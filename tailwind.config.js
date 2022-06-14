@@ -10,6 +10,9 @@ module.exports = {
         'serif': ['Source Serif Pro', ...defaultTheme.fontFamily.serif],
         'sans': ['Source Sans Pro', ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        'accent': '#ff4a52',
+      }
     },
   },
   plugins: [],
