@@ -69,26 +69,27 @@ const Recipe = () => {
                 </span>
               </div>
             </div>
-            <div className="relative">
-              {!loading && (
+            {!loading && (
+              <div className="relative">
                 <img
                   className="object-cover object-center rounded w-full h-[450px]"
                   src={`https://spoonacular.com/recipeImages/${data.id}-636x393.jpg`}
                   alt="Recipe Image"
                 />
-              )}
-              <div className="flex flex-row gap-x-6 absolute bottom-5 left-5">
-                <img
-                  className="w-8 h-8"
-                  src={
-                    data.vegetarian
-                      ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
-                      : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
-                  }
-                  alt=""
-                />
+
+                <div className="flex flex-row gap-x-6 absolute bottom-5 left-5">
+                  <img
+                    className="w-8 h-8"
+                    src={
+                      data.vegetarian
+                        ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
+                        : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
+                    }
+                    alt=""
+                  />
+                </div>
               </div>
-            </div>
+            )}
             <div className="grid grid-cols-4 gap-x-1">
               <div className="flex flex-row gap-x-4 px-4 py-5 justify-center items-center rounded bg-gray-100">
                 <i className="fa-duotone fa-timer text-4xl text-red-500"></i>
