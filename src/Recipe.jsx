@@ -80,7 +80,11 @@ const Recipe = () => {
               <div className="flex flex-row gap-x-6 absolute bottom-5 left-5">
                 <img
                   className="w-8 h-8"
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
+                  src={
+                    data.vegetarian
+                      ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
+                      : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
+                  }
                   alt=""
                 />
               </div>
