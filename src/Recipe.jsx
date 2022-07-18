@@ -19,6 +19,11 @@ const Recipe = () => {
   useEffect(() => {
     fetchData((response) => {
       if (response.status === 200) {
+        /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
+        response.data.summary = response.data.summary.replace(
+          /<\/?[^>]+(>|$)/g,
+          ""
+        );
         setData(response.data);
         setLoading(false);
       } else {
