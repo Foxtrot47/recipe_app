@@ -128,67 +128,18 @@ const Recipe = () => {
               </div>
             </div>
             <div className="py-4 text-lg">{!loading && data.summary}</div>
-            <div className="grid grid-cols-2 gap-x-6 mt-4 w-full">
-              <div className="bg-gray-100 flex flex-col gap-y-4 py-4 px-6">
-                <div className="flex flex-row gap-x-2 text-2xl">
-                  <i className="fa-solid fa-list text-red-500"></i>
-                  <span className="font-semibold">Ingredients</span>
-                </div>
-                <div className="bg-white drop-shadow-lg p-4">
-                  <ul className="pl-4 mt-2 text-lg flex flex-col gap-y-4">
-                    {!loading &&
-                      data.extendedIngredients.map((ingredient, id) => {
-                        return <ol key={id}>{ingredient.original}</ol>;
-                      })}
-                  </ul>
-                </div>
+            <div className="bg-gray-100 flex flex-col gap-y-4 p-8 pt-4">
+              <div className="flex flex-row gap-x-2 text-2xl">
+                <i className="fa-solid fa-list text-red-500"></i>
+                <span className="font-semibold">Ingredients</span>
               </div>
-              <div className="bg-red-50 flex flex-col gap-y-4 py-4 px-6">
-                <div className="flex flex-row gap-x-2 text-2xl">
-                  <i className="fa-solid fa-info text-red-500"></i>
-                  <span className="font-semibold">Nutrition</span>
-                </div>
-                <span>
-                  Per Serving:{" "}
+              <div className="bg-white drop-shadow-lg p-4">
+                <ul className="pl-4 mt-2 text-lg flex flex-col gap-y-4">
                   {!loading &&
-                    data.nutrition.weightPerServing.amount +
-                      data.nutrition.weightPerServing.unit}
-                </span>
-                <div className="bg-white drop-shadow-lg p-4 flex flex-col gap-y-2 pt-6 text-lg">
-                  <div className="flex justify-end text-sm text-gray-500">
-                    Daily Value*
-                  </div>
-                  <div className="w-full flex flex-col gap-y-4">
-                    {!loading &&
-                      data.nutrition.nutrients.map((nutrient, id) => {
-                        /* Only show selected few nutrients */
-                        if (
-                          nutrient.name === "Calories" ||
-                          nutrient.name === "Fat" ||
-                          nutrient.name === "Saturated Fat" ||
-                          nutrient.name === "Carbohydrates" ||
-                          nutrient.name === "Sugar" ||
-                          nutrient.name === "Cholesterol" ||
-                          nutrient.name === "Sodium"
-                        ) {
-                          return (
-                            <div
-                              key={id}
-                              className="flex flex-row justify-between"
-                            >
-                              <span className="text-gray-600">
-                                {nutrient.name}:{" "}
-                                {nutrient.amount + nutrient.unit}{" "}
-                              </span>
-                              <span className="font-semibold">
-                                {nutrient.percentOfDailyNeeds}%
-                              </span>
-                            </div>
-                          );
-                        }
-                      })}
-                  </div>
-                </div>
+                    data.extendedIngredients.map((ingredient, id) => {
+                      return <ol key={id}>{ingredient.original}</ol>;
+                    })}
+                </ul>
               </div>
             </div>
             {
@@ -314,6 +265,52 @@ const Recipe = () => {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+            <div className="bg-red-50 flex flex-col gap-y-4 py-4 px-6 mt-6">
+              <div className="flex flex-row gap-x-2 text-2xl">
+                <i className="fa-solid fa-info text-red-500"></i>
+                <span className="font-semibold">Nutrition</span>
+              </div>
+              <span>
+                Per Serving:{" "}
+                {!loading &&
+                  data.nutrition.weightPerServing.amount +
+                    data.nutrition.weightPerServing.unit}
+              </span>
+              <div className="bg-white drop-shadow-lg p-4 flex flex-col gap-y-2 pt-6 text-lg">
+                <div className="flex justify-end text-sm text-gray-500">
+                  Daily Value*
+                </div>
+                <div className="w-full flex flex-col gap-y-4">
+                  {!loading &&
+                    data.nutrition.nutrients.map((nutrient, id) => {
+                      /* Only show selected few nutrients */
+                      if (
+                        nutrient.name === "Calories" ||
+                        nutrient.name === "Fat" ||
+                        nutrient.name === "Saturated Fat" ||
+                        nutrient.name === "Carbohydrates" ||
+                        nutrient.name === "Sugar" ||
+                        nutrient.name === "Cholesterol" ||
+                        nutrient.name === "Sodium"
+                      ) {
+                        return (
+                          <div
+                            key={id}
+                            className="flex flex-row justify-between"
+                          >
+                            <span className="text-gray-600">
+                              {nutrient.name}: {nutrient.amount + nutrient.unit}{" "}
+                            </span>
+                            <span className="font-semibold">
+                              {nutrient.percentOfDailyNeeds}%
+                            </span>
+                          </div>
+                        );
+                      }
+                    })}
+                </div>
               </div>
             </div>
           </div>
