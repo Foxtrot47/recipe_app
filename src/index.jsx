@@ -1,20 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-} from "react-router-dom";
-import App from './App.jsx';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import App from "./App.jsx";
 import Recipe from "./Recipe.jsx";
-import './index.css';
+import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="recipes/:recipeid" element={<Recipe />} />
-        </Routes>
-    </BrowserRouter>
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="recipes/:recipeid" element={<Recipe />} />
+    </Routes>
+  </BrowserRouter>
 );
