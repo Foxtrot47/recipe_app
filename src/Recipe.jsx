@@ -1,10 +1,12 @@
 import Navbar from "./Navbar.jsx";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import fetchData from "./Helpers.js";
 
 const Recipe = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  let { recipeid } = useParams();
 
   const recipeCategories = [
     "Breakfast",
@@ -17,7 +19,8 @@ const Recipe = () => {
   ];
 
   useEffect(() => {
-    fetchData((response) => {
+    const endPoint = recipeid + "/information";
+    fetchData(endPoint, { includeNutrition: true }, "get", (response) => {
       if (response.status === 200) {
         /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
         response.data.summary = response.data.summary.replace(
@@ -46,7 +49,7 @@ const Recipe = () => {
         console.log("uh oh");
       }
     });
-  }, []);
+  }, [recipeid]);
 
   // For rendering the stars
   const renderRating = () => {
