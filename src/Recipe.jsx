@@ -22,7 +22,7 @@ const Recipe = () => {
     if (recipeid === undefined) return;
     let endPoint = recipeid + "/information";
     fetchData(endPoint, { includeNutrition: true }, "get", (response) => {
-      if (response.status === 200) {
+      if (response.status === 200 && response.data !== null) {
         /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
         response.data.summary = response.data.summary.replace(
           /<\/?[^>]+(>|$)/g,
@@ -52,7 +52,7 @@ const Recipe = () => {
     });
     endPoint = recipeid + "/similar";
     fetchData(endPoint, { number: 4 }, "get", (response) => {
-      if (response.status === 200) {
+      if (response.status === 200 && response.data !== null) {
         let newData = data;
         newData["similiarRecipies"] = response.data;
         setData(newData);
