@@ -119,7 +119,7 @@ const Recipe = () => {
               <div className="relative">
                 <img
                   className="object-cover object-center rounded w-full h-[450px]"
-                  src={`https://spoonacular.com/recipeImages/${data.id}-636x393.jpg`}
+                  src={`https://spoonacular.com/recipeImages/${data.id}-636x393.${data.imageType}`}
                   alt="Recipe Image"
                 />
 
@@ -240,7 +240,7 @@ const Recipe = () => {
                       <div className="flex-none">
                         <img
                           className="object-cover object-center w-36 h-36 rounded-lg"
-                          src={`https://spoonacular.com/recipeImages/${recipe.id}-312x231.jpg`}
+                          src={`https://spoonacular.com/recipeImages/${recipe.id}-312x231.${recipe.imageType}`}
                           alt=""
                         />
                       </div>
