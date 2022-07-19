@@ -19,7 +19,8 @@ const Recipe = () => {
   ];
 
   useEffect(() => {
-    const endPoint = recipeid + "/information";
+    if (recipeid === undefined) return;
+    let endPoint = recipeid + "/information";
     fetchData(endPoint, { includeNutrition: true }, "get", (response) => {
       if (response.status === 200) {
         /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
@@ -47,6 +48,16 @@ const Recipe = () => {
         setLoading(false);
       } else {
         console.log("uh oh");
+      }
+    });
+    endPoint = recipeid + "/similar";
+    fetchData(endPoint, { number: 4 }, "get", (response) => {
+      if (response.status === 200) {
+        let newData = data;
+        newData["similiarRecipies"] = response.data;
+        setData(newData);
+      } else {
+        console.log("Failed to fetch similiar recipies");
       }
     });
   }, [recipeid]);
@@ -221,74 +232,26 @@ const Recipe = () => {
               </span>
             </div>
             <div className="flex flex-col gap-y-6">
-              <div className="flex flex-row gap-x-4">
-                <div className="flex-none">
-                  <img
-                    className="object-cover object-center w-36 h-36 rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="flex flex-col gap-y-4 relative">
-                  <span className="text-accent font-semibold -top-1.5 absolute">
-                    Dinner
-                  </span>
-                  <p className="font-semibold text-lg whitespace-normal mt-6">
-                    Lorem ipsum dolor sit amet jkjskfskfj
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-4">
-                <div className="flex-none">
-                  <img
-                    className="object-cover object-center w-36 h-36 rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="flex flex-col gap-y-4 relative">
-                  <span className="text-accent font-semibold -top-1.5 absolute">
-                    Dinner
-                  </span>
-                  <p className="font-semibold text-lg whitespace-normal mt-6">
-                    Lorem ipsum dolor sit amet jkjskfskfj
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-4">
-                <div className="flex-none">
-                  <img
-                    className="object-cover object-center w-36 h-36 rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="flex flex-col gap-y-4 relative">
-                  <span className="text-accent font-semibold -top-1.5 absolute">
-                    Dinner
-                  </span>
-                  <p className="font-semibold text-lg whitespace-normal mt-6">
-                    Lorem ipsum dolor sit amet jkjskfskfj
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-4">
-                <div className="flex-none">
-                  <img
-                    className="object-cover object-center w-36 h-36 rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="flex flex-col gap-y-4 relative">
-                  <span className="text-accent font-semibold -top-1.5 absolute">
-                    Dinner
-                  </span>
-                  <p className="font-semibold text-lg whitespace-normal mt-6">
-                    Lorem ipsum dolor sit amet jkjskfskfj
-                  </p>
-                </div>
-              </div>
+              {!loading &&
+                data.similiarRecipies !== undefined &&
+                data.similiarRecipies.map((recipe, id) => {
+                  return (
+                    <div key={id} className="flex flex-row gap-x-4">
+                      <div className="flex-none">
+                        <img
+                          className="object-cover object-center w-36 h-36 rounded-lg"
+                          src={`https://spoonacular.com/recipeImages/${recipe.id}-312x231.jpg`}
+                          alt=""
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-4 relative">
+                        <p className="font-semibold text-lg whitespace-normal mt-6">
+                          {recipe.title}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
             <div className="border-b border-gray-300 relative pb-2 mt-4">
               <p className="text-2xl font-medium">Recipe Categories</p>
