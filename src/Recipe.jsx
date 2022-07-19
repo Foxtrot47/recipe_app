@@ -24,6 +24,22 @@ const Recipe = () => {
           /<\/?[^>]+(>|$)/g,
           ""
         );
+        /* 
+          Calculate rating from spoonacular api score
+          But we need to extract it from summary 
+          stupid api doesn't provide it even if they advertise it in docs
+          Our aim is to convert the percentage into a numbers like 1,1.5,2 etc. upto 5
+        */
+        // Group the number after score of
+        const Reg = new RegExp(/score of (\d+)/);
+
+        // Get the group and not the match
+        let rating = Reg.exec(response.data.summary)[1];
+        // Convert percentage into float in range 0-5
+        rating = (rating / 100) * 5;
+
+        // Convert into a multiple of .5
+        response.data.rating = Math.round(rating / 0.5) * 0.5;
         setData(response.data);
         setLoading(false);
       } else {
@@ -31,6 +47,22 @@ const Recipe = () => {
       }
     });
   }, []);
+
+  // For rendering the stars
+  const renderRating = () => {
+    let out = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= data.rating) {
+        out.push(<i key={i} className="fa-solid fa-star"></i>);
+      } else {
+        if (i - 0.5 == data.rating)
+          out.push(<i key={i} className="fa-duotone fa-star-half"></i>);
+        else out.push(<i key={i} className="fa-duotone fa-star"></i>);
+      }
+    }
+    return out;
+  };
+
   return (
     <div className="">
       <Navbar />
@@ -87,6 +119,11 @@ const Recipe = () => {
                     }
                     alt=""
                   />
+                </div>
+                <div className="absolute top-5 left-5 border border-black bg-white px-2 py-1">
+                  <div className="flex flex-row gap-x-2 text-lg text-black">
+                    {renderRating()}
+                  </div>
                 </div>
               </div>
             )}
