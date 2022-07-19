@@ -305,7 +305,7 @@ const Recipe = () => {
                 })}
               </div>
             </div>
-            <div className="bg-red-50 flex flex-col gap-y-4 py-4 px-6 mt-6">
+            <div className="bg-red-50 flex flex-col gap-y-4 p-6 pt-4 mt-6">
               <div className="flex flex-row gap-x-2 text-2xl">
                 <i className="fa-solid fa-info text-red-500"></i>
                 <span className="font-semibold">Nutrition</span>
