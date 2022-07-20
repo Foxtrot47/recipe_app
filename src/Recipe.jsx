@@ -44,6 +44,13 @@ const Recipe = () => {
 
         // Convert into a multiple of .5
         response.data.rating = Math.round(rating / 0.5) * 0.5;
+
+        // Remove score and recommendations from summary
+        response.data.summary = response.data.summary.replace(
+          /All things considered.*/g,
+          ""
+        )
+
         setData(response.data);
         setLoading(false);
       } else {
