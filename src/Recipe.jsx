@@ -49,7 +49,12 @@ const Recipe = () => {
         response.data.summary = response.data.summary.replace(
           /All things considered.*/g,
           ""
-        )
+        );
+
+        // Set defaut image type if not specified
+        if (response.data.imageType === undefined) {
+          response.data.imageType = "jpg";
+        }
 
         setData(response.data);
         setLoading(false);
