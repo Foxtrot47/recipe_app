@@ -56,12 +56,16 @@ const Recipe = () => {
           response.data.imageType = "jpg";
         }
 
+        fetchSimiliar();      
         setData(response.data);
         setLoading(false);
       } else {
         console.log("uh oh");
       }
     });
+  }, [recipeid]);
+
+  const fetchSimiliar = () => {
     endPoint = recipeid + "/similar";
     fetchData(endPoint, { number: 4 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
@@ -72,7 +76,7 @@ const Recipe = () => {
         console.log("Failed to fetch similiar recipies");
       }
     });
-  }, [recipeid]);
+  };
 
   // For rendering the stars
   const renderRating = () => {
