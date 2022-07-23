@@ -56,8 +56,8 @@ const Recipe = () => {
           response.data.imageType = "jpg";
         }
 
-        fetchSimiliar();      
         setData(response.data);
+        fetchSimiliar();
         setLoading(false);
       } else {
         console.log("uh oh");
