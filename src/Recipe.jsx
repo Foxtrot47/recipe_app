@@ -110,9 +110,7 @@ const Recipe = () => {
             <i className="fa-regular fa-angle-right text-sm"></i>
             Cateogry
             <i className="fa-regular fa-angle-right text-sm"></i>
-            <span className="text-gray-800">
-              Lorem ipsum dolor sit amet, consectetur adipiscing
-            </span>
+            <span className="text-gray-800">{!loading && data.title}</span>
           </span>
         </div>
         <div className="flex flex-row gap-x-6 px-40">
