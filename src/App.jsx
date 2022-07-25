@@ -1,6 +1,61 @@
 import Navbar from "./Navbar";
+import { useState, useEffect } from "react";
+import fetchData from "./Helpers.js";
 
-function App() {
+const App = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData("/random", { number: 6 }, "get", (response) => {
+      if (response.status === 200 && response.data !== null) {
+        response.data.recipes.map((recipe) => {
+          // Set image type to default jpg if its not defined
+          if (recipe.imageType === undefined) {
+            recipe.imageType = "jpg";
+          }
+          /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
+          recipe.summary = recipe.summary.replace(/<\/?[^>]+(>|$)/g, "");
+          /* 
+          Calculate rating from spoonacular api score
+          But we need to extract it from summary 
+          stupid api doesn't provide it even if they advertise it in docs
+          Our aim is to convert the percentage into a numbers like 1,1.5,2 etc. upto 5
+        */
+          // Group the number after score of
+          const Reg = new RegExp(/score of (\d+)/);
+
+          // Get the group and not the match
+          let rating = Reg.exec(recipe.summary)[1];
+          // Convert percentage into float in range 0-5
+          rating = (rating / 100) * 5;
+
+          // Convert into a multiple of .5
+          recipe.rating = Math.round(rating / 0.5) * 0.5;
+        });
+        setData(response.data);
+        setLoading(false);
+      } else {
+        console.log("Fetching recipies from API failed");
+      }
+    });
+  }, []);
+
+  // For rendering the stars
+  const renderRating = (rating) => {
+    let out = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        out.push(<i key={i} className="fa-solid fa-star"></i>);
+      } else {
+        if (i - 0.5 == rating)
+          out.push(<i key={i} className="fa-duotone fa-star-half"></i>);
+        else out.push(<i key={i} className="fa-duotone fa-star"></i>);
+      }
+    }
+    return out;
+  };
+
   return (
     <div className="App h-full">
       <Navbar />
@@ -27,147 +82,34 @@ function App() {
           </div>
         </div>
         {/* Rest of body */}
-        <div className="px-8 flex flex-row gap-x-10 text-center">
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="px-8 flex flex-row gap-x-10 text-center">
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <img
-              className="drop-shadow-xl filter rounded-lg"
-              src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-            />
-            <div className="flex flex-col items-center gap-y-2">
-              <p className="text-accent font-semibold">Breakfast</p>
-              <p className="text-2xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-                <i className="fa-duotone fa-star"></i>
-              </div>
-              <p className="px-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                quis eleifend arcu. Aliquam mollis porta suscipit.
-              </p>
-            </div>
-          </div>
+        <div className="px-8 grid grid-cols-3 gap-x-10 gap-y-4 text-center">
+          {!loading &&
+            data.recipes.map((recipe, id) => {
+              return (
+                <div key={id} className="flex flex-col gap-y-6">
+                  <img
+                    className="drop-shadow-xl filter rounded-lg object-cover object-center"
+                    src={`https://spoonacular.com/recipeImages/${recipe.id}-636x393.${recipe.imageType}`}
+                  />
+                  <div className="flex flex-col items-center gap-y-2">
+                    <p className="text-accent font-semibold capitalize ">
+                      {recipe.dishTypes.length > 0
+                        ? recipe.dishTypes[0]
+                        : "Unknown"}
+                    </p>
+                    <p className="text-2xl font-semibold truncate w-full">
+                      {recipe.title}
+                    </p>
+                    <div className="flex flex-row gap-x-2 text-sm">
+                      {renderRating(recipe.rating)}
+                    </div>
+                    <p className="px-4 h-24 w-full text-ellipsis overflow-hidden">
+                      {recipe.summary}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
         </div>
         <div className="px-12">
           <div className="border-b border-gray-300 relative pb-2">
@@ -418,6 +360,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
