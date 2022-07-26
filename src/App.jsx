@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import { useState, useEffect } from "react";
-import fetchData from "./Helpers.js";
+import { cleanupRecipeData, fetchData, renderRating } from "./Helpers.jsx";
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -9,30 +9,7 @@ const App = () => {
   useEffect(() => {
     fetchData("/random", { number: 6 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        response.data.recipes.map((recipe) => {
-          // Set image type to default jpg if its not defined
-          if (recipe.imageType === undefined) {
-            recipe.imageType = "jpg";
-          }
-          /* Clean up Recipe summary , Spoonacular puts html tags into it and breaks rendering */
-          recipe.summary = recipe.summary.replace(/<\/?[^>]+(>|$)/g, "");
-          /* 
-          Calculate rating from spoonacular api score
-          But we need to extract it from summary 
-          stupid api doesn't provide it even if they advertise it in docs
-          Our aim is to convert the percentage into a numbers like 1,1.5,2 etc. upto 5
-        */
-          // Group the number after score of
-          const Reg = new RegExp(/score of (\d+)/);
-
-          // Get the group and not the match
-          let rating = Reg.exec(recipe.summary)[1];
-          // Convert percentage into float in range 0-5
-          rating = (rating / 100) * 5;
-
-          // Convert into a multiple of .5
-          recipe.rating = Math.round(rating / 0.5) * 0.5;
-        });
+        response.data.recipes.map((recipe) => cleanupRecipeData(recipe));
         setData(response.data);
         setLoading(false);
       } else {
@@ -40,21 +17,6 @@ const App = () => {
       }
     });
   }, []);
-
-  // For rendering the stars
-  const renderRating = (rating) => {
-    let out = [];
-    for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
-        out.push(<i key={i} className="fa-solid fa-star"></i>);
-      } else {
-        if (i - 0.5 == rating)
-          out.push(<i key={i} className="fa-duotone fa-star-half"></i>);
-        else out.push(<i key={i} className="fa-duotone fa-star"></i>);
-      }
-    }
-    return out;
-  };
 
   return (
     <div className="App h-full">
