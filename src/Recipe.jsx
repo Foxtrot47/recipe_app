@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 import { cleanupRecipeData, fetchData, renderRating } from "./Helpers.jsx";
 
 const Recipe = () => {
-  const [data, setData] = useState(null);
+  const [recipeData, setRecipeData] = useState(null);
+  const [similiarRecipeData, setSimiliarRecipeData] = useState(null);
   const [loading, setLoading] = useState(true);
   let { recipeid } = useParams();
 
@@ -24,7 +25,7 @@ const Recipe = () => {
     fetchData(endPoint, { includeNutrition: true }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
         cleanupRecipeData(response.data);
-        setData(response.data);
+        setRecipeData(response.data);
         fetchSimiliar();
         setLoading(false);
       } else {
@@ -37,9 +38,7 @@ const Recipe = () => {
     endPoint = recipeid + "/similar";
     fetchData(endPoint, { number: 4 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        let newData = data;
-        newData["similiarRecipies"] = response.data;
-        setData(newData);
+        setSimiliarRecipeData(response.data);
       } else {
         console.log("Failed to fetch similiar recipies");
       }
@@ -56,14 +55,16 @@ const Recipe = () => {
             alt=""
             className="object-cover object-center w-full absolute opacity-10 h-full"
           />
-          <div className="text-4xl">{!loading && data.title}</div>
+          <div className="text-4xl">{!loading && recipeData.title}</div>
           <span className="text-lg flex flex-row gap-x-2 items-center">
             <i className="fa-solid fa-home"></i>
             Home
             <i className="fa-regular fa-angle-right text-sm"></i>
             Cateogry
             <i className="fa-regular fa-angle-right text-sm"></i>
-            <span className="text-gray-800">{!loading && data.title}</span>
+            <span className="text-gray-800">
+              {!loading && recipeData.title}
+            </span>
           </span>
         </div>
         <div className="flex flex-row gap-x-6 px-40">
@@ -72,13 +73,14 @@ const Recipe = () => {
               <div className="text-gray-500 flex flex-row gap-x-1">
                 <i className="text-accent font-bold fa-solid fa-user"></i>
                 <span className="text-black">By</span>
-                {!loading && data.sourceName}
+                {!loading && recipeData.sourceName}
               </div>
               <div className=" flex flex-row gap-x-1">
                 <i className="text-accent font-bold fa-solid fa-book"></i>
                 <span>Cuisine:</span>
                 <span className="text-gray-500 italic">
-                  {!loading && data.cuisines.map((cuisine) => cuisine + ", ")}
+                  {!loading &&
+                    recipeData.cuisines.map((cuisine) => cuisine + ", ")}
                 </span>
               </div>
             </div>
@@ -86,7 +88,7 @@ const Recipe = () => {
               <div className="relative">
                 <img
                   className="object-cover object-center rounded w-full h-[450px]"
-                  src={`https://spoonacular.com/recipeImages/${data.id}-636x393.${data.imageType}`}
+                  src={`https://spoonacular.com/recipeImages/${recipeData.id}-636x393.${recipeData.imageType}`}
                   alt="Recipe Image"
                 />
 
@@ -94,7 +96,7 @@ const Recipe = () => {
                   <img
                     className="w-8 h-8"
                     src={
-                      data.vegetarian
+                      recipeData.vegetarian
                         ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
                         : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
                     }
@@ -114,7 +116,7 @@ const Recipe = () => {
                 <div className="flex flex-col">
                   <span className="text-xl font-semibold">Prep Time</span>
                   <span className="text-gray-500">
-                    {!loading && data.readyInMinutes}m
+                    {!loading && recipeData.readyInMinutes}m
                   </span>
                 </div>
               </div>
@@ -123,7 +125,7 @@ const Recipe = () => {
                 <div className="flex flex-col">
                   <span className="text-xl font-semibold">Health Points</span>
                   <span className="text-gray-500">
-                    {!loading && data.healthScore}
+                    {!loading && recipeData.healthScore}
                   </span>
                 </div>
               </div>
@@ -132,7 +134,7 @@ const Recipe = () => {
                 <div className="flex flex-col">
                   <span className="text-xl font-semibold">Serving</span>
                   <span className="text-gray-500">
-                    {!loading && data.servings}
+                    {!loading && recipeData.servings}
                   </span>
                 </div>
               </div>
@@ -141,12 +143,12 @@ const Recipe = () => {
                 <div className="flex flex-col">
                   <span className="text-xl font-semibold">Likes</span>
                   <span className="text-gray-500">
-                    {!loading && data.aggregateLikes}
+                    {!loading && recipeData.aggregateLikes}
                   </span>
                 </div>
               </div>
             </div>
-            <div className="py-4 text-lg">{!loading && data.summary}</div>
+            <div className="py-4 text-lg">{!loading && recipeData.summary}</div>
             <div className="bg-gray-100 flex flex-col gap-y-4 p-8 pt-4">
               <div className="flex flex-row gap-x-2 text-2xl">
                 <i className="fa-solid fa-list text-red-500"></i>
@@ -155,7 +157,7 @@ const Recipe = () => {
               <div className="bg-white drop-shadow-lg p-4">
                 <ul className="pl-4 mt-2 text-lg flex flex-col gap-y-4">
                   {!loading &&
-                    data.extendedIngredients.map((ingredient, id) => {
+                    recipeData.extendedIngredients.map((ingredient, id) => {
                       return <ol key={id}>{ingredient.original}</ol>;
                     })}
                 </ul>
@@ -163,7 +165,7 @@ const Recipe = () => {
             </div>
             {
               /* Some recipes do not have instructions for them , ignore rendering for them */
-              !loading && data.analyzedInstructions[0] !== undefined && (
+              !loading && recipeData.analyzedInstructions[0] !== undefined && (
                 <div className="flex flex-col">
                   <div className="border-b border-gray-300 relative pb-2 mt-6">
                     <p className="text-3xl font-medium">Instructions</p>
@@ -172,7 +174,7 @@ const Recipe = () => {
                     </span>
                   </div>
                   <div className="flex flex-col gap-y-9 my-10">
-                    {data.analyzedInstructions[0].steps.map(
+                    {recipeData.analyzedInstructions[0].steps.map(
                       (instruction, id) => {
                         return (
                           <div key={id} className="flex flex-row gap-x-4">
@@ -200,8 +202,8 @@ const Recipe = () => {
             </div>
             <div className="flex flex-col gap-y-6">
               {!loading &&
-                data.similiarRecipies !== undefined &&
-                data.similiarRecipies.map((recipe, id) => {
+                similiarRecipeData !== null &&
+                similiarRecipeData.map((recipe, id) => {
                   return (
                     <div key={id} className="flex flex-row gap-x-4">
                       <div className="flex-none">
@@ -246,8 +248,8 @@ const Recipe = () => {
               <span>
                 Per Serving:{" "}
                 {!loading &&
-                  data.nutrition.weightPerServing.amount +
-                    data.nutrition.weightPerServing.unit}
+                  recipeData.nutrition.weightPerServing.amount +
+                    recipeData.nutrition.weightPerServing.unit}
               </span>
               <div className="bg-white drop-shadow-lg p-4 flex flex-col gap-y-2 pt-6 text-lg">
                 <div className="flex justify-end text-sm text-gray-500">
@@ -255,7 +257,7 @@ const Recipe = () => {
                 </div>
                 <div className="w-full flex flex-col gap-y-4">
                   {!loading &&
-                    data.nutrition.nutrients.map((nutrient, id) => {
+                    recipeData.nutrition.nutrients.map((nutrient, id) => {
                       /* Only show selected few nutrients */
                       if (
                         nutrient.name === "Calories" ||
