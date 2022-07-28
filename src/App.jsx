@@ -44,7 +44,7 @@ const App = () => {
           </div>
         </div>
         {/* Rest of body */}
-        <div className="px-8 grid grid-cols-3 gap-x-10 gap-y-4 text-center">
+        <div className="px-8 grid grid-cols-3 gap-x-10 gap-y-6 text-center">
           {!loading &&
             data.recipes.map((recipe, id) => {
               return (
