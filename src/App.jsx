@@ -1,15 +1,16 @@
 import Navbar from "./Navbar";
 import { useState, useEffect } from "react";
-import { cleanupRecipeData, fetchData, renderRating } from "./Helpers.jsx";
+import { Link } from "react-router-dom";
+import { fetchData, renderRating } from "./Helpers.jsx";
 
 const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchResult, setSearchResults] = useState(null);
 
   useEffect(() => {
-    fetchData("/random", { number: 6 }, "get", (response) => {
+    fetchData("random", { limit: 6 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        response.data.recipes.map((recipe) => cleanupRecipeData(recipe));
         setData(response.data);
         setLoading(false);
       } else {
@@ -17,6 +18,16 @@ const App = () => {
       }
     });
   }, []);
+
+  const doAutoComplete = async () => {
+    const query = document.getElementById("searchfield").value;
+    if (query === "") setSearchResults(null);
+    fetchData("autocomplete", { q: query }, "get", (response) => {
+      if (response.status === 200 && response.data !== null) {
+        setSearchResults(response.data);
+      }
+    });
+  };
 
   return (
     <div className="App h-full">
@@ -36,40 +47,58 @@ const App = () => {
             <span className="w-2/5 bg-white flex flex-row items-center text-2xl py-2 opacity-80 drop-shadow-xl filter">
               <i className="fa-solid fa-magnifying-glass px-4 text-accent"></i>
               <input
+                id="searchfield"
                 className=" py-2 w-full outline-none"
                 type="text"
                 placeholder="Search for recipes"
+                onInput={doAutoComplete.bind()}
+                autoComplete="off"
               />
             </span>
+            {searchResult !== null && searchResult.length > 0 && (
+              <div className="absolute top-36 bg-white rounded z-10 flex flex-col gap-y-2 p-2 opacity-90 drop-shadow-xl filter w-2/5 text-xl">
+                {searchResult.map((recipe, id) => {
+                  return (
+                    <Link to={`/recipes/${recipe._id}`} className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded">
+                      <img src={recipe.image.url} className="w-16 rounded" />
+                      <p key={id}>{recipe.name}</p>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
         {/* Rest of body */}
         <div className="px-8 grid grid-cols-3 gap-x-10 gap-y-6 text-center">
           {!loading &&
-            data.recipes.map((recipe, id) => {
+            data.map((recipe, id) => {
               return (
-                <div key={id} className="flex flex-col gap-y-6">
+                <Link
+                  key={id}
+                  to={"/recipes/" + recipe._id}
+                  className="flex flex-col gap-y-6 hover:bg-gray-50 rounded-lg hover:drop-shadow-lg"
+                >
                   <img
-                    className="drop-shadow-xl filter rounded-lg object-cover object-center"
-                    src={`https://spoonacular.com/recipeImages/${recipe.id}-636x393.${recipe.imageType}`}
+                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-80"
+                    src={recipe.image.url}
+                    alt={recipe.image.alt}
                   />
-                  <div className="flex flex-col items-center gap-y-2">
+                  <div className="flex flex-col items-center gap-y-2 px-4">
                     <p className="text-accent font-semibold capitalize ">
-                      {recipe.dishTypes.length > 0
-                        ? recipe.dishTypes[0]
+                      {recipe.category.length > 0
+                        ? recipe.category[0]
                         : "Unknown"}
                     </p>
                     <p className="text-2xl font-semibold truncate w-full">
-                      {recipe.title}
+                      {recipe.name}
                     </p>
-                    <div className="flex flex-row gap-x-2 text-sm">
-                      {renderRating(recipe.rating)}
-                    </div>
+                    <div className="flex flex-row gap-x-2 text-sm"></div>
                     <p className="px-4 h-24 w-full text-ellipsis overflow-hidden">
-                      {recipe.summary}
+                      {recipe.description}
                     </p>
                   </div>
-                </div>
+                </Link>
               );
             })}
         </div>

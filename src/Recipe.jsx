@@ -1,7 +1,9 @@
 import Navbar from "./Navbar.jsx";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { cleanupRecipeData, fetchData, renderRating } from "./Helpers.jsx";
+import { useParams, Link } from "react-router-dom";
+import { fetchData, renderRating } from "./Helpers.jsx";
+import Icon from "@mdi/react";
+import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from "@mdi/js";
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
@@ -21,12 +23,11 @@ const Recipe = () => {
 
   useEffect(() => {
     if (recipeid === undefined) return;
-    let endPoint = recipeid + "/information";
-    fetchData(endPoint, { includeNutrition: true }, "get", (response) => {
+    let endPoint = "recipebyid";
+    fetchData(endPoint, { id: recipeid }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        cleanupRecipeData(response.data);
         setRecipeData(response.data);
-        fetchSimiliar();
+        //fetchSimiliar();
         setLoading(false);
       } else {
         console.log("uh oh");
@@ -34,192 +35,286 @@ const Recipe = () => {
     });
   }, [recipeid]);
 
-  const fetchSimiliar = () => {
-    endPoint = recipeid + "/similar";
-    fetchData(endPoint, { number: 4 }, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        setSimiliarRecipeData(response.data);
-      } else {
-        console.log("Failed to fetch similiar recipies");
-      }
-    });
-  };
-
   return (
     <div className="">
       <Navbar />
       <div className="flex flex-col gap-y-6 mt-14">
         <div className="flex flex-col gap-y-4 relative justify-center items-center bg-accent h-72 text-white font-medium">
-          <img
-            src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-3-1536x864.jpg"
-            alt=""
-            className="object-cover object-center w-full absolute opacity-10 h-full"
-          />
-          <div className="text-4xl">{!loading && recipeData.title}</div>
-          <span className="text-lg flex flex-row gap-x-2 items-center">
-            <i className="fa-solid fa-home"></i>
-            Home
+          {!loading && (
+            <img
+              src={recipeData.image.url}
+              alt={recipeData.image.alt}
+              className="object-cover object-center w-full absolute opacity-10 h-full"
+            />
+          )}
+          <div className="text-4xl">{!loading && recipeData.name}</div>
+          <div className="text-lg flex flex-row gap-x-2 items-center z-0">
+            <Link to={"/"}>
+              <i className="fa-solid fa-home"></i>
+              &nbsp;Home
+            </Link>
             <i className="fa-regular fa-angle-right text-sm"></i>
-            Cateogry
+            {!loading && recipeData.category[0]}
             <i className="fa-regular fa-angle-right text-sm"></i>
-            <span className="text-gray-800">
-              {!loading && recipeData.title}
-            </span>
-          </span>
+            <span className="text-gray-800">{!loading && recipeData.name}</span>
+          </div>
         </div>
-        <div className="flex flex-row gap-x-6 px-40">
+        <div className="flex flex-row gap-x-6 px-20">
           <div className="flex flex-col gap-y-1 ">
-            <div className="flex flex-row gap-x-4 p-2 mb-1 ">
-              <div className="text-gray-500 flex flex-row gap-x-1">
+            <div className="flex flex-row gap-x-10 p-2 mb-1">
+              <div className="text-gray-500 flex flex-row gap-x-1 items-center">
                 <i className="text-accent font-bold fa-solid fa-user"></i>
                 <span className="text-black">By</span>
-                {!loading && recipeData.sourceName}
+                {!loading && recipeData.author}
               </div>
-              <div className=" flex flex-row gap-x-1">
-                <i className="text-accent font-bold fa-solid fa-book"></i>
-                <span>Cuisine:</span>
-                <span className="text-gray-500 italic">
-                  {!loading &&
-                    recipeData.cuisines.map((cuisine) => cuisine + ", ")}
-                </span>
-              </div>
+              {!loading && recipeData.cuisine.length > 0 && (
+                <div className=" flex flex-row gap-x-1">
+                  <i className="text-accent font-bold fa-solid fa-bell-concierge"></i>
+                  <span>Cuisine:</span>
+                  <span className="text-gray-500">{recipeData.cuisine}</span>
+                </div>
+              )}
+              {!loading && recipeData.category.length > 0 && (
+                <div className=" flex flex-row gap-x-1">
+                  <i className="text-accent font-bold fa-solid fa-book"></i>
+                  <span>Category:</span>
+                  {recipeData.category.map((cat, id) => {
+                    return (
+                      <span key={id} className="text-gray-500">
+                        {cat},
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+              {!loading && recipeData.diet.length > 0 && (
+                <div className=" flex flex-row gap-x-4">
+                  {recipeData.diet.map((dietInfo, id) => {
+                    return (
+                      <div
+                        key={id}
+                        className="flex flex-row gap-x-2 items-center whitespace-normal"
+                      >
+                        {(dietInfo.slug === "diary-free" && (
+                          <Icon path={mdiEggOff} title="Diary free" />
+                        )) ||
+                          (dietInfo.slug === "gluten-free" && (
+                            <Icon
+                              path={mdiBarleyOff}
+                              title="Gluten free"
+                              size="19"
+                              className="text-accent"
+                            />
+                          )) ||
+                          (dietInfo.slug === "vegan" && (
+                            <i className="fa-solid fa-circle-check text-accent"></i>
+                          )) ||
+                          (dietInfo.slug === "healthy" && (
+                            <i className="fa-solid fa-heart text-accent"></i>
+                          ))}
+                        {dietInfo.display !== "Vegetarian" && dietInfo.display}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             {!loading && (
               <div className="relative">
                 <img
                   className="object-cover object-center rounded w-full h-[450px]"
-                  src={`https://spoonacular.com/recipeImages/${recipeData.id}-636x393.${recipeData.imageType}`}
-                  alt="Recipe Image"
+                  src={recipeData.image.url}
+                  alt={recipeData.image.alt}
                 />
 
-                <div className="flex flex-row gap-x-6 absolute bottom-5 left-5">
-                  <img
-                    className="w-8 h-8"
-                    src={
-                      recipeData.vegetarian
-                        ? "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Veg_symbol.svg/1200px-Veg_symbol.svg.png"
-                        : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Non_veg_symbol.svg/2048px-Non_veg_symbol.svg.png"
-                    }
-                    alt=""
-                  />
+                <div className="flex flex-row gap-x-6 absolute bottom-5 left-5 y-0 bg-white">
+                  {recipeData.diet.find((term) => {
+                    return (
+                      term.display === "Vegetarian" || term.display === "Vegan"
+                    );
+                  }) ? (
+                    <Icon
+                      path={mdiSquareCircle}
+                      className="text-[#008100]"
+                      size="50"
+                    />
+                  ) : (
+                    <Icon
+                      path={mdiSquareCircle}
+                      className="text-[#9d380c]"
+                      size="50"
+                    />
+                  )}
                 </div>
                 <div className="absolute top-5 left-5 border border-black bg-white px-2 py-1">
                   <div className="flex flex-row gap-x-2 text-lg text-black">
-                    {renderRating()}
+                    {renderRating(recipeData.rating.avg)}
                   </div>
                 </div>
               </div>
             )}
-            <div className="grid grid-cols-4 gap-x-1">
-              <div className="flex flex-row gap-x-4 px-4 py-5 justify-center items-center rounded bg-gray-100">
-                <i className="fa-duotone fa-timer text-4xl text-red-500"></i>
+            <div className="grid grid-cols-4 gap-x-1 rounded bg-gray-100 px-16">
+              <div className="flex flex-row gap-x-4 px-2 justify-center items-center">
+                <i className="fa-duotone fa-hat-chef text-4xl text-red-500"></i>
+                <div className="flex flex-col">
+                  <span className="text-xl font-semibold">Difficulty</span>
+                  <span className="text-gray-500">
+                    {(!loading && recipeData.skillLevel) || "N/A"}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-row gap-x-4 px-8 justify-center items-center">
+                <i className="fa-duotone fa-family text-4xl text-red-500"></i>
+                <div className="flex flex-col">
+                  <span className="text-xl font-semibold">Servings</span>
+                  <span className="text-gray-500">
+                    {(!loading && recipeData.yield) || "N/A"}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-row gap-x-4 px-4 py-5 justify-center items-center">
+                <i className="fa-duotone fa-knife-kitchen text-4xl text-red-500"></i>
                 <div className="flex flex-col">
                   <span className="text-xl font-semibold">Prep Time</span>
                   <span className="text-gray-500">
-                    {!loading && recipeData.readyInMinutes}m
+                    {!loading && recipeData.time.prepTime}m
                   </span>
                 </div>
               </div>
-              <div className="flex flex-row gap-x-4 px-2 justify-center items-center rounded bg-gray-100">
-                <i className="fa-solid fa-heart text-4xl text-red-500"></i>
+              <div className="flex flex-row gap-x-4 px-4 py-5 justify-center items-center">
+                <i className="fa-duotone fa-bowl-rice text-4xl text-red-500"></i>
                 <div className="flex flex-col">
-                  <span className="text-xl font-semibold">Health Points</span>
+                  <span className="text-xl font-semibold">Cook Time</span>
                   <span className="text-gray-500">
-                    {!loading && recipeData.healthScore}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-4 px-8 justify-center items-center rounded bg-gray-100">
-                <i className="fa-duotone fa-family text-4xl text-red-500"></i>
-                <div className="flex flex-col">
-                  <span className="text-xl font-semibold">Serving</span>
-                  <span className="text-gray-500">
-                    {!loading && recipeData.servings}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-4 px-8 justify-center items-center rounded bg-gray-100">
-                <i className="fa-duotone fa-thumbs-up text-4xl text-red-500"></i>
-                <div className="flex flex-col">
-                  <span className="text-xl font-semibold">Likes</span>
-                  <span className="text-gray-500">
-                    {!loading && recipeData.aggregateLikes}
+                    {!loading && recipeData.time.cookTime}m
                   </span>
                 </div>
               </div>
             </div>
-            <div className="py-4 text-lg">{!loading && recipeData.summary}</div>
-            <div className="bg-gray-100 flex flex-col gap-y-4 p-8 pt-4">
-              <div className="flex flex-row gap-x-2 text-2xl">
-                <i className="fa-solid fa-list text-red-500"></i>
-                <span className="font-semibold">Ingredients</span>
-              </div>
-              <div className="bg-white drop-shadow-lg p-4">
-                <ul className="pl-4 mt-2 text-lg flex flex-col gap-y-4">
+            <div className="py-4 text-lg">
+              {!loading && recipeData.description}
+            </div>
+            <div className="grid grid-cols-2 gap-x-4">
+              <div className="flex flex-col">
+                <div className="border-b border-gray-300 relative pb-2 mt-6">
+                  <p className="text-3xl font-medium">Ingredients</p>
+                  <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[4px] w-36">
+                    &nbsp;
+                  </span>
+                </div>
+                <div className="flex flex-col gap-y-2 my-10">
                   {!loading &&
-                    recipeData.extendedIngredients.map((ingredient, id) => {
-                      return <ol key={id}>{ingredient.original}</ol>;
+                    recipeData.ingredients.map((section, id) => {
+                      return (
+                        <div key={id}>
+                          {section.heading && (
+                            <p className="text-2xl py-4">{section.heading}</p>
+                          )}
+                          <div className="text-lg flex flex-col px-4 gap-y-4">
+                            <ul className="list-disc">
+                              {section.ingredients.map((ingredient, ingid) => {
+                                return (
+                                  <li key={ingid}>
+                                    {ingredient.quantityText} {}
+                                    {ingredient.ingredientText}
+                                    {ingredient.note}
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        </div>
+                      );
                     })}
-                </ul>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <div className="border-b border-gray-300 relative pb-2 mt-6">
+                  <p className="text-3xl font-medium">Instructions</p>
+                  <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[4px] w-36">
+                    &nbsp;
+                  </span>
+                </div>
+                <div className="flex flex-col gap-y-9 my-10">
+                  {!loading &&
+                    recipeData.instructions.map((instruction, id) => {
+                      return (
+                        <div key={id} className="flex flex-row gap-x-4">
+                          <div className="h-10 pr-4 py-1 border-r-accent border-r-2 flex items-center text-2xl flex-none">
+                            Step {id + 1}
+                          </div>
+                          <p className="text-lg pt-1 whitespace-pre-wrap">
+                            {instruction.text}
+                          </p>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
-            {
-              /* Some recipes do not have instructions for them , ignore rendering for them */
-              !loading && recipeData.analyzedInstructions[0] !== undefined && (
-                <div className="flex flex-col">
-                  <div className="border-b border-gray-300 relative pb-2 mt-6">
-                    <p className="text-3xl font-medium">Instructions</p>
-                    <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[4px] w-36">
-                      &nbsp;
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-y-9 my-10">
-                    {recipeData.analyzedInstructions[0].steps.map(
-                      (instruction, id) => {
-                        return (
-                          <div key={id} className="flex flex-row gap-x-4">
-                            <div className="h-10 pr-4 py-1 border-r-accent border-r-2 flex items-center text-2xl flex-none">
-                              Step {instruction.number}
-                            </div>
-                            <p className="text-lg pt-1 whitespace-pre-wrap">
-                              {instruction.step}
-                            </p>
-                          </div>
-                        );
-                      }
-                    )}
-                  </div>
-                </div>
-              )
-            }
+            <div className="flex flex-col">
+              <div className="border-b border-gray-300 relative pb-2 mt-6">
+                <p className="text-3xl font-medium">
+                  <i className="fa-solid fa-wheat text-accent text-xl mr-2"></i>
+                  Nutrional Info
+                </p>
+                <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[4px] w-52">
+                  &nbsp;
+                </span>
+              </div>
+              <div className="grid grid-cols-8 gap-x-4 py-8">
+                {!loading &&
+                  recipeData.nutritionalInfo.map((nutrition, id) => {
+                    return (
+                      <div
+                        key={id}
+                        className="flex flex-col gap-x-4 bg-gray-200 items-center p-6 rounded-full"
+                      >
+                        <p className="text-lg pt-1 whitespace-pre-wrap">
+                          {nutrition.prefix}
+                          {nutrition.value}
+                          {nutrition.suffix}
+                        </p>
+                        <span className="text-xl capitalize font-semibold">
+                          {nutrition.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col w-1/3 flex-none h-full">
-            <div className="border-b border-gray-300 relative pb-2 mb-4">
+          <div className="flex flex-col w-1/4 flex-none h-full">
+            <div className="border-b border-gray-300 relative pb-2 mb-6">
               <p className="text-2xl font-medium">Similiar Recipes</p>
               <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
                 &nbsp;
               </span>
             </div>
-            <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col gap-y-4">
               {!loading &&
-                similiarRecipeData !== null &&
-                similiarRecipeData.map((recipe, id) => {
-                  return (
-                    <div key={id} className="flex flex-row gap-x-4">
-                      <div className="flex-none">
-                        <img
-                          className="object-cover object-center w-36 h-36 rounded-lg"
-                          src={`https://spoonacular.com/recipeImages/${recipe.id}-312x231.${recipe.imageType}`}
-                          alt=""
-                        />
+                recipeData.similiarRecipes !== null &&
+                recipeData.similiarRecipes.map((recipe, id) => {
+                  if (id < 4)
+                    return (
+                      <div key={id} className="flex flex-row gap-x-4">
+                        <div className="flex-none">
+                          <img
+                            className="object-cover object-center h-24 rounded-lg"
+                            src={recipe.image.url}
+                            alt={recipe.image.alt}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-4 items-start">
+                          <p className="text-xl font-semibold text-clip overflow-hidden w-60">
+                            {recipe.title}
+                          </p>
+                          <div className="flex flex-row gap-x-2 text-accent text-sm">
+                            {renderRating(recipe.rating.ratingValue)}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-y-4 relative">
-                        <p className="font-semibold text-lg whitespace-normal mt-6">
-                          {recipe.title}
-                        </p>
-                      </div>
-                    </div>
-                  );
+                    );
                 })}
             </div>
             <div className="border-b border-gray-300 relative pb-2 mt-4">
@@ -238,52 +333,6 @@ const Recipe = () => {
                     </div>
                   );
                 })}
-              </div>
-            </div>
-            <div className="bg-red-50 flex flex-col gap-y-4 p-6 pt-4 mt-6">
-              <div className="flex flex-row gap-x-2 text-2xl">
-                <i className="fa-solid fa-info text-red-500"></i>
-                <span className="font-semibold">Nutrition</span>
-              </div>
-              <span>
-                Per Serving:{" "}
-                {!loading &&
-                  recipeData.nutrition.weightPerServing.amount +
-                    recipeData.nutrition.weightPerServing.unit}
-              </span>
-              <div className="bg-white drop-shadow-lg p-4 flex flex-col gap-y-2 pt-6 text-lg">
-                <div className="flex justify-end text-sm text-gray-500">
-                  Daily Value*
-                </div>
-                <div className="w-full flex flex-col gap-y-4">
-                  {!loading &&
-                    recipeData.nutrition.nutrients.map((nutrient, id) => {
-                      /* Only show selected few nutrients */
-                      if (
-                        nutrient.name === "Calories" ||
-                        nutrient.name === "Fat" ||
-                        nutrient.name === "Saturated Fat" ||
-                        nutrient.name === "Carbohydrates" ||
-                        nutrient.name === "Sugar" ||
-                        nutrient.name === "Cholesterol" ||
-                        nutrient.name === "Sodium"
-                      ) {
-                        return (
-                          <div
-                            key={id}
-                            className="flex flex-row justify-between"
-                          >
-                            <span className="text-gray-600">
-                              {nutrient.name}: {nutrient.amount + nutrient.unit}{" "}
-                            </span>
-                            <span className="font-semibold">
-                              {nutrient.percentOfDailyNeeds}%
-                            </span>
-                          </div>
-                        );
-                      }
-                    })}
-                </div>
               </div>
             </div>
           </div>
