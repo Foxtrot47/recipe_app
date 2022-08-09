@@ -12,6 +12,10 @@ async function fetchData(endPoint, params, method, callback) {
 
 // For rendering the stars
 const renderRating = (rating) => {
+  // if rating is in percentage convert
+  if (rating > 5) {
+    rating = (rating / 100) * 5;
+  }
   let out = [];
   const floorRating = Math.floor(rating);
   for (let i = 1; i <= 5; i++) {

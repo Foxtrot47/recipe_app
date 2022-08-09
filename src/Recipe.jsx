@@ -1,13 +1,14 @@
 import Navbar from "./Navbar.jsx";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import axios from "axios";
 import { fetchData, renderRating } from "./Helpers.jsx";
 import Icon from "@mdi/react";
 import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from "@mdi/js";
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
-  const [similiarRecipeData, setSimiliarRecipeData] = useState(null);
+  const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
   let { recipeid } = useParams();
 
@@ -27,13 +28,39 @@ const Recipe = () => {
     fetchData(endPoint, { id: recipeid }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
         setRecipeData(response.data);
-        //fetchSimiliar();
+        fetchReviews(recipeid);
         setLoading(false);
       } else {
         console.log("uh oh");
       }
     });
   }, [recipeid]);
+
+  const fetchReviews = async (recipeId) => {
+    // Required params for comments api
+    const params = {
+      siteId: "bbcgoodfood",
+      entityType: "recipe",
+      entityId: recipeId,
+      source: "content-api",
+      itemsPerPage: 5,
+      page: 1,
+      client: "bbcgoodfood",
+    };
+    await axios({
+      method: "get",
+      url: "https://reactions.api.immediate.co.uk/api/reactions?",
+      params,
+    }).then((response) => {
+      if (
+        response.status === 200 &&
+        response.data !== null &&
+        response.data["hydra:member"].length > 0
+      ) {
+        setReviews(response.data["hydra:member"]);
+      }
+    });
+  };
 
   return (
     <div className="">
@@ -278,6 +305,57 @@ const Recipe = () => {
                         <span className="text-xl capitalize font-semibold">
                           {nutrition.label}
                         </span>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+            <div className="flex flex-col gap-y-4 mr-20">
+              <div className="border-b border-gray-300 relative pb-2 mt-6">
+                <p className="text-3xl font-medium">
+                  <i className="fa-solid fa-comments text-accent text-xl mr-2"></i>
+                  Comments, questions and tips
+                </p>
+                <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[4px] w-2/5">
+                  &nbsp;
+                </span>
+              </div>
+              <div className="flex flex-col gap-y-8 py-8 w-5/6">
+                {!loading &&
+                  reviews != null &&
+                  reviews.map((review, id) => {
+                    return (
+                      <div
+                        key={id}
+                        className="flex flex-col gap-y-4 p-4 bg-gray-100 rounded-lg drop-shadow"
+                      >
+                        <div className="flex flex-row gap-x-4 justify-between items-start">
+                          <div className="flex flex-row gap-x-2 items-center">
+                            {(review.author.avatar && (
+                              <img src={review.author.avatar}></img>
+                            )) || (
+                              <i className="fa-solid fa-circle-user text-accent text-bg-gray-200 text-5xl mr-2"></i>
+                            )}
+                            <div className="flex flex-col gap-y-1">
+                              <span className="capitalize text-2xl">
+                                {review.author.displayName}
+                              </span>
+                              {review.changed && (
+                                <div className="text-lg text-gray-500">
+                                  {review.changed}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {review.rating && (
+                            <div className="font-accent flex flex-row gap-x-2">
+                              {renderRating(review.rating)}
+                            </div>
+                          )}
+                        </div>
+                        {review.body && (
+                          <div className="text-xl px-16">{review.body}</div>
+                        )}
                       </div>
                     );
                   })}
