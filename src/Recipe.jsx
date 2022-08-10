@@ -375,7 +375,11 @@ const Recipe = () => {
                 recipeData.similiarRecipes.map((recipe, id) => {
                   if (id < 4)
                     return (
-                      <Link key={id} className="flex flex-row gap-x-4" to={recipe.url}>
+                      <Link
+                        key={id}
+                        className="flex flex-row gap-x-4 w-full pr-6 rounded hover:bg-gray-100 hover:drop-shadow"
+                        to={recipe.url}
+                      >
                         <div className="flex-none">
                           <img
                             className="object-cover object-center h-24 rounded-lg"
@@ -384,7 +388,7 @@ const Recipe = () => {
                           />
                         </div>
                         <div className="flex flex-col gap-y-4 items-start">
-                          <p className="text-xl font-semibold text-clip overflow-hidden w-60">
+                          <p className="text-xl font-semibold text-clip overflow-hidden w-50">
                             {recipe.title}
                           </p>
                           <div className="flex flex-row gap-x-2 text-accent text-sm">
