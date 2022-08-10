@@ -375,7 +375,7 @@ const Recipe = () => {
                 recipeData.similiarRecipes.map((recipe, id) => {
                   if (id < 4)
                     return (
-                      <div key={id} className="flex flex-row gap-x-4">
+                      <Link key={id} className="flex flex-row gap-x-4" to={recipe.url}>
                         <div className="flex-none">
                           <img
                             className="object-cover object-center h-24 rounded-lg"
@@ -391,7 +391,7 @@ const Recipe = () => {
                             {renderRating(recipe.rating.ratingValue)}
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     );
                 })}
             </div>
