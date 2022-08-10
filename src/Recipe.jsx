@@ -5,6 +5,7 @@ import axios from "axios";
 import { fetchData, renderRating } from "./Helpers.jsx";
 import Icon from "@mdi/react";
 import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from "@mdi/js";
+import moment from "moment";
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
@@ -342,7 +343,10 @@ const Recipe = () => {
                               </span>
                               {review.changed && (
                                 <div className="text-lg text-gray-500">
-                                  {review.changed}
+                                  {moment(
+                                    review.changed,
+                                    "YYYY-MM-DDTh:mm:ss a"
+                                  ).fromNow()}
                                 </div>
                               )}
                             </div>
