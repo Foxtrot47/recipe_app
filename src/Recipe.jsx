@@ -335,7 +335,7 @@ const Recipe = () => {
                             {(review.author.avatar && (
                               <img src={review.author.avatar}></img>
                             )) || (
-                              <i className="fa-solid fa-circle-user text-accent text-bg-gray-200 text-5xl mr-2"></i>
+                            <i className="fa-solid fa-circle-user text-accent text-bg-gray-200 text-5xl mr-2"></i>
                             )}
                             <div className="flex flex-col gap-y-1">
                               <span className="capitalize text-2xl">
