@@ -27,7 +27,11 @@ const Recipe = () => {
     if (recipeslug === undefined) return;
     let endPoint = "recipebyslug";
     fetchData(endPoint, { slug: recipeslug }, "get", (response) => {
-      if (response.status === 200 && response.data !== null && response.data.length > 0) {
+      if (
+        response.status === 200 &&
+        response.data !== null &&
+        response.data.length > 0
+      ) {
         setRecipeData(response.data[0]);
         fetchReviews(response.data[0]["_id"]);
         setLoading(false);
