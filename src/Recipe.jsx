@@ -299,7 +299,6 @@ const Recipe = () => {
                         className="flex flex-col gap-x-4 bg-gray-200 items-center p-6 rounded-full"
                       >
                         <p className="text-lg pt-1 whitespace-pre-wrap">
-                          {nutrition.prefix}
                           {nutrition.value}
                           {nutrition.suffix}
                         </p>
@@ -332,11 +331,7 @@ const Recipe = () => {
                       >
                         <div className="flex flex-row gap-x-4 justify-between items-start">
                           <div className="flex flex-row gap-x-2 items-center">
-                            {(review.author.avatar && (
-                              <img src={review.author.avatar}></img>
-                            )) || (
                             <i className="fa-solid fa-circle-user text-accent text-bg-gray-200 text-5xl mr-2"></i>
-                            )}
                             <div className="flex flex-col gap-y-1">
                               <span className="capitalize text-2xl">
                                 {review.author.displayName}
