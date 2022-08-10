@@ -59,7 +59,7 @@ const App = () => {
               <div className="absolute top-36 bg-white rounded z-10 flex flex-col gap-y-2 p-2 opacity-90 drop-shadow-xl filter w-2/5 text-xl">
                 {searchResult.map((recipe, id) => {
                   return (
-                    <Link to={`/recipes/${recipe._id}`} className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded">
+                    <Link to={`/recipes/${recipe.slug}`} className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded">
                       <img src={recipe.image.url} className="w-16 rounded" />
                       <p key={id}>{recipe.name}</p>
                     </Link>
@@ -76,7 +76,7 @@ const App = () => {
               return (
                 <Link
                   key={id}
-                  to={"/recipes/" + recipe._id}
+                  to={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-50 rounded-lg hover:drop-shadow-lg"
                 >
                   <img

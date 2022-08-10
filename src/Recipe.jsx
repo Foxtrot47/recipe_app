@@ -10,7 +10,7 @@ const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
-  let { recipeid } = useParams();
+  let { recipeslug } = useParams();
 
   const recipeCategories = [
     "Breakfast",
@@ -23,18 +23,18 @@ const Recipe = () => {
   ];
 
   useEffect(() => {
-    if (recipeid === undefined) return;
-    let endPoint = "recipebyid";
-    fetchData(endPoint, { id: recipeid }, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        setRecipeData(response.data);
-        fetchReviews(recipeid);
+    if (recipeslug === undefined) return;
+    let endPoint = "recipebyslug";
+    fetchData(endPoint, { slug: recipeslug }, "get", (response) => {
+      if (response.status === 200 && response.data !== null && response.data.length > 0) {
+        setRecipeData(response.data[0]);
+        fetchReviews(response.data[0]["_id"]);
         setLoading(false);
       } else {
         console.log("uh oh");
       }
     });
-  }, [recipeid]);
+  }, [recipeslug]);
 
   const fetchReviews = async (recipeId) => {
     // Required params for comments api
