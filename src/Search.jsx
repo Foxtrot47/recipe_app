@@ -19,31 +19,57 @@ const Recipe = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  let resultCount = 0,
+    reachedBottom = true;
 
   useEffect(() => {
+    fetchResults();
+  }, [searchParams]);
+
+  const fetchResults = () => {
     const body = {};
     let params = new URLSearchParams(searchParams);
     for (const [key, value] of params.entries()) {
       body[key] = value;
     }
+    if (resultCount > 0) body["offset"] = resultCount;
     // Copy the search query to a hidden input field so that it will not get removed on parameter change
     // This is because search query intially came from outside the form and serialize function will not see it
     document.getElementById("queryField").value = body["q"];
     fetchData("search", body, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
+        if (results !== null) {
+          response.data = response.data.concat(results);
+        } else reachedBottom = false;
         setResults(response.data);
+        resultCount += response.data.length;
+
+        // If results are less than what we normally expect , don't turn on infinite scroll
+        if (resultCount < 20) reachedBottom = true;
         setLoading(false);
       } else {
         console.log("Fetching resuls from API failed");
       }
     });
-  }, [searchParams]);
+  };
 
   const handleSubmit = () => {
+    resultCount = 0;
+    reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
     setSearchParams(data);
   };
 
+  const handleScroll = () => {
+    const bottom =
+      Math.ceil(window.innerHeight + window.scrollY) >=
+      document.documentElement.scrollHeight;
+
+    if (bottom && reachedBottom === false) {
+      fetchResults();
+    }
+  };
+  window.addEventListener("scroll", handleScroll, true);
   return (
     <div className="">
       <Navbar />
