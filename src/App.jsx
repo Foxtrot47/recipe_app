@@ -103,7 +103,9 @@ const App = () => {
                     <p className="text-2xl font-semibold truncate w-full">
                       {recipe.name}
                     </p>
-                    <div className="flex flex-row gap-x-2 text-sm"></div>
+                    <div className="flex flex-row gap-x-2 text-sm text-accent">
+                      {renderRating(recipe.rating.avg)}
+                    </div>
                     <p className="px-4 h-24 w-full text-ellipsis overflow-hidden">
                       {recipe.description}
                     </p>
