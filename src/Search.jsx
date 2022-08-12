@@ -95,7 +95,7 @@ const Recipe = () => {
                         );
                       })) ||
                       (filters[i].name === "Total Time" &&
-                        Object.keys(timeFilters).map((index) => {
+                        Object.keys(timeFilters).map((index, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
@@ -110,7 +110,7 @@ const Recipe = () => {
                           );
                         })) ||
                       (filters[i].name === "Diet type" &&
-                        dietTypes.map((diet) => {
+                        dietTypes.map((diet, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
@@ -125,7 +125,7 @@ const Recipe = () => {
                           );
                         })) ||
                       (filters[i].name === "Calories" &&
-                        Object.keys(calorieRange).map((index) => {
+                        Object.keys(calorieRange).map((index, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
@@ -140,7 +140,7 @@ const Recipe = () => {
                           );
                         })) ||
                       (filters[i].name === "Difficulty" &&
-                        difficultyRanges.map((difficulty) => {
+                        difficultyRanges.map((difficulty, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
@@ -155,7 +155,7 @@ const Recipe = () => {
                           );
                         })) ||
                       (filters[i].name === "Cuisine" &&
-                        cuisineTypes.map((cuisine) => {
+                        cuisineTypes.map((cuisine, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
@@ -185,7 +185,7 @@ const Recipe = () => {
                           );
                         })) ||
                       (filters[i].name === "Servings" &&
-                        servingRanges.map((serving) => {
+                        servingRanges.map((serving, i) => {
                           return (
                             <div key={i} className="flex flex-row gap-x-4">
                               <input
