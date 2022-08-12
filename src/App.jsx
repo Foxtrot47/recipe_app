@@ -1,12 +1,13 @@
 import Navbar from "./Navbar";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchData, renderRating } from "./Helpers.jsx";
 
 const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResults] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData("random", { limit: 6 }, "get", (response) => {
@@ -27,6 +28,10 @@ const App = () => {
         setSearchResults(response.data);
       }
     });
+  };
+
+  const gotoSearch = (event) => {
+    if (event.key === "Enter") navigate("/search?q=" + event.target.value);
   };
 
   return (
@@ -52,6 +57,7 @@ const App = () => {
                 type="text"
                 placeholder="Search for recipes"
                 onInput={doAutoComplete.bind()}
+                onKeyDown={gotoSearch}
                 autoComplete="off"
               />
             </span>
@@ -59,7 +65,10 @@ const App = () => {
               <div className="absolute top-36 bg-white rounded z-10 flex flex-col gap-y-2 p-2 opacity-90 drop-shadow-xl filter w-2/5 text-xl">
                 {searchResult.map((recipe, id) => {
                   return (
-                    <Link to={`/recipes/${recipe.slug}`} className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded">
+                    <Link
+                      to={`/recipes/${recipe.slug}`}
+                      className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded"
+                    >
                       <img src={recipe.image.url} className="w-16 rounded" />
                       <p key={id}>{recipe.name}</p>
                     </Link>
