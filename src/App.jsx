@@ -66,6 +66,7 @@ const App = () => {
                 {searchResult.map((recipe, id) => {
                   return (
                     <Link
+                      key={id}
                       to={`/recipes/${recipe.slug}`}
                       className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded"
                     >
