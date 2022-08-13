@@ -15,7 +15,7 @@ import {
   servingRanges,
 } from "./SearchData.js";
 
-const Recipe = () => {
+const Search = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -85,7 +85,6 @@ const Recipe = () => {
             return (
               <div
                 key={i}
-                s
                 className={`flex flex-row items-center gap-x-2 group py-5 px-6 ${
                   !filters[i]["full-width"] && "relative"
                 }`}
@@ -267,4 +266,4 @@ const Recipe = () => {
   );
 };
 
-export default Recipe;
+export default Search;
