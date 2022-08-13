@@ -64,7 +64,7 @@ const Search = () => {
 
   const handleScroll = () => {
     const bottom =
-      Math.ceil(window.innerHeight + window.scrollY) >=
+      Math.ceil(window.innerHeight + window.scrollY + 500) >=
       document.documentElement.scrollHeight;
     if (bottom && reachedBottom === false && resultsDup !== null) {
       fetchResults();
