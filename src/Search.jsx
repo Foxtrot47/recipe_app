@@ -20,7 +20,8 @@ const Search = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   let resultCount = 0,
-    reachedBottom = true;
+    reachedBottom = false,
+    resultsDup = null;
 
   useEffect(() => {
     fetchResults();
@@ -38,14 +39,15 @@ const Search = () => {
     document.getElementById("queryField").value = body["q"];
     fetchData("search", body, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        if (results !== null) {
-          response.data = response.data.concat(results);
+        if (resultsDup !== null) {
+          response.data = resultsDup.concat(response.data);
         } else reachedBottom = false;
+        resultsDup = response.data;
         setResults(response.data);
         resultCount += response.data.length;
 
         // If results are less than what we normally expect , don't turn on infinite scroll
-        if (resultCount < 20) reachedBottom = true;
+        if (response.data < 20) reachedBottom = true;
         setLoading(false);
       } else {
         console.log("Fetching resuls from API failed");
@@ -64,12 +66,13 @@ const Search = () => {
     const bottom =
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
-
-    if (bottom && reachedBottom === false) {
+    if (bottom && reachedBottom === false && resultsDup !== null) {
       fetchResults();
     }
   };
+
   window.addEventListener("scroll", handleScroll, true);
+
   return (
     <div className="">
       <Navbar />
