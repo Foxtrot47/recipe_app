@@ -4,11 +4,14 @@ Before doing anything install dependencies with
 
 ### `yarn install`
 
-Then get an API Key from [Spoonacular](https://spoonacular.com/food-api)
+Then set up node backend [Recipe Server](https://github.com/Foxtrot47/recipe-app-server)
+Follow intructions on that repo
 
 then create .env file in root of project and add
 
-### `VITE_API_KEY= your api key here`
+### `VITE_APP_BACKEND_URL=http://127.0.0.1:3000`
+
+feel free to modify the IP
 
 ## Available Scripts
 
