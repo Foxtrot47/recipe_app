@@ -3,7 +3,7 @@ import axios from "axios";
 async function fetchData(endPoint, params, method, callback) {
   await axios({
     method,
-    url: import.meta.env.VITE_SERVER_URL + endPoint,
+    url: import.meta.env.VITE_APP_BACKEND_URL + endPoint,
     params,
   })
     .then((response) => callback(response))
