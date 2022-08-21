@@ -1,19 +1,25 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        'serif': ['Source Serif Pro', ...defaultTheme.fontFamily.serif],
-        'sans': ['Source Sans Pro', ...defaultTheme.fontFamily.sans],
+        serif: ["Source Serif Pro", ...defaultTheme.fontFamily.serif],
+        inter: ["Inter"],
+        "helvetica-neue": ["Helvetica Neue"],
+        "playfair-display": [
+          "Playfair Display",
+          ...defaultTheme.fontFamily.sans,
+        ],
       },
       colors: {
-        'accent': '#ff4a52',
-      }
+        "gray-600": "#222232",
+        "gray-700": "#282A36",
+        "gray-800": "#1D1E26",
+        "gray-900": "#15171B",
+      },
     },
   },
   plugins: [],
-}
+};

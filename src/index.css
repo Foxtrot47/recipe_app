@@ -1,16 +1,25 @@
 @import "css/all.css";
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url("https://rsms.me/inter/inter.css");
+@import url('http://fonts.cdnfonts.com/css/helvetica-neue-9');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 .fade-to-bottom {
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
-    -webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
 }
