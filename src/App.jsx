@@ -39,7 +39,7 @@ const App = () => {
     <div className="App h-full">
       <Navbar />
       {/* Body Section */}
-      <div className="flex flex-col h-full gap-y-8 dark:bg-gray-800 dark:text-gray-100">
+      <div className="flex flex-col h-full gap-y-8">
         {/* Hero Section */}
         <div className="flex-none mt-10 w-full h-[25rem] flex justify-center items-center">
           <img
