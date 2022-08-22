@@ -164,7 +164,7 @@ const App = () => {
                 return (
                   <div
                     key={id}
-                    className="flex flex-col gap-y-6 dark:hover:bg-gray-600 rounded-lg"
+                    className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                   >
                     <img
                       className="drop-shadow-xl filter rounded-lg"
@@ -201,7 +201,10 @@ const App = () => {
               <div className="flex flex-col gap-y-6">
                 {additionalRecipes.map((id) => {
                   return (
-                    <div key={id} className="flex flex-row gap-x-4">
+                    <div
+                      key={id}
+                      className="flex flex-row gap-x-4 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow rounded-lg"
+                    >
                       <div className="flex-none">
                         <img
                           className="object-cover object-center w-36 h-36 rounded-lg"
@@ -209,7 +212,7 @@ const App = () => {
                           alt=""
                         />
                       </div>
-                      <div className="flex flex-col gap-y-4 relative">
+                      <div className="flex flex-col gap-y-4 relative mt-4">
                         <span className="text-red-500 font-semibold -top-1.5 absolute">
                           Dinner
                         </span>
@@ -228,7 +231,7 @@ const App = () => {
                 </span>
               </div>
               <div className="flex flex-col gap-y-6">
-                <div className="grid grid-cols-2 w-16 px-2 gap-4 text-xl text-[#646464]">
+                <div className="grid grid-cols-2 w-16 px-2 gap-4 text-xl text-gray-700 dark:text-gray-300">
                   <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p> Breakfast</p>
                   <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
