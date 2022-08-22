@@ -8,6 +8,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResults] = useState(null);
   const navigate = useNavigate();
+  const additionalRecipes = [1, 2, 3, 4];
 
   useEffect(() => {
     fetchData("random", { limit: 6 }, "get", (response) => {
@@ -38,7 +39,7 @@ const App = () => {
     <div className="App h-full">
       <Navbar />
       {/* Body Section */}
-      <div className="flex flex-col h-full gap-y-8">
+      <div className="flex flex-col h-full gap-y-8 dark:bg-gray-800 dark:text-gray-100">
         {/* Hero Section */}
         <div className="flex-none mt-10 w-full h-[25rem] flex justify-center items-center">
           <img
@@ -46,14 +47,14 @@ const App = () => {
             src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna-wordpress-theme-radiustheme.com-4-1240x578.jpg"
           />
           <div className="absolute w-full items-center flex flex-col gap-y-4">
-            <p className="text-6xl font-medium text-white font-serif drop-shadow-xl filter">
+            <p className="text-6xl font-semibold text-white font-playfair-display drop-shadow-xl filter">
               Find a Recipe
             </p>
-            <span className="w-2/5 bg-white flex flex-row items-center text-2xl py-2 opacity-80 drop-shadow-xl filter">
-              <i className="fa-solid fa-magnifying-glass px-4 text-accent"></i>
+            <span className="w-2/5 bg-white dark:bg-gray-800 flex flex-row items-center text-2xl py-2 opacity-80 drop-shadow-xl filter">
+              <i className="fa-solid fa-magnifying-glass px-4 text-red-500"></i>
               <input
                 id="searchfield"
-                className=" py-2 w-full outline-none"
+                className=" py-2 w-full outline-none dark:bg-[#1d1e26]"
                 type="text"
                 placeholder="Search for recipes"
                 onInput={doAutoComplete.bind()}
@@ -62,13 +63,13 @@ const App = () => {
               />
             </span>
             {searchResult !== null && searchResult.length > 0 && (
-              <div className="absolute top-36 bg-white rounded z-10 flex flex-col gap-y-2 p-2 opacity-90 drop-shadow-xl filter w-2/5 text-xl">
+              <div className="absolute top-36 bg-white dark:bg-gray-800 rounded z-10 flex flex-col gap-y-2 p-2 opacity-95 drop-shadow-xl filter w-2/5 text-xl">
                 {searchResult.map((recipe, id) => {
                   return (
                     <Link
                       key={id}
                       to={`/recipes/${recipe.slug}`}
-                      className="flex flex-row gap-x-4 items-center hover:bg-[#ff2400] drop-shadow rounded"
+                      className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                     >
                       <img src={recipe.image.url} className="w-16 rounded" />
                       <p key={id}>{recipe.name}</p>
@@ -87,7 +88,7 @@ const App = () => {
                 <Link
                   key={id}
                   to={"/recipes/" + recipe.slug}
-                  className="flex flex-col gap-y-6 hover:bg-gray-50 rounded-lg hover:drop-shadow-lg"
+                  className="flex flex-col gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
                 >
                   <img
                     className="drop-shadow-xl filter rounded-lg object-cover object-center h-80"
@@ -95,7 +96,7 @@ const App = () => {
                     alt={recipe.image.alt}
                   />
                   <div className="flex flex-col items-center gap-y-2 px-4">
-                    <p className="text-accent font-semibold capitalize ">
+                    <p className="text-red-500 font-semibold capitalize ">
                       {recipe.category.length > 0
                         ? recipe.category[0]
                         : "Unknown"}
@@ -103,10 +104,10 @@ const App = () => {
                     <p className="text-2xl font-semibold truncate w-full">
                       {recipe.name}
                     </p>
-                    <div className="flex flex-row gap-x-2 text-sm text-accent">
+                    <div className="flex flex-row gap-x-2 text-sm text-red-500">
                       {renderRating(recipe.rating.avg)}
                     </div>
-                    <p className="px-4 h-24 w-full text-ellipsis overflow-hidden">
+                    <p className="px-4 max-h-20 w-full text-ellipsis overflow-hidden dark:text-gray-300">
                       {recipe.description}
                     </p>
                   </div>
@@ -115,9 +116,9 @@ const App = () => {
             })}
         </div>
         <div className="px-12">
-          <div className="border-b border-gray-300 relative pb-2">
+          <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2">
             <p className="text-3xl font-medium">Trending Recipes</p>
-            <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
+            <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-60">
               &nbsp;
             </span>
           </div>
@@ -129,16 +130,16 @@ const App = () => {
               src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-3.jpg"
             />
             <div className="absolute flex flex-row justify-between w-full items-center px-10 text-red-400 ">
-              <div className="bg-white rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
+              <div className="bg-white dark:bg-gray-600 rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
                 &lt;
               </div>
-              <div className="bg-white rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
+              <div className="bg-white dark:bg-gray-600 rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
                 &gt;
               </div>
             </div>
             <div className="absolute h-full flex flex-col gap-y-4 justify-end items-center">
-              <div className="bg-white px-10 py-6 flex flex-col gap-y-4 items-center ">
-                <p className="text-accent font-semibold">Lunch</p>
+              <div className="bg-white dark:bg-gray-700 px-10 py-6 flex flex-col gap-y-4 items-center ">
+                <p className="text-red-500 font-semibold">Lunch</p>
                 <p className="text-3xl font-semibold">
                   Lorem ipsum dolor sit amet
                 </p>
@@ -157,203 +158,90 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row gap-x-10 w-full">
-            <div className="flex flex-col">
-              <div className="flex flex-row gap-x-6">
-                <div className="flex flex-col gap-y-6">
-                  <img
-                    className="drop-shadow-xl filter rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-                  />
-                  <div className="flex flex-col items-center gap-y-2">
-                    <p className="text-accent font-semibold">Breakfast</p>
-                    <p className="text-2xl font-semibold">
-                      Lorem ipsum dolor sit amet
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-sm">
-                      <i className="fa-solid fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
+          <div className="flex flex-row gap-x-10">
+            <div className="grid grid-cols-2 gap-6 h-full">
+              {additionalRecipes.map((id) => {
+                return (
+                  <div
+                    key={id}
+                    className="flex flex-col gap-y-6 dark:hover:bg-gray-600 rounded-lg"
+                  >
+                    <img
+                      className="drop-shadow-xl filter rounded-lg"
+                      src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
+                    />
+                    <div className="flex flex-col items-center gap-y-2 pb-6">
+                      <p className="text-red-500 font-semibold">Breakfast</p>
+                      <p className="text-2xl font-semibold">
+                        Lorem ipsum dolor sit amet
+                      </p>
+                      <div className="flex flex-row gap-x-2 text-sm text-red-500">
+                        <i className="fa-solid fa-star"></i>
+                        <i className="fa-duotone fa-star"></i>
+                        <i className="fa-duotone fa-star"></i>
+                        <i className="fa-duotone fa-star"></i>
+                        <i className="fa-duotone fa-star"></i>
+                      </div>
+                      <p className="px-4 text-gray-600 dark:text-gray-300">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Sed quis eleifend arcu. Aliquam mollis porta suscipit.
+                      </p>
                     </div>
-                    <p className="px-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed quis eleifend arcu. Aliquam mollis porta suscipit.
-                    </p>
                   </div>
-                </div>
-                <div className="flex flex-col gap-y-6">
-                  <img
-                    className="drop-shadow-xl filter rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-                  />
-                  <div className="flex flex-col items-center gap-y-2">
-                    <p className="text-accent font-semibold">Breakfast</p>
-                    <p className="text-2xl font-semibold">
-                      Lorem ipsum dolor sit amet
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-sm">
-                      <i className="fa-solid fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                    </div>
-                    <p className="px-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed quis eleifend arcu. Aliquam mollis porta suscipit.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-row gap-x-6">
-                <div className="flex flex-col gap-y-6">
-                  <img
-                    className="drop-shadow-xl filter rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-                  />
-                  <div className="flex flex-col items-center gap-y-2">
-                    <p className="text-accent font-semibold">Breakfast</p>
-                    <p className="text-2xl font-semibold">
-                      Lorem ipsum dolor sit amet
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-sm">
-                      <i className="fa-solid fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                    </div>
-                    <p className="px-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed quis eleifend arcu. Aliquam mollis porta suscipit.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-y-6">
-                  <img
-                    className="drop-shadow-xl filter rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
-                  />
-                  <div className="flex flex-col items-center gap-y-2">
-                    <p className="text-accent font-semibold">Breakfast</p>
-                    <p className="text-2xl font-semibold">
-                      Lorem ipsum dolor sit amet
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-sm">
-                      <i className="fa-solid fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                      <i className="fa-duotone fa-star"></i>
-                    </div>
-                    <p className="px-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed quis eleifend arcu. Aliquam mollis porta suscipit.
-                    </p>
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
             <div className="flex flex-col gap-y-4 w-3/6">
-              <div className="border-b border-gray-300 relative pb-2 mb-4">
+              <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mb-4">
                 <p className="text-2xl font-medium">Latest Recipes</p>
-                <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
+                <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
                   &nbsp;
                 </span>
               </div>
               <div className="flex flex-col gap-y-6">
-                <div className="flex flex-row gap-x-4">
-                  <div className="flex-none">
-                    <img
-                      className="object-cover object-center w-36 h-36 rounded-lg"
-                      src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-4 relative">
-                    <span className="text-accent font-semibold -top-1.5 absolute">
-                      Dinner
-                    </span>
-                    <p className="font-semibold text-lg whitespace-normal mt-6">
-                      Lorem ipsum dolor sit amet jkjskfskfj
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-row gap-x-4">
-                  <div className="flex-none">
-                    <img
-                      className="object-cover object-center w-36 h-36 rounded-lg"
-                      src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-4 relative">
-                    <span className="text-accent font-semibold -top-1.5 absolute">
-                      Dinner
-                    </span>
-                    <p className="font-semibold text-lg whitespace-normal mt-6">
-                      Lorem ipsum dolor sit amet jkjskfskfj
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-row gap-x-4">
-                  <div className="flex-none">
-                    <img
-                      className="object-cover object-center w-36 h-36 rounded-lg"
-                      src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-4 relative">
-                    <span className="text-accent font-semibold -top-1.5 absolute">
-                      Dinner
-                    </span>
-                    <p className="font-semibold text-lg whitespace-normal mt-6">
-                      Lorem ipsum dolor sit amet jkjskfskfj
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-row gap-x-4">
-                  <div className="flex-none">
-                    <img
-                      className="object-cover object-center w-36 h-36 rounded-lg"
-                      src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex flex-col gap-y-4 relative">
-                    <span className="text-accent font-semibold -top-1.5 absolute">
-                      Dinner
-                    </span>
-                    <p className="font-semibold text-lg whitespace-normal mt-6">
-                      Lorem ipsum dolor sit amet jkjskfskfj
-                    </p>
-                  </div>
-                </div>
+                {additionalRecipes.map((id) => {
+                  return (
+                    <div key={id} className="flex flex-row gap-x-4">
+                      <div className="flex-none">
+                        <img
+                          className="object-cover object-center w-36 h-36 rounded-lg"
+                          src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
+                          alt=""
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-4 relative">
+                        <span className="text-red-500 font-semibold -top-1.5 absolute">
+                          Dinner
+                        </span>
+                        <p className="font-semibold text-lg whitespace-normal mt-6">
+                          Lorem ipsum dolor sit amet jkjskfskfj
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="border-b border-gray-300 relative pb-2 mt-4">
+              <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mt-4">
                 <p className="text-2xl font-medium">Recipe Categories</p>
-                <span className="bg-accent text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
+                <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
                   &nbsp;
                 </span>
               </div>
               <div className="flex flex-col gap-y-6">
                 <div className="grid grid-cols-2 w-16 px-2 gap-4 text-xl text-[#646464]">
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p> Breakfast</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Lunch</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Dinner</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Drink</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Pasta</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Pizza</p>
-                  <i className="fa-solid fa-circle-arrow-right text-accent"></i>
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                   <p>Salad</p>
                 </div>
               </div>
