@@ -76,10 +76,10 @@ const Search = () => {
   return (
     <div className="">
       <Navbar />
-      <div className="flex flex-col mt-14">
+      <div className="flex flex-col mt-[62px]">
         <form
           id="filters"
-          className="fixed w-full flex flex-row drop-shadow text-black bg-white px-10 justify-around z-10"
+          className="fixed w-full flex flex-row drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100 px-10 justify-around z-10"
           onClick={handleSubmit}
         >
           {/* Hidden Input field to keep search query intact*/}
@@ -95,7 +95,7 @@ const Search = () => {
                 {filters[i].name}
                 <i className="fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
                 <div
-                  className={`hidden group-hover:inline-block absolute top-[65px] bg-white drop-shadow-lg py-8 w-72 z-50
+                  className={`hidden group-hover:inline-block absolute top-[64px] bg-white dark:bg-gray-600 drop-shadow-lg py-8 w-72 z-50
                     ${filters[i]["full-width"] && "w-screen"} ${
                     (filters[i].name === "Servings" && "right-0 w-56") ||
                     "left-0"
@@ -110,12 +110,15 @@ const Search = () => {
                     {(filters[i].name === "Meal type" &&
                       mealTypes.map((type, i) => {
                         return (
-                          <div key={i} className="flex flex-row gap-x-4">
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                          >
                             <input
                               type="checkbox"
                               name="mealtypes"
                               value={type}
-                              className="w-5"
+                              className="w-5 accent-red-500"
                               onClick={handleSubmit}
                             />
                             <p>{type}</p>
@@ -125,12 +128,15 @@ const Search = () => {
                       (filters[i].name === "Total Time" &&
                         Object.keys(timeFilters).map((index, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="totalTime"
                                 value={index}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{timeFilters[index]}</p>
@@ -140,12 +146,15 @@ const Search = () => {
                       (filters[i].name === "Diet type" &&
                         dietTypes.map((diet, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="dietType"
                                 value={diet}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{diet}</p>
@@ -155,12 +164,15 @@ const Search = () => {
                       (filters[i].name === "Calories" &&
                         Object.keys(calorieRange).map((index, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="kcal"
                                 value={index}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{calorieRange[index]}</p>
@@ -170,12 +182,15 @@ const Search = () => {
                       (filters[i].name === "Difficulty" &&
                         difficultyRanges.map((difficulty, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="skillLevel"
                                 value={difficulty}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{difficulty}</p>
@@ -185,12 +200,15 @@ const Search = () => {
                       (filters[i].name === "Cuisine" &&
                         cuisineTypes.map((cuisine, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="cuisine"
                                 value={cuisine}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{cuisine}</p>
@@ -200,12 +218,15 @@ const Search = () => {
                       (filters[i].name === "Rating" &&
                         Object.keys(ratingRanges).map((i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="rating"
                                 value={i}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{ratingRanges[i]}</p>
@@ -215,12 +236,15 @@ const Search = () => {
                       (filters[i].name === "Servings" &&
                         servingRanges.map((serving, i) => {
                           return (
-                            <div key={i} className="flex flex-row gap-x-4">
+                            <div
+                              key={i}
+                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            >
                               <input
                                 type="checkbox"
                                 name="yield"
                                 value={serving}
-                                className="w-5"
+                                className="w-5 accent-red-500"
                                 onClick={handleSubmit}
                               />
                               <p>{serving}</p>
@@ -233,7 +257,7 @@ const Search = () => {
             );
           })}
         </form>
-        <div className="grid grid-cols-4 gap-10 mt-20 px-24">
+        <div className="grid grid-cols-4 gap-10 pt-24 px-24">
           {!loading &&
             results.length > 0 &&
             results.map((recipe, id) => {
@@ -241,7 +265,7 @@ const Search = () => {
                 <Link
                   key={id}
                   to={"/recipes/" + recipe.slug}
-                  className="flex flex-col gap-y-6 hover:bg-gray-50 rounded-lg hover:drop-shadow-lg"
+                  className="flex flex-col gap-y-6 hover:bg-white dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
                 >
                   <img
                     className="drop-shadow-xl filter rounded-lg object-cover object-center h-56"
@@ -249,10 +273,10 @@ const Search = () => {
                     alt={recipe.image.alt}
                   />
                   <div className="flex flex-col gap-y-2 px-4">
-                    <p className="text-xl font-semibold truncate w-full">
+                    <p className="text-xl font-semibold truncate w-full text-white">
                       {recipe.name}
                     </p>
-                    <div className="flex flex-row gap-x-2 text-accent">
+                    <div className="flex flex-row gap-x-2 text-red-500">
                       {renderRating(recipe.rating.avg)}
                     </div>
                     <div className="flex flex-row gap-x-2 text-sm"></div>
