@@ -112,7 +112,7 @@ const Search = () => {
                         return (
                           <div
                             key={i}
-                            className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                           >
                             <input
                               type="checkbox"
@@ -148,7 +148,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
@@ -166,7 +166,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
@@ -184,7 +184,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
@@ -202,7 +202,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
@@ -220,7 +220,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
@@ -238,7 +238,7 @@ const Search = () => {
                           return (
                             <div
                               key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <input
                                 type="checkbox"
