@@ -26,12 +26,12 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/categories"
                   className="hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   Category
-                </a>
+                </Link>
               </li>
               <li>
                 <Link
