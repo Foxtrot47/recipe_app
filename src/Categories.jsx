@@ -6,7 +6,7 @@ const Categories = () => {
   return (
     <div>
       <Navbar />
-      <div className="grid grid-cols-2 md:grid-cols-4 md:gap-10 gap-5 pt-24 pb-5 px-4 md:px-24">
+      <div className="body grid grid-cols-2 md:grid-cols-4 md:gap-10 gap-5 pt-24 pb-5 px-4 md:px-24">
         {mealTypes.map((type, id) => {
           return (
             <Link
