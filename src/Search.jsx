@@ -1,4 +1,3 @@
-import Navbar from "./Navbar.jsx";
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { fetchData, renderRating } from "./Helpers.jsx";
@@ -74,41 +73,74 @@ const Search = () => {
   window.addEventListener("scroll", handleScroll, true);
 
   return (
-    <div className="">
-      <Navbar />
-      <div className="flex flex-col mt-[62px]">
-        <form
-          id="filters"
-          className="fixed w-full flex flex-row drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100 px-10 justify-around z-10"
-          onClick={handleSubmit}
-        >
-          {/* Hidden Input field to keep search query intact*/}
-          <input type="text" id="queryField" name="q" className="hidden" />
-          {Object.keys(filters).map((i) => {
-            return (
+    <div className="flex flex-col mt-[62px]">
+      <form
+        id="filters"
+        className="fixed w-full flex flex-row drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100 px-10 justify-around z-10"
+        onClick={handleSubmit}
+      >
+        {/* Hidden Input field to keep search query intact*/}
+        <input type="text" id="queryField" name="q" className="hidden" />
+        {Object.keys(filters).map((i) => {
+          return (
+            <div
+              key={i}
+              className={`flex flex-row items-center gap-x-2 group py-5 px-6 ${
+                !filters[i]["full-width"] && "relative"
+              }`}
+            >
+              {filters[i].name}
+              <i className="fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
               <div
-                key={i}
-                className={`flex flex-row items-center gap-x-2 group py-5 px-6 ${
-                  !filters[i]["full-width"] && "relative"
-                }`}
-              >
-                {filters[i].name}
-                <i className="fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
-                <div
-                  className={`hidden group-hover:inline-block absolute top-[64px] bg-white dark:bg-gray-600 drop-shadow-lg py-8 w-72 z-50
+                className={`hidden group-hover:inline-block absolute top-[64px] bg-white dark:bg-gray-600 drop-shadow-lg py-8 w-72 z-50
                     ${filters[i]["full-width"] && "w-screen"} ${
-                    (filters[i].name === "Servings" && "right-0 w-56") ||
-                    "left-0"
-                  }
+                  (filters[i].name === "Servings" && "right-0 w-56") || "left-0"
+                }
                   `}
-                >
-                  <div
-                    className={`grid grid-cols-1 gap-y-4 text-xl gap-x-10 items-center justify-between px-10
+              >
+                <div
+                  className={`grid grid-cols-1 gap-y-4 text-xl gap-x-10 items-center justify-between px-10
                     ${filters[i]["full-width"] && "grid-cols-5"}
                     `}
-                  >
-                    {(filters[i].name === "Meal type" &&
-                      mealTypes.map((type, i) => {
+                >
+                  {(filters[i].name === "Meal type" &&
+                    mealTypes.map((type, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                          <input
+                            type="checkbox"
+                            name="mealtypes"
+                            value={type}
+                            className="w-5 accent-red-500"
+                            onClick={handleSubmit}
+                          />
+                          <p>{type}</p>
+                        </div>
+                      );
+                    })) ||
+                    (filters[i].name === "Total Time" &&
+                      Object.keys(timeFilters).map((index, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="totalTime"
+                              value={index}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{timeFilters[index]}</p>
+                          </div>
+                        );
+                      })) ||
+                    (filters[i].name === "Diet type" &&
+                      dietTypes.map((diet, i) => {
                         return (
                           <div
                             key={i}
@@ -116,178 +148,141 @@ const Search = () => {
                           >
                             <input
                               type="checkbox"
-                              name="mealtypes"
-                              value={type}
+                              name="dietType"
+                              value={diet}
                               className="w-5 accent-red-500"
                               onClick={handleSubmit}
                             />
-                            <p>{type}</p>
+                            <p>{diet}</p>
                           </div>
                         );
                       })) ||
-                      (filters[i].name === "Total Time" &&
-                        Object.keys(timeFilters).map((index, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="totalTime"
-                                value={index}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{timeFilters[index]}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Diet type" &&
-                        dietTypes.map((diet, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="dietType"
-                                value={diet}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{diet}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Calories" &&
-                        Object.keys(calorieRange).map((index, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="kcal"
-                                value={index}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{calorieRange[index]}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Difficulty" &&
-                        difficultyRanges.map((difficulty, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="skillLevel"
-                                value={difficulty}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{difficulty}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Cuisine" &&
-                        cuisineTypes.map((cuisine, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="cuisine"
-                                value={cuisine}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{cuisine}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Rating" &&
-                        Object.keys(ratingRanges).map((i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="rating"
-                                value={i}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{ratingRanges[i]}</p>
-                            </div>
-                          );
-                        })) ||
-                      (filters[i].name === "Servings" &&
-                        servingRanges.map((serving, i) => {
-                          return (
-                            <div
-                              key={i}
-                              className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                            >
-                              <input
-                                type="checkbox"
-                                name="yield"
-                                value={serving}
-                                className="w-5 accent-red-500"
-                                onClick={handleSubmit}
-                              />
-                              <p>{serving}</p>
-                            </div>
-                          );
-                        }))}
-                  </div>
+                    (filters[i].name === "Calories" &&
+                      Object.keys(calorieRange).map((index, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="kcal"
+                              value={index}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{calorieRange[index]}</p>
+                          </div>
+                        );
+                      })) ||
+                    (filters[i].name === "Difficulty" &&
+                      difficultyRanges.map((difficulty, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="skillLevel"
+                              value={difficulty}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{difficulty}</p>
+                          </div>
+                        );
+                      })) ||
+                    (filters[i].name === "Cuisine" &&
+                      cuisineTypes.map((cuisine, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="cuisine"
+                              value={cuisine}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{cuisine}</p>
+                          </div>
+                        );
+                      })) ||
+                    (filters[i].name === "Rating" &&
+                      Object.keys(ratingRanges).map((i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="rating"
+                              value={i}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{ratingRanges[i]}</p>
+                          </div>
+                        );
+                      })) ||
+                    (filters[i].name === "Servings" &&
+                      servingRanges.map((serving, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              name="yield"
+                              value={serving}
+                              className="w-5 accent-red-500"
+                              onClick={handleSubmit}
+                            />
+                            <p>{serving}</p>
+                          </div>
+                        );
+                      }))}
                 </div>
               </div>
+            </div>
+          );
+        })}
+      </form>
+      <div className="grid grid-cols-4 gap-10 pt-24 px-24">
+        {!loading &&
+          results.length > 0 &&
+          results.map((recipe, id) => {
+            return (
+              <Link
+                key={id}
+                to={"/recipes/" + recipe.slug}
+                className="flex flex-col gap-y-6 hover:bg-white dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
+              >
+                <img
+                  className="drop-shadow-xl filter rounded-lg object-cover object-center h-56"
+                  src={recipe.image.url}
+                  alt={recipe.image.alt}
+                />
+                <div className="flex flex-col gap-y-2 px-4">
+                  <p className="text-xl font-semibold truncate w-full text-white">
+                    {recipe.name}
+                  </p>
+                  <div className="flex flex-row gap-x-2 text-red-500">
+                    {renderRating(recipe.rating.avg)}
+                  </div>
+                  <div className="flex flex-row gap-x-2 text-sm"></div>
+                  <p className="h-12 mb-4 w-full text-ellipsis overflow-hidden">
+                    {recipe.description}
+                  </p>
+                </div>
+              </Link>
             );
           })}
-        </form>
-        <div className="grid grid-cols-4 gap-10 pt-24 px-24">
-          {!loading &&
-            results.length > 0 &&
-            results.map((recipe, id) => {
-              return (
-                <Link
-                  key={id}
-                  to={"/recipes/" + recipe.slug}
-                  className="flex flex-col gap-y-6 hover:bg-white dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
-                >
-                  <img
-                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-56"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                  />
-                  <div className="flex flex-col gap-y-2 px-4">
-                    <p className="text-xl font-semibold truncate w-full text-white">
-                      {recipe.name}
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-red-500">
-                      {renderRating(recipe.rating.avg)}
-                    </div>
-                    <div className="flex flex-row gap-x-2 text-sm"></div>
-                    <p className="h-12 mb-4 w-full text-ellipsis overflow-hidden">
-                      {recipe.description}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-        </div>
       </div>
     </div>
   );

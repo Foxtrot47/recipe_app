@@ -1,4 +1,3 @@
-import Navbar from "./Navbar.jsx";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -68,8 +67,6 @@ const Recipe = () => {
   };
 
   return (
-    <div className="">
-      <Navbar />
       <div className="flex flex-col gap-y-6 mt-14">
         <div className="flex flex-col gap-y-4 relative justify-center items-center bg-red-500 h-72 text-white font-medium">
           {!loading && (
@@ -416,12 +413,10 @@ const Recipe = () => {
                     </div>
                   );
                 })}
-              </div>
             </div>
           </div>
         </div>
       </div>
-      &nbsp; &nbsp; &nbsp;
     </div>
   );
 };
