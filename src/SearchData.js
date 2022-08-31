@@ -1,15 +1,5 @@
 // Static data used as filters in search page
-const filters = [
-    { name: "Meal type", "full-width": true },
-    { name: "Total Time", "full-width": false },
-    { name: "Diet type", "full-width": true },
-    { name: "Calories", "full-width": false },
-    { name: "Difficulty", "full-width": false },
-    { name: "Cuisine", "full-width": true },
-    { name: "Rating", "full-width": false },
-    { name: "Servings", "full-width": false },
-  ],
-  mealTypes = [
+const mealTypes = [
     "Afternoon tea",
     "Breads",
     "Breakfast",
@@ -75,12 +65,12 @@ const filters = [
     "Vegan",
     "Vegetarian",
   ],
-  timeFilters = {
-    lte10: "10 minutes or less",
-    lte30: "30 minutes or less",
-    lte60: "1 hour or less",
-    gt60: "Over 1 hour",
-  },
+  timeFilters = [
+    { lte10: "10 minutes or less" },
+    { lte30: "30 minutes or less" },
+    { lte60: "1 hour or less" },
+    { gt60: "Over 1 hour" },
+  ],
   cuisineTypes = [
     "Afghan",
     "African",
@@ -137,23 +127,73 @@ const filters = [
     "Vietnamese",
     "Welsh",
   ],
-  calorieRange = {
-    lte250: "250kcal and under",
-    lte500: "upto 500kcal",
-    lte750: "upto 750kcal",
-    lte1000: "upto 1000kcal",
-    lte1500: "upto 1500kcal",
-    gt1500: "Over 1500kcal",
-  },
+  calorieRange = [
+    { lte250: "250kcal and under" },
+    { lte500: "upto 500kcal" },
+    { lte750: "upto 750kcal" },
+    { lte1000: "upto 1000kcal" },
+    { lte1500: "upto 1500kcal" },
+    { gt1500: "Over 1500kcal" },
+  ],
   difficultyRanges = ["Easy", "More effort", "A challenge"],
-  ratingRanges = {
-    gte1: "1 Star+",
-    gte2: "2 Star+",
-    gte3: "3 Star+",
-    gte4: "4 Star+",
-    eq5: "5 Stars",
-  },
-  servingRanges = [1, 2, 3, 4, 5, 6, 7, 8, "9+"];
+  ratingRanges = [
+    { gte1: "1 Star+" },
+    { gte2: "2 Star+" },
+    { gte3: "3 Star+" },
+    { gte4: "4 Star+" },
+    { eq5: "5 Stars" },
+  ],
+  servingRanges = [1, 2, 3, 4, 5, 6, 7, 8, "9+"],
+  filters = [
+    {
+      name: "Meal type",
+      "full-width": true,
+      slug: "mealTypes",
+      data: mealTypes,
+    },
+    {
+      name: "Total Time",
+      "full-width": false,
+      slug: "timeFilters",
+      data: timeFilters,
+    },
+    {
+      name: "Diet type",
+      "full-width": true,
+      slug: "dietTypes",
+      data: dietTypes,
+    },
+    {
+      name: "Calories",
+      "full-width": false,
+      slug: "calorieRange",
+      data: calorieRange,
+    },
+    {
+      name: "Difficulty",
+      "full-width": false,
+      slug: "difficultyRanges",
+      data: difficultyRanges,
+    },
+    {
+      name: "Cuisine",
+      "full-width": true,
+      slug: "cuisineTypes",
+      data: cuisineTypes,
+    },
+    {
+      name: "Rating",
+      "full-width": false,
+      slug: "ratingRanges",
+      data: ratingRanges,
+    },
+    {
+      name: "Servings",
+      "full-width": false,
+      slug: "servingRanges",
+      data: servingRanges,
+    },
+  ];
 export {
   filters,
   dietTypes,

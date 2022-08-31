@@ -103,17 +103,16 @@ const Search = () => {
                     ${filters[i]["full-width"] && "grid-cols-5"}
                     `}
                 >
-                  {(filters[i].name === "Meal type" &&
-                    mealTypes.map((type, i) => {
-                      return (
-                        <div
-                          key={i}
-                          className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                        >
-                          <input
-                            type="checkbox"
-                            name="mealtypes"
-                            value={type}
+                  {filters[i].data.map((filterItem, id) => {
+                    return (
+                      <div
+                        key={id}
+                        className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        <input
+                          type="checkbox"
+                            name="dietType"
+                            value={filterItem}
                             className="w-5 accent-red-500"
                             onClick={handleSubmit}
                           />
