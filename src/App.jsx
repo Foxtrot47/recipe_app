@@ -39,22 +39,22 @@ const App = () => {
     <div className="App h-full">
       <Navbar />
       {/* Body Section */}
-      <div className="flex flex-col h-full gap-y-8">
+      <div className="flex flex-col h-full gap-y-8 body">
         {/* Hero Section */}
-        <div className="flex-none mt-10 w-full h-[25rem] flex justify-center items-center">
+        <div className="flex-none mt-10 w-full h-96 md:h-[25rem] flex justify-center items-center">
           <img
-            className="object-cover object-center w-full h-full fade-to-bottom filter brightness-75"
+            className="object-cover object-center w-full h-full fade-to-bottom brightness-75"
             src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna-wordpress-theme-radiustheme.com-4-1240x578.jpg"
           />
           <div className="absolute w-full items-center flex flex-col gap-y-4">
-            <p className="text-6xl font-semibold text-white font-playfair-display drop-shadow-xl filter">
+            <p className="text-5xl md:text-6xl font-semibold text-white font-playfair-display drop-shadow-xl filter">
               Find a Recipe
             </p>
-            <span className="w-2/5 bg-white dark:bg-gray-800 flex flex-row items-center text-2xl py-2 opacity-80 drop-shadow-xl filter">
+            <span className="w-10/12 md:w-2/5 bg-white dark:bg-gray-800 flex flex-row items-center text-xl py-2 opacity-80 drop-shadow-xl filter">
               <i className="fa-solid fa-magnifying-glass px-4 text-red-500"></i>
               <input
                 id="searchfield"
-                className=" py-2 w-full outline-none dark:bg-[#1d1e26]"
+                className="py-2 w-full outline-none dark:bg-[#1d1e26]"
                 type="text"
                 placeholder="Search for recipes"
                 onInput={doAutoComplete.bind()}
@@ -63,7 +63,7 @@ const App = () => {
               />
             </span>
             {searchResult !== null && searchResult.length > 0 && (
-              <div className="absolute top-36 bg-white dark:bg-gray-800 rounded z-10 flex flex-col gap-y-2 p-2 opacity-95 drop-shadow-xl filter w-2/5 text-xl">
+              <div className="absolute top-[135px] md:top-36 bg-white dark:bg-gray-800 rounded z-10 flex flex-col gap-y-2 p-2 opacity-95 drop-shadow-xl filter w-10/12 md:w-2/5 text-lg">
                 {searchResult.map((recipe, id) => {
                   return (
                     <Link
@@ -81,22 +81,24 @@ const App = () => {
           </div>
         </div>
         {/* Rest of body */}
-        <div className="px-8 grid grid-cols-3 gap-x-10 gap-y-6 text-center">
+        <div className="px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-x-2 md:gap-x-10 gap-y-6 text-center">
           {!loading &&
             data.map((recipe, id) => {
               return (
                 <Link
                   key={id}
                   to={"/recipes/" + recipe.slug}
-                  className="flex flex-col gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
+                  className="flex flex-col flex-0 gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg group overflow-hidden"
                 >
-                  <img
-                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-80"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                  />
+                  <div className="md:h-80 md:max-h-80 overflow-hidden">
+                    <img
+                      className="drop-shadow-xl filter rounded-lg object-cover group-hover:scale-110 group-hover:rotate-2 transition duration-300 ease-in-out"
+                      src={recipe.image.url}
+                      alt={recipe.image.alt}
+                    />
+                  </div>
                   <div className="flex flex-col items-center gap-y-2 px-4">
-                    <p className="text-red-500 font-semibold capitalize ">
+                    <p className="text-red-500 font-semibold capitalize">
                       {recipe.category.length > 0
                         ? recipe.category[0]
                         : "Unknown"}
@@ -107,7 +109,7 @@ const App = () => {
                     <div className="flex flex-row gap-x-2 text-sm text-red-500">
                       {renderRating(recipe.rating.avg)}
                     </div>
-                    <p className="px-4 max-h-20 w-full text-ellipsis overflow-hidden dark:text-gray-300">
+                    <p className="md:px-4 max-h-20 w-full text-ellipsis overflow-hidden dark:text-gray-300">
                       {recipe.description}
                     </p>
                   </div>
@@ -115,7 +117,7 @@ const App = () => {
               );
             })}
         </div>
-        <div className="px-12">
+        <div className="px-4 md:px-12">
           <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2">
             <p className="text-3xl font-medium">Trending Recipes</p>
             <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-60">
@@ -123,34 +125,30 @@ const App = () => {
             </span>
           </div>
         </div>
-        <div className="px-8 w-full h-full flex-none flex flex-col gap-y-10">
-          <div className="relative h-[30rem] flex items-center justify-center">
+        <div className="mt-20 md:mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
+          <div className="relative mb-10 md:mb-0 flex flex-col w-full h-72 md:h-[30rem] items-center justify-center group">
             <img
               className="filter brightness-75 object-cover object-center w-full h-full rounded-lg shadow-xl"
               src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-3.jpg"
             />
-            <div className="absolute flex flex-row justify-between w-full items-center px-10 text-red-400 ">
-              <div className="bg-white dark:bg-gray-600 rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
+            <div className="absolute top-4 md:inset-0 flex flex-row justify-between w-full items-center px-2 md:px-10 text-red-400">
+              <div className="bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter">
                 &lt;
               </div>
-              <div className="bg-white dark:bg-gray-600 rounded-full p-4 px-6 font-bold drop-shadow-xl filter">
+              <div className="bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter">
                 &gt;
               </div>
             </div>
-            <div className="absolute h-full flex flex-col gap-y-4 justify-end items-center">
-              <div className="bg-white dark:bg-gray-700 px-10 py-6 flex flex-col gap-y-4 items-center ">
+            <div className="md:absolute h-full flex flex-col w-full md:w-auto gap-y-4 justify-end items-center">
+              <div className="md:bg-white md:dark:bg-gray-700 px-4 md:px-10 py-6 flex flex-col gap-y-2 md:gap-y-4 items-center w-full md:w-auto">
                 <p className="text-red-500 font-semibold">Lunch</p>
-                <p className="text-3xl font-semibold">
+                <p className="text-lg md:text-3xl font-semibold">
                   Lorem ipsum dolor sit amet
                 </p>
-                <div className="flex flex-row gap-x-2 text-sm">
-                  <i className="fa-solid fa-star"></i>
-                  <i className="fa-duotone fa-star"></i>
-                  <i className="fa-duotone fa-star"></i>
-                  <i className="fa-duotone fa-star"></i>
-                  <i className="fa-duotone fa-star"></i>
+                <div className="flex flex-row gap-x-2 text-sm text-accent">
+                  {renderRating(5)}
                 </div>
-                <p className="whitespace-normal text-center hidden">
+                <p className="whitespace-normal md:w-[500px] text-center md:hidden group-hover:block">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
                   tincidunt sem sed sem accumsan molestie. Ut facilisis dolor
                   lectus, vel ultricies magna maximus quis.
@@ -158,8 +156,8 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-row gap-x-10">
-            <div className="grid grid-cols-2 gap-6 h-full">
+          <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
               {additionalRecipes.map((id) => {
                 return (
                   <div
@@ -170,19 +168,15 @@ const App = () => {
                       className="drop-shadow-xl filter rounded-lg"
                       src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
                     />
-                    <div className="flex flex-col items-center gap-y-2 pb-6">
+                    <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
                       <p className="text-red-500 font-semibold">Breakfast</p>
                       <p className="text-2xl font-semibold">
                         Lorem ipsum dolor sit amet
                       </p>
                       <div className="flex flex-row gap-x-2 text-sm text-red-500">
-                        <i className="fa-solid fa-star"></i>
-                        <i className="fa-duotone fa-star"></i>
-                        <i className="fa-duotone fa-star"></i>
-                        <i className="fa-duotone fa-star"></i>
-                        <i className="fa-duotone fa-star"></i>
+                        {renderRating(5)}
                       </div>
-                      <p className="px-4 text-gray-600 dark:text-gray-300">
+                      <p className="md:px-2 text-gray-600 dark:text-gray-300">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Sed quis eleifend arcu. Aliquam mollis porta suscipit.
                       </p>
@@ -191,7 +185,7 @@ const App = () => {
                 );
               })}
             </div>
-            <div className="flex flex-col gap-y-4 w-3/6">
+            <div className="flex flex-col gap-y-4 md:w-3/6">
               <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mb-4">
                 <p className="text-2xl font-medium">Latest Recipes</p>
                 <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
@@ -205,7 +199,7 @@ const App = () => {
                       key={id}
                       className="flex flex-row gap-x-4 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow rounded-lg"
                     >
-                      <div className="flex-none">
+                      <div className="flex-none ">
                         <img
                           className="object-cover object-center w-36 h-36 rounded-lg"
                           src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
