@@ -24,6 +24,15 @@ const mealTypes = [
     "Treat",
     "Vegetable",
   ],
+  mealTypesSmall = [
+    "Breakfast",
+    "Lunch",
+    "Dinner",
+    "Drink",
+    "Pasta",
+    "Pizza",
+    "Salad",
+  ],
   mealImages = [
     "https://cdn2.rsc.org.uk/sitefinity/images/catering/social-images/afternoon-tea-rooftop-restaurant-2022_2021_elin-englund_323478.tmb-gal-1340.jpg?sfvrsn=cfacb521_1",
     "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Anadama_bread_%281%29.jpg/1200px-Anadama_bread_%281%29.jpg",
@@ -198,6 +207,7 @@ export {
   filters,
   dietTypes,
   mealTypes,
+  mealTypesSmall,
   mealImages,
   timeFilters,
   cuisineTypes,

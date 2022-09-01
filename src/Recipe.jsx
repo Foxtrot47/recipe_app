@@ -5,22 +5,13 @@ import { fetchData, renderRating } from "./Helpers.jsx";
 import Icon from "@mdi/react";
 import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from "@mdi/js";
 import moment from "moment";
+import { mealTypesSmall } from "./SearchData";
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
   let { recipeslug } = useParams();
-
-  const recipeCategories = [
-    "Breakfast",
-    "Lunch",
-    "Dinner",
-    "Drink",
-    "Pasta",
-    "Pizza",
-    "Salad",
-  ];
 
   useEffect(() => {
     if (recipeslug === undefined) return;
@@ -416,12 +407,16 @@ const Recipe = () => {
           </div>
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col w-16 px-2 pt-4 gap-y-4 text-xl text-gray-600 dark:text-gray-200 mb-4">
-              {recipeCategories.map((category, id) => {
+              {mealTypesSmall.map((category, id) => {
                 return (
-                  <div key={id} className="flex flex-row gap-x-2">
+                  <Link
+                    key={id}
+                    className="flex flex-row gap-x-2"
+                    to={"/search?mealTypes=" + category}
+                  >
                     <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                     <p> {category}</p>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

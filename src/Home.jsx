@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchData, renderRating } from "./Helpers.jsx";
+import { mealTypesSmall } from "./SearchData";
 
 const Home = () => {
   const [data, setData] = useState(null);
@@ -221,21 +222,19 @@ const Home = () => {
               </span>
             </div>
             <div className="flex flex-col gap-y-6">
-              <div className="grid grid-cols-2 w-16 px-2 gap-4 text-xl text-gray-700 dark:text-gray-300">
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p> Breakfast</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Lunch</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Dinner</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Drink</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Pasta</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Pizza</p>
-                <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                <p>Salad</p>
+              <div className="flex flex-col w-16 px-2 pt-4 gap-y-4 text-xl text-gray-600 dark:text-gray-200 mb-4">
+                {mealTypesSmall.map((category, id) => {
+                  return (
+                    <Link
+                      key={id}
+                      className="flex flex-row gap-x-2"
+                      to={"/search?mealTypes=" + category}
+                    >
+                      <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
+                      <p> {category}</p>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>
