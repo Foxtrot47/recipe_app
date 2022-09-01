@@ -154,7 +154,7 @@ const mealTypes = [
     {
       name: "Total Time",
       "full-width": false,
-      slug: "timeFilters",
+      slug: "totalTime",
       data: timeFilters,
     },
     {
@@ -166,13 +166,13 @@ const mealTypes = [
     {
       name: "Calories",
       "full-width": false,
-      slug: "calorieRange",
+      slug: "kcal",
       data: calorieRange,
     },
     {
       name: "Difficulty",
       "full-width": false,
-      slug: "difficultyRanges",
+      slug: "skillLevel",
       data: difficultyRanges,
     },
     {
@@ -184,13 +184,13 @@ const mealTypes = [
     {
       name: "Rating",
       "full-width": false,
-      slug: "ratingRanges",
+      slug: "rating",
       data: ratingRanges,
     },
     {
       name: "Servings",
       "full-width": false,
-      slug: "servingRanges",
+      slug: "yield",
       data: servingRanges,
     },
   ];
