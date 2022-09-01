@@ -80,7 +80,13 @@ const Search = () => {
         onClick={handleSubmit}
       >
         {/* Hidden Input field to keep search query intact*/}
-        <input type="text" id="queryField" name="q" className="hidden" />
+        <input
+          type="text"
+          id="queryField"
+          name="q"
+          className="hidden"
+          value=""
+        />
         {Object.keys(filters).map((i) => {
           return (
             <div
