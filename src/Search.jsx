@@ -7,6 +7,7 @@ import { filters } from "./SearchData.js";
 const Search = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [filterButtonClicked, setFilterButtonClicked] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   let resultCount = 0,
     reachedBottom = false,
@@ -49,6 +50,7 @@ const Search = () => {
     reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
     setSearchParams(data);
+    setFilterButtonClicked(false);
   };
 
   const handleScroll = () => {
@@ -60,15 +62,43 @@ const Search = () => {
     }
   };
 
+  const handleFilterButtonTap = (state) => {
+    setFilterButtonClicked(state);
+  };
   window.addEventListener("scroll", handleScroll, true);
 
   return (
     <div className="flex flex-col mt-[62px]">
+      <button
+        className="md:hidden py-4 flex flex-row gap-x-2 justify-center text-xl text-black bg-white dark:bg-gray-600 dark:text-gray-100"
+        onClick={() => handleFilterButtonTap(true)}
+      >
+        <i className="fa-solid fa-bars-filter text-accent"></i>
+        Filters
+      </button>
       <form
         id="filters"
-        className="fixed w-full flex flex-row drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100 px-10 justify-around z-10"
-        onClick={handleSubmit}
+        className={`drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100
+                    md:fixed md:w-full md:flex md:flex-row md:px-10 md:justify-around md:h-auto md:-top-2 md:z-10
+                    fixed h-screen w-screen flex-col overscroll-contain z-30
+                    transition ease-in-out duration-700 top-0
+                    ${
+                      filterButtonClicked
+                        ? "flex translate-y-0"
+                        : "translate-y-full"
+                    }
+                  `}
       >
+        <div className="md:hidden grid grid-cols-3 mb-5 dark:bg-gray-800 py-4 p-6 text-2xl">
+          <button
+            type="button"
+            onClick={() => setFilterButtonClicked(false)}
+            className="text-left"
+          >
+            <i className="fa-solid fa-circle-xmark text-xl" />
+          </button>
+          <p className="justify-self-center">Filters</p>
+        </div>
         {/* Hidden Input field to keep search query intact*/}
         <input
           type="text"
@@ -81,23 +111,50 @@ const Search = () => {
           return (
             <div
               key={i}
-              className={`flex flex-row items-center gap-x-2 group py-5 px-6 ${
-                !filters[i]["full-width"] && "relative"
-              }`}
+              className={
+                "items-center gap-x-2 group py-5 px-6 text-xl justify-between grid grid-cols-2 md:flex md:flex-row " +
+                (!filters[i]["full-width"] && "md:relative")
+              }
             >
               {filters[i].name}
-              <i className="fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
+              <i className="hidden md:block fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
+
+              <select
+                className="md:hidden rounded-lg bg-gray-800 focus:border-red-500 focus:ring-0"
+                name={filters[i].slug}
+              >
+                <option value="">Any</option>
+                {filters[i].data.map((filterItem, id) => {
+                  return (
+                    <option
+                      value={
+                        typeof filterItem !== "object"
+                          ? filterItem
+                          : Object.keys(filterItem)[0]
+                      }
+                      onClick={handleSubmit}
+                    >
+                      {typeof filterItem !== "object"
+                        ? filterItem
+                        : Object.values(filterItem)[0]}
+                    </option>
+                  );
+                })}
+              </select>
               <div
-                className={`hidden group-hover:inline-block absolute top-[64px] bg-white dark:bg-gray-600 drop-shadow-lg py-8 w-72 z-50
-                    ${filters[i]["full-width"] && "w-screen"} ${
-                  (filters[i].name === "Servings" && "right-0 w-56") || "left-0"
+                className={
+                  "hidden md:group-hover:block absolute bg-white dark:bg-gray-600 drop-shadow-lg py-8 z-20 gap-y-2 top-[64px] h-max " +
+                  (filters[i]["full-width"] ? "w-screen " : "w-72 ") +
+                  (filters[i].name === "Servings"
+                    ? "md:right-0 w-44 "
+                    : "md:left-0")
                 }
-                  `}
               >
                 <div
-                  className={`grid grid-cols-1 gap-y-4 text-xl gap-x-10 items-center justify-between px-10
-                    ${filters[i]["full-width"] && "grid-cols-5"}
-                    `}
+                  className={`text-xl gap-x-10 items-center justify-between px-10
+                              grid gap-y-4 grid-cols-1 
+                              ${filters[i]["full-width"] && "grid-cols-5"}
+                  `}
                 >
                   {filters[i].data.map((filterItem, id) => {
                     return (
@@ -131,14 +188,13 @@ const Search = () => {
         })}
 
         <input
-                              type="checkbox"
-                              name="yield"
-                              value={serving}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
+          className="md:hidden py-4 bg-gray-800 mx-4 border-gray-900 border rounded-full active:bg-gray-700 drop-shadow-xl"
+          type="button"
+          value="Submit"
+          onClick={handleSubmit}
+        />
       </form>
-      <div className="grid grid-cols-4 gap-10 pt-24 px-24">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pt-6 md:pt-24 px-4 md:px-24">
         {!loading &&
           results.length > 0 &&
           results.map((recipe, id) => {
