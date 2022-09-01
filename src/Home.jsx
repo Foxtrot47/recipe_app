@@ -51,7 +51,7 @@ const Home = () => {
             <i className="fa-solid fa-magnifying-glass px-4 text-red-500"></i>
             <input
               id="searchfield"
-              className="py-2 w-full outline-none dark:bg-[#1d1e26]"
+              className="py-2 w-full dark:bg-[#1d1e26] border-0 focus:border-0 focus:ring-0 caret-red-500"
               type="text"
               placeholder="Search for recipes"
               onInput={doAutoComplete.bind()}
