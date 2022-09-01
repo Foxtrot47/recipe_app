@@ -2,17 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { fetchData, renderRating } from "./Helpers.jsx";
 import serialize from "form-serialize";
-import {
-  filters,
-  dietTypes,
-  mealTypes,
-  timeFilters,
-  cuisineTypes,
-  calorieRange,
-  difficultyRanges,
-  ratingRanges,
-  servingRanges,
-} from "./SearchData.js";
+import { filters } from "./SearchData.js";
 
 const Search = () => {
   const [results, setResults] = useState(null);
@@ -113,150 +103,40 @@ const Search = () => {
                     return (
                       <div
                         key={id}
-                        className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200 items-center"
                       >
                         <input
                           type="checkbox"
-                            name="dietType"
-                            value={filterItem}
-                            className="w-5 accent-red-500"
-                            onClick={handleSubmit}
-                          />
-                          <p>{type}</p>
-                        </div>
-                      );
-                    })) ||
-                    (filters[i].name === "Total Time" &&
-                      Object.keys(timeFilters).map((index, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4  dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="totalTime"
-                              value={index}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{timeFilters[index]}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Diet type" &&
-                      dietTypes.map((diet, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="dietType"
-                              value={diet}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{diet}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Calories" &&
-                      Object.keys(calorieRange).map((index, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="kcal"
-                              value={index}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{calorieRange[index]}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Difficulty" &&
-                      difficultyRanges.map((difficulty, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="skillLevel"
-                              value={difficulty}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{difficulty}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Cuisine" &&
-                      cuisineTypes.map((cuisine, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="cuisine"
-                              value={cuisine}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{cuisine}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Rating" &&
-                      Object.keys(ratingRanges).map((i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              name="rating"
-                              value={i}
-                              className="w-5 accent-red-500"
-                              onClick={handleSubmit}
-                            />
-                            <p>{ratingRanges[i]}</p>
-                          </div>
-                        );
-                      })) ||
-                    (filters[i].name === "Servings" &&
-                      servingRanges.map((serving, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200"
-                          >
-                            <input
+                          name={filters[i].slug}
+                          value={
+                            typeof filterItem !== "object"
+                              ? filterItem
+                              : Object.keys(filterItem)[0]
+                          }
+                          className="w-5 accent-red-500"
+                          onClick={handleSubmit}
+                        />
+                        <p>
+                          {typeof filterItem !== "object"
+                            ? filterItem
+                            : Object.values(filterItem)[0]}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        <input
                               type="checkbox"
                               name="yield"
                               value={serving}
                               className="w-5 accent-red-500"
                               onClick={handleSubmit}
                             />
-                            <p>{serving}</p>
-                          </div>
-                        );
-                      }))}
-                </div>
-              </div>
-            </div>
-          );
-        })}
       </form>
       <div className="grid grid-cols-4 gap-10 pt-24 px-24">
         {!loading &&
