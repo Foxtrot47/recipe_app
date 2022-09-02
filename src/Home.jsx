@@ -47,11 +47,11 @@ const Home = () => {
           <p className="text-5xl md:text-6xl font-semibold text-white font-playfair-display drop-shadow-xl filter">
             Find a Recipe
           </p>
-          <span className="w-10/12 md:w-2/5 bg-white dark:bg-gray-800 flex flex-row items-center text-xl py-2 opacity-80 drop-shadow-xl filter">
-            <i className="fa-solid fa-magnifying-glass px-4 text-red-500"></i>
+          <span className="w-10/12 md:w-2/5 bg-white dark:bg-gray-800 flex flex-row items-center text-xl opacity-80 drop-shadow-xl filter rounded-lg">
+            <i className="fa-solid fa-magnifying-glass px-4 text-red-500 absolute"></i>
             <input
               id="searchfield"
-              className="py-2 w-full dark:bg-[#1d1e26] border-0 focus:border-0 focus:ring-0 caret-red-500"
+              className="pl-11 py-4 w-full dark:bg-[#1d1e26] border-0 focus:border-gray-700 focus:ring-gray-900 caret-red-500 rounded-lg dark:placeholder:text-white dark:text-white text-lg"
               type="text"
               placeholder="Search for recipes"
               onInput={doAutoComplete.bind()}
