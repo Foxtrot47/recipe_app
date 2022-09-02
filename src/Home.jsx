@@ -128,7 +128,7 @@ const Home = () => {
             className="filter brightness-75 object-cover object-center w-full h-full rounded-lg shadow-xl"
             src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-3.jpg"
           />
-          <div className="absolute top-4 md:inset-0 flex flex-row justify-between w-full items-center px-2 md:px-10 text-red-400">
+          <div className="absolute top-0 md:inset-0 flex flex-row justify-between w-full items-center px-2 md:px-10 text-red-400">
             <div className="bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter">
               &lt;
             </div>
@@ -136,16 +136,16 @@ const Home = () => {
               &gt;
             </div>
           </div>
-          <div className="md:absolute h-full flex flex-col w-full md:w-auto gap-y-4 justify-end items-center">
-            <div className="md:bg-white md:dark:bg-gray-700 px-4 md:px-10 py-6 flex flex-col gap-y-2 md:gap-y-4 items-center w-full md:w-auto">
+          <div className="md:absolute h-full flex flex-col w-full md:w-auto gap-y-4 justify-end items-center md:overflow-hidden">
+            <div className="md:bg-white md:dark:bg-gray-700 px-4 md:px-10 py-6 flex flex-col gap-y-2 md:gap-y-4 items-center w-full md:w-auto transition duration-500 ease-in-out md:translate-y-24 md:group-hover:translate-y-0">
               <p className="text-red-500 font-semibold">Lunch</p>
-              <p className="text-lg md:text-3xl font-semibold">
+              <p className="text-2xl md:text-3xl font-semibold">
                 Lorem ipsum dolor sit amet
               </p>
               <div className="flex flex-row gap-x-2 text-sm text-red-500">
                 {renderRating(5)}
               </div>
-              <p className="whitespace-normal md:w-[500px] text-center md:hidden group-hover:block">
+              <p className="whitespace-normal md:w-[500px] text-center">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
                 tincidunt sem sed sem accumsan molestie. Ut facilisis dolor
                 lectus, vel ultricies magna maximus quis.
