@@ -142,7 +142,7 @@ const Home = () => {
               <p className="text-lg md:text-3xl font-semibold">
                 Lorem ipsum dolor sit amet
               </p>
-              <div className="flex flex-row gap-x-2 text-sm text-accent">
+              <div className="flex flex-row gap-x-2 text-sm text-red-500">
                 {renderRating(5)}
               </div>
               <p className="whitespace-normal md:w-[500px] text-center md:hidden group-hover:block">
