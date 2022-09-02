@@ -94,19 +94,19 @@ const Home = () => {
                     alt={recipe.image.alt}
                   />
                 </div>
-                <div className="flex flex-col items-center gap-y-2 px-4">
+                <div className="flex flex-none flex-col items-center gap-y-2 px-4 pb-4">
                   <p className="text-red-500 font-semibold capitalize">
                     {recipe.category.length > 0
                       ? recipe.category[0]
                       : "Unknown"}
                   </p>
-                  <p className="text-2xl font-semibold truncate w-full">
+                  <p className="text-2xl flex-none font-semibold truncate w-full">
                     {recipe.name}
                   </p>
-                  <div className="flex flex-row gap-x-2 text-sm text-red-500">
+                  <div className="flex flex-none flex-row gap-x-2 text-sm text-red-500">
                     {renderRating(recipe.rating.avg)}
                   </div>
-                  <p className="md:px-4 max-h-20 w-full text-ellipsis overflow-hidden dark:text-gray-300">
+                  <p className="md:px-4 h-full w-full text-ellipsis overflow-hidden dark:text-gray-300">
                     {recipe.description}
                   </p>
                 </div>
