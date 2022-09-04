@@ -93,7 +93,7 @@ const Recipe = () => {
       <div className="flex flex-col md:flex-row gap-x-6 px-4 md:px-20">
         <div className="flex flex-col gap-y-1 ">
           <div className="flex flex-col md:flex-row gap-y-2 md:gap-x-6 p-2 mb-1">
-            {recipeData.author && (
+            {recipeData && recipeData.author && (
               <div className="text-gray-500 dark:text-gray-100 flex flex-row gap-x-1 items-center">
                 <i className="text-red-500 font-bold fa-solid fa-user"></i>
                 <span className="text-gray-500 dark:text-gray-400">By</span>
