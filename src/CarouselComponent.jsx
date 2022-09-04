@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -83,6 +84,10 @@ const CarouselComponent = ({ recipes }) => {
         })}
     </Carousel>
   );
+};
+
+CarouselComponent.propTypes = {
+  recipes: PropTypes.object.isRequired,
 };
 
 export default CarouselComponent;
