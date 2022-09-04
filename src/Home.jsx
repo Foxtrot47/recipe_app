@@ -1,23 +1,42 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+import CarouselComponent from "./CarouselComponent.jsx";
 import { fetchData, renderRating } from "./Helpers.jsx";
 import { mealTypesSmall } from "./SearchData";
 
 const Home = () => {
-  const [data, setData] = useState(null);
+  const [randomRecipeData, setRandomRecipeData] = useState(null);
+  const [carouselRecipeData, setCarouselRecipeData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResults] = useState(null);
   const navigate = useNavigate();
+  const carousselRecipeId = [
+    666164, 236556, 760127, 771380, 339180, 243740, 728908,
+  ];
   const additionalRecipes = [1, 2, 3, 4];
 
   useEffect(() => {
     fetchData("random", { limit: 6 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        setData(response.data);
+        setRandomRecipeData(response.data);
         setLoading(false);
       } else {
         console.log("Fetching recipies from API failed");
       }
+    });
+    // Fetching caroussel recipes
+    carousselRecipeId.map((id) => {
+      fetchData("recipebyid", { id: id }, "get", (response) => {
+        if (response.status === 200 && response.data !== null) {
+          setCarouselRecipeData((carouselRecipeData) => [
+            ...carouselRecipeData,
+            response.data,
+          ]);
+        } else {
+          console.log("Fetching recipies from API failed");
+        }
+      });
     });
   }, []);
 
@@ -80,7 +99,7 @@ const Home = () => {
       {/* Rest of body */}
       <div className="px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-x-2 md:gap-x-10 gap-y-6 text-center">
         {!loading &&
-          data.map((recipe, id) => {
+          randomRecipeData.map((recipe, id) => {
             return (
               <Link
                 key={id}
@@ -122,37 +141,8 @@ const Home = () => {
           </span>
         </div>
       </div>
-      <div className="mt-20 md:mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
-        <div className="relative mb-10 md:mb-0 flex flex-col w-full h-72 md:h-[30rem] items-center justify-center group">
-          <img
-            className="filter brightness-75 object-cover object-center w-full h-full rounded-lg shadow-xl"
-            src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-3.jpg"
-          />
-          <div className="absolute top-0 md:inset-0 flex flex-row justify-between w-full items-center px-2 md:px-10 text-red-400">
-            <div className="bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter">
-              &lt;
-            </div>
-            <div className="bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter">
-              &gt;
-            </div>
-          </div>
-          <div className="md:absolute h-full flex flex-col w-full md:w-auto gap-y-4 justify-end items-center md:overflow-hidden">
-            <div className="md:bg-white md:dark:bg-gray-700 px-4 md:px-10 py-6 flex flex-col gap-y-2 md:gap-y-4 items-center w-full md:w-auto transition duration-500 ease-in-out md:translate-y-24 md:group-hover:translate-y-0">
-              <p className="text-red-500 font-semibold">Lunch</p>
-              <p className="text-2xl md:text-3xl font-semibold">
-                Lorem ipsum dolor sit amet
-              </p>
-              <div className="flex flex-row gap-x-2 text-sm text-red-500">
-                {renderRating(5)}
-              </div>
-              <p className="whitespace-normal md:w-[500px] text-center">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
-                tincidunt sem sed sem accumsan molestie. Ut facilisis dolor
-                lectus, vel ultricies magna maximus quis.
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
+        <CarouselComponent recipes={carouselRecipeData} />
         <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
             {additionalRecipes.map((id) => {
