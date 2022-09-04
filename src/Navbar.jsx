@@ -1,22 +1,22 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Navbar = () => {
-  const [searchinputTapped, setSearchInputTapped] = useState(false)
-  const [hamburgerClicked, setHamburgerClicked] = useState(false)
-  window.addEventListener('click', (e) => {
-    if (!e) return
-    if (document.getElementById('mobile-search-button').contains(e.target)) {
-      setSearchInputTapped(true)
+  const [searchinputTapped, setSearchInputTapped] = useState(false);
+  const [hamburgerClicked, setHamburgerClicked] = useState(false);
+  window.addEventListener("click", (e) => {
+    if (!e) return;
+    if (document.getElementById("mobile-search-button").contains(e.target)) {
+      setSearchInputTapped(true);
     } else if (
-      document.getElementById('mobile-hamburger-button').contains(e.target)
+      document.getElementById("mobile-hamburger-button").contains(e.target)
     ) {
-      setHamburgerClicked(true)
+      setHamburgerClicked(true);
     } else {
-      setSearchInputTapped(false)
-      setHamburgerClicked(false)
+      setSearchInputTapped(false);
+      setHamburgerClicked(false);
     }
-  })
+  });
 
   return (
     <nav className="bg-white text-gray-900 border-gray-200 px-5 md:px-10 pb-2 pt-3 dark:bg-gray-900 fixed top-0 w-full drop-shadow z-20 font-medium dark:text-white">
@@ -126,12 +126,12 @@ const Navbar = () => {
         className={`absolute left-0 bg-black transition ease-in-out duration-50 z-10
           ${
             searchinputTapped
-              ? 'bg-opacity-80 h-screen w-screen'
-              : 'bg-opacity-0 h-0 w-0'
+              ? "bg-opacity-80 h-screen w-screen"
+              : "bg-opacity-0 h-0 w-0"
           }`}
       ></div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
