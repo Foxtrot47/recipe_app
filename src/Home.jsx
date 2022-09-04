@@ -8,13 +8,14 @@ import { mealTypesSmall } from "./SearchData";
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState(null);
   const [carouselRecipeData, setCarouselRecipeData] = useState([]);
+  const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResults] = useState(null);
   const navigate = useNavigate();
   const carousselRecipeId = [
     666164, 236556, 760127, 771380, 339180, 243740, 728908,
   ];
-  const additionalRecipes = [1, 2, 3, 4];
+  const additionalRecipesIds = [761176, 687363, 238164, 744140];
 
   useEffect(() => {
     fetchData("random", { limit: 6 }, "get", (response) => {
@@ -31,6 +32,19 @@ const Home = () => {
         if (response.status === 200 && response.data !== null) {
           setCarouselRecipeData((carouselRecipeData) => [
             ...carouselRecipeData,
+            response.data,
+          ]);
+        } else {
+          console.log("Fetching recipies from API failed");
+        }
+      });
+    });
+    // Fetching additional recipes
+    additionalRecipesIds.map((index) => {
+      fetchData("recipebyid", { id: index }, "get", (response) => {
+        if (response.status === 200 && response.data !== null) {
+          setAdditionalRecipeData((additionalRecipeData) => [
+            ...additionalRecipeData,
             response.data,
           ]);
         } else {
@@ -144,35 +158,38 @@ const Home = () => {
       <div className="mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
         <CarouselComponent recipes={carouselRecipeData} />
         <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-            {additionalRecipes.map((id) => {
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+            {additionalRecipeData.map((recipe, id) => {
               return (
-                <div
+                <Link
                   key={id}
+                  to={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                 >
                   <img
-                    className="drop-shadow-xl filter rounded-lg"
-                    src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2020/06/ranna-wordpress-theme-radiustheme.com-9-530x338.jpg"
+                    className="drop-shadow-xl filter rounded-lg h-80 object-cover object-center"
+                    src={recipe.image.url}
+                    alt={recipe.image.alt}
                   />
                   <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
-                    <p className="text-red-500 font-semibold">Breakfast</p>
-                    <p className="text-2xl font-semibold">
-                      Lorem ipsum dolor sit amet
+                    <p className="text-red-500 font-semibold">
+                      {recipe.category.length > 0
+                        ? recipe.category[0]
+                        : "Unknown"}
                     </p>
+                    <p className="text-2xl font-semibold">{recipe.name}</p>
                     <div className="flex flex-row gap-x-2 text-sm text-red-500">
-                      {renderRating(5)}
+                      {renderRating(recipe.rating.avg)}
                     </div>
                     <p className="md:px-2 text-gray-600 dark:text-gray-300">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed quis eleifend arcu. Aliquam mollis porta suscipit.
+                      {recipe.description}
                     </p>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
-          <div className="flex flex-col gap-y-4 md:w-3/6">
+          <div className="flex flex-col gap-y-4 md:w-80 flex-none">
             <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mb-4">
               <p className="text-2xl font-medium">Latest Recipes</p>
               <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-14">
@@ -180,7 +197,7 @@ const Home = () => {
               </span>
             </div>
             <div className="flex flex-col gap-y-6">
-              {additionalRecipes.map((id) => {
+              {additionalRecipesIds.map((id) => {
                 return (
                   <div
                     key={id}
