@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const Navbar = () => {
   const [searchinputTapped, setSearchInputTapped] = useState(false);
   const [hamburgerClicked, setHamburgerClicked] = useState(false);
+
+  const navigate = useNavigate();
   window.addEventListener("click", (e) => {
     if (!e) return;
     if (document.getElementById("mobile-search-button").contains(e.target)) {
@@ -17,6 +19,10 @@ const Navbar = () => {
       setHamburgerClicked(false);
     }
   });
+
+  const gotoSearch = (e) => {
+    if (e.key === "Enter") navigate("/search?q=" + e.target.value);
+  };
 
   return (
     <nav className="bg-white text-gray-900 border-gray-200 px-5 md:px-10 pb-2 pt-3 dark:bg-gray-900 fixed top-0 w-full drop-shadow z-20 font-medium dark:text-white">
@@ -72,6 +78,7 @@ const Navbar = () => {
               id="search-navbar"
               className="p-2 pl-10 w-full bg-gray-100 dark:bg-gray-700 placeholder:text-gray-900 placeholder:dark:text-gray-300 hover:placeholder:text-gray-900 dark:hover:placeholder:text-slate-200 rounded-full border border-gray-300 dark:border-gray-800 focus:outline-red-500 shadow-inner"
               placeholder="Search..."
+              onKeyDown={gotoSearch}
             />
           </div>
         </div>
@@ -93,6 +100,7 @@ const Navbar = () => {
                 className="p-2 pl-10 w-full bg-gray-100 dark:bg-gray-700 placeholder:text-gray-900 placeholder:dark:text-gray-300 hover:placeholder:text-gray-900 dark:hover:placeholder:text-slate-200 rounded-full border border-gray-300 dark:border-gray-800 focus:outline-red-500 shadow-inner"
                 placeholder="Search..."
                 autoFocus
+                onKeyDown={gotoSearch}
               />
               <i className="fa-regular fa-arrow-right-from-bracket" />
             </div>
