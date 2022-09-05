@@ -85,6 +85,7 @@ const Navbar = () => {
         <div className="md:hidden flex flex-row gap-x-10 items-center dark:text-gray-200 font-normal">
           {searchInputEnabled && (
             <button
+              type="button"
               id="mobile-search-button"
               onClick={() => setSearchInputTapped(true)}
             >
@@ -107,13 +108,13 @@ const Navbar = () => {
                 autoFocus
                 onKeyDown={gotoSearch}
               />
-              <button onClick={() => setSearchInputTapped(false)}>
+              <button type="button" onClick={() => setSearchInputTapped(false)}>
                 <i className="fa-regular fa-arrow-right-from-bracket" />
               </button>
             </div>
           )}
           <div className="group">
-            <button id="mobile-hamburger-button">
+            <button id="mobile-hamburger-button" type="button">
               <i className="fa-regular fa-bars" />
             </button>
             <div
