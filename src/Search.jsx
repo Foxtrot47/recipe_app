@@ -133,6 +133,7 @@ const Search = () => {
                 {filters[i].data.map((filterItem, id) => {
                   return (
                     <option
+                      key={id}
                       value={
                         typeof filterItem !== "object"
                           ? filterItem
