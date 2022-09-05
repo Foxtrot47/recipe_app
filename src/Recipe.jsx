@@ -1,61 +1,63 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import axios from "axios";
-import { fetchData, renderRating } from "./Helpers.jsx";
-import Icon from "@mdi/react";
-import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from "@mdi/js";
-import moment from "moment";
-import { mealTypesSmall } from "./SearchData";
+import { useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
+
+import axios from 'axios'
+import Icon from '@mdi/react'
+import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from '@mdi/js'
+import moment from 'moment'
+import { fetchData, renderRating } from './Helpers'
+import { mealTypesSmall } from './SearchData'
 
 const Recipe = () => {
-  const [recipeData, setRecipeData] = useState(null);
-  const [reviews, setReviews] = useState(null);
-  const [loading, setLoading] = useState(true);
-  let { recipeslug } = useParams();
+  const [recipeData, setRecipeData] = useState(null)
+  const [reviews, setReviews] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const { recipeslug } = useParams()
 
   useEffect(() => {
-    if (recipeslug === undefined) return;
-    let endPoint = "recipebyslug";
-    fetchData(endPoint, { slug: recipeslug }, "get", (response) => {
+    if (recipeslug === undefined) return
+    fetchData('recipebyslug', { slug: recipeslug }, 'get', (response) => {
       if (
         response.status === 200 &&
         response.data !== null &&
         response.data.length > 0
       ) {
-        setRecipeData(response.data[0]);
-        fetchReviews(response.data[0]["_id"]);
-        setLoading(false);
+        setRecipeData(response.data[0])
+        // The key is _id and not id because of the way mongodb stores data
+        // eslint-disable-next-line no-underscore-dangle
+        fetchReviews(response.data[0]._id)
+        setLoading(false)
       } else {
-        console.log("uh oh");
+        console.log('uh oh')
       }
-    });
-  }, [recipeslug]);
+    })
+  }, [recipeslug])
 
   const fetchReviews = async (recipeId) => {
     // Required params for comments api
     const params = {
-      siteId: "bbcgoodfood",
-      entityType: "recipe",
+      siteId: 'bbcgoodfood',
+      entityType: 'recipe',
       entityId: recipeId,
-      source: "content-api",
+      source: 'content-api',
       itemsPerPage: 5,
       page: 1,
-      client: "bbcgoodfood",
-    };
+      client: 'bbcgoodfood',
+    }
     await axios({
-      method: "get",
-      url: "https://reactions.api.immediate.co.uk/api/reactions?",
+      method: 'get',
+      url: 'https://reactions.api.immediate.co.uk/api/reactions?',
       params,
     }).then((response) => {
       if (
         response.status === 200 &&
         response.data !== null &&
-        response.data["hydra:member"].length > 0
+        response.data['hydra:member'].length > 0
       ) {
-        setReviews(response.data["hydra:member"]);
+        setReviews(response.data['hydra:member'])
       }
-    });
-  };
+    })
+  }
 
   return (
     <div className="flex flex-col gap-y-6 mt-14">
@@ -71,7 +73,7 @@ const Recipe = () => {
           {!loading && recipeData.name}
         </div>
         <div className="text-lg md:flex md:flex-row gap-x-2 items-center z-0 text-gray-300 font-regular">
-          <Link to={"/"} className="hover:text-gray-100">
+          <Link to="/" className="hover:text-gray-100">
             <i className="fa-solid fa-home"></i>
             &nbsp;Home&nbsp;
             <i className="fa-regular fa-angle-right text-sm"></i>
@@ -115,40 +117,38 @@ const Recipe = () => {
                 <span className="text-gray-500 dark:text-gray-400">
                   Category:
                 </span>
-                {recipeData.category.map((cat, id) => {
-                  return <span key={id}>{cat},</span>;
-                })}
+                {recipeData.category.map((cat) => (
+                  <span key={cat.id}>{cat},</span>
+                ))}
               </div>
             )}
             {!loading && recipeData.diet.length > 0 && (
               <div className=" flex flex-row gap-x-4">
-                {recipeData.diet.map((dietInfo, id) => {
-                  return (
-                    <div
-                      key={id}
-                      className="flex flex-row gap-x-2 items-center whitespace-normal"
-                    >
-                      {(dietInfo.slug === "diary-free" && (
-                        <Icon path={mdiEggOff} title="Diary free" />
+                {recipeData.diet.map((dietInfo) => (
+                  <div
+                    key={dietInfo.id}
+                    className="flex flex-row gap-x-2 items-center whitespace-normal"
+                  >
+                    {(dietInfo.slug === 'diary-free' && (
+                      <Icon path={mdiEggOff} title="Diary free" />
+                    )) ||
+                      (dietInfo.slug === 'gluten-free' && (
+                        <Icon
+                          path={mdiBarleyOff}
+                          title="Gluten free"
+                          size="19"
+                          className="text-red-500"
+                        />
                       )) ||
-                        (dietInfo.slug === "gluten-free" && (
-                          <Icon
-                            path={mdiBarleyOff}
-                            title="Gluten free"
-                            size="19"
-                            className="text-red-500"
-                          />
-                        )) ||
-                        (dietInfo.slug === "vegan" && (
-                          <i className="fa-solid fa-circle-check text-red-500"></i>
-                        )) ||
-                        (dietInfo.slug === "healthy" && (
-                          <i className="fa-solid fa-heart text-red-500"></i>
-                        ))}
-                      {dietInfo.display !== "Vegetarian" && dietInfo.display}
-                    </div>
-                  );
-                })}
+                      (dietInfo.slug === 'vegan' && (
+                        <i className="fa-solid fa-circle-check text-red-500"></i>
+                      )) ||
+                      (dietInfo.slug === 'healthy' && (
+                        <i className="fa-solid fa-heart text-red-500"></i>
+                      ))}
+                    {dietInfo.display !== 'Vegetarian' && dietInfo.display}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -161,11 +161,10 @@ const Recipe = () => {
               />
 
               <div className="flex flex-row gap-x-6 absolute bottom-3 md:bottom-5 left-3 md:left-5 y-0 bg-white">
-                {recipeData.diet.find((term) => {
-                  return (
-                    term.display === "Vegetarian" || term.display === "Vegan"
-                  );
-                }) ? (
+                {recipeData.diet.find(
+                  (term) =>
+                    term.display === 'Vegetarian' || term.display === 'Vegan',
+                ) ? (
                   <Icon
                     path={mdiSquareCircle}
                     className="text-[#008100] w-10 md:w-12"
@@ -190,7 +189,7 @@ const Recipe = () => {
               <div className="flex flex-col">
                 <span className="text-xl font-semibold">Difficulty</span>
                 <span className="text-gray-400">
-                  {(!loading && recipeData.skillLevel) || "N/A"}
+                  {(!loading && recipeData.skillLevel) || 'N/A'}
                 </span>
               </div>
             </div>
@@ -199,7 +198,7 @@ const Recipe = () => {
               <div className="flex flex-col">
                 <span className="text-xl font-semibold">Servings</span>
                 <span className="text-gray-400">
-                  {(!loading && recipeData.yield) || "N/A"}
+                  {(!loading && recipeData.yield) || 'N/A'}
                 </span>
               </div>
             </div>
@@ -235,28 +234,24 @@ const Recipe = () => {
               </div>
               <div className="flex flex-col gap-y-2 my-10">
                 {!loading &&
-                  recipeData.ingredients.map((section, id) => {
-                    return (
-                      <div key={id}>
-                        {section.heading && (
-                          <p className="text-2xl py-4">{section.heading}</p>
-                        )}
-                        <div className="text-lg flex flex-col px-4 gap-y-4">
-                          <ul className="list-disc">
-                            {section.ingredients.map((ingredient, ingid) => {
-                              return (
-                                <li key={ingid}>
-                                  {ingredient.quantityText} {}
-                                  {ingredient.ingredientText}
-                                  {ingredient.note}
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
+                  recipeData.ingredients.map((section) => (
+                    <div key={section.id}>
+                      {section.heading && (
+                        <p className="text-2xl py-4">{section.heading}</p>
+                      )}
+                      <div className="text-lg flex flex-col px-4 gap-y-4">
+                        <ul className="list-disc">
+                          {section.ingredients.map((ingredient) => (
+                            <li key={ingredient.id}>
+                              {ingredient.quantityText} {}
+                              {ingredient.ingredientText}
+                              {ingredient.note}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
               </div>
             </div>
             <div className="flex flex-col">
@@ -268,18 +263,16 @@ const Recipe = () => {
               </div>
               <div className="flex flex-col gap-y-9 my-10">
                 {!loading &&
-                  recipeData.instructions.map((instruction, id) => {
-                    return (
-                      <div key={id} className="flex flex-row gap-x-4">
-                        <div className="h-10 pr-4 py-1 border-r-red-500 border-r-2 flex items-center text-2xl flex-none">
-                          Step {id + 1}
-                        </div>
-                        <p className="text-lg pt-1 whitespace-pre-wrap">
-                          {instruction.text}
-                        </p>
+                  recipeData.instructions.map((instruction, id) => (
+                    <div key={instruction.id} className="flex flex-row gap-x-4">
+                      <div className="h-10 pr-4 py-1 border-r-red-500 border-r-2 flex items-center text-2xl flex-none">
+                        Step {id + 1}
                       </div>
-                    );
-                  })}
+                      <p className="text-lg pt-1 whitespace-pre-wrap">
+                        {instruction.text}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
@@ -295,22 +288,20 @@ const Recipe = () => {
             </div>
             <div className="grid grid-cols-8 gap-x-32 md:gap-x-32 py-8 overflow-x-scroll md:overflow-visible">
               {!loading &&
-                recipeData.nutritionalInfo.map((nutrition, id) => {
-                  return (
-                    <div
-                      key={id}
-                      className="flex flex-col gap-x-4 bg-gray-200 dark:bg-gray-600 items-center px-14 py-6 rounded-full"
-                    >
-                      <p className="text-lg pt-1 whitespace-pre-wrap">
-                        {nutrition.value}
-                        {nutrition.suffix}
-                      </p>
-                      <span className="text-lg capitalize font-semibold dark:text-gray-200">
-                        {nutrition.label}
-                      </span>
-                    </div>
-                  );
-                })}
+                recipeData.nutritionalInfo.map((nutrition) => (
+                  <div
+                    key={nutrition.id}
+                    className="flex flex-col gap-x-4 bg-gray-200 dark:bg-gray-600 items-center px-14 py-6 rounded-full"
+                  >
+                    <p className="text-lg pt-1 whitespace-pre-wrap">
+                      {nutrition.value}
+                      {nutrition.suffix}
+                    </p>
+                    <span className="text-lg capitalize font-semibold dark:text-gray-200">
+                      {nutrition.label}
+                    </span>
+                  </div>
+                ))}
             </div>
           </div>
           <div className="flex flex-col gap-y-4 md:mr-20">
@@ -326,41 +317,39 @@ const Recipe = () => {
             <div className="flex flex-col gap-y-8 py-8 md:w-5/6">
               {!loading &&
                 reviews != null &&
-                reviews.map((review, id) => {
-                  return (
-                    <div
-                      key={id}
-                      className="flex flex-col gap-y-4 p-4 bg-gray-100 dark:bg-gray-600 rounded-lg drop-shadow"
-                    >
-                      <div className="flex flex-col md:flex-row md:gap-x-4 gap-y-2 justify-between items-start">
-                        <div className="flex flex-row gap-x-2 items-center">
-                          <i className="fa-solid fa-circle-user text-red-500 text-bg-gray-200 text-5xl mr-2"></i>
-                          <div className="flex flex-col md:gap-y-1">
-                            <span className="capitalize text-xl dark:text-gray-100 truncate w-64">
-                              {review.author.displayName}
-                            </span>
-                            {review.changed && (
-                              <div className="text-lg text-gray-500">
-                                {moment(
-                                  review.changed,
-                                  "YYYY-MM-DDTh:mm:ss a"
-                                ).fromNow()}
-                              </div>
-                            )}
-                          </div>
+                reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="flex flex-col gap-y-4 p-4 bg-gray-100 dark:bg-gray-600 rounded-lg drop-shadow"
+                  >
+                    <div className="flex flex-col md:flex-row md:gap-x-4 gap-y-2 justify-between items-start">
+                      <div className="flex flex-row gap-x-2 items-center">
+                        <i className="fa-solid fa-circle-user text-red-500 text-bg-gray-200 text-5xl mr-2"></i>
+                        <div className="flex flex-col md:gap-y-1">
+                          <span className="capitalize text-xl dark:text-gray-100 truncate w-64">
+                            {review.author.displayName}
+                          </span>
+                          {review.changed && (
+                            <div className="text-lg text-gray-500">
+                              {moment(
+                                review.changed,
+                                'YYYY-MM-DDTh:mm:ss a',
+                              ).fromNow()}
+                            </div>
+                          )}
                         </div>
-                        {review.rating && (
-                          <div className="flex flex-row gap-x-2 text-red-500">
-                            {renderRating(review.rating)}
-                          </div>
-                        )}
                       </div>
-                      {review.body && (
-                        <div className="md:text-lg md:px-16">{review.body}</div>
+                      {review.rating && (
+                        <div className="flex flex-row gap-x-2 text-red-500">
+                          {renderRating(review.rating)}
+                        </div>
                       )}
                     </div>
-                  );
-                })}
+                    {review.body && (
+                      <div className="md:text-lg md:px-16">{review.body}</div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -374,32 +363,29 @@ const Recipe = () => {
           <div className="flex flex-col gap-y-4 mb-4">
             {!loading &&
               recipeData.similiarRecipes !== null &&
-              recipeData.similiarRecipes.map((recipe, id) => {
-                if (id < 4)
-                  return (
-                    <Link
-                      key={id}
-                      className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
-                      to={recipe.url}
-                    >
-                      <div className="flex-none">
-                        <img
-                          className="object-cover object-center h-24 rounded-lg"
-                          src={recipe.image.url}
-                          alt={recipe.image.alt}
-                        />
-                      </div>
-                      <div className="flex flex-col justify-around items-start">
-                        <p className="text-lg font-semibold text-clip overflow-hidden w-50">
-                          {recipe.title}
-                        </p>
-                        <div className="flex flex-row gap-x-2 text-red-500 text-sm">
-                          {renderRating(recipe.rating.ratingValue)}
-                        </div>
-                      </div>
-                    </Link>
-                  );
-              })}
+              recipeData.similiarRecipes.map((recipe) => (
+                <Link
+                  key={recipe.id}
+                  className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
+                  to={recipe.url}
+                >
+                  <div className="flex-none">
+                    <img
+                      className="object-cover object-center h-24 rounded-lg"
+                      src={recipe.image.url}
+                      alt={recipe.image.alt}
+                    />
+                  </div>
+                  <div className="flex flex-col justify-around items-start">
+                    <p className="text-lg font-semibold text-clip overflow-hidden w-50">
+                      {recipe.title}
+                    </p>
+                    <div className="flex flex-row gap-x-2 text-red-500 text-sm">
+                      {renderRating(recipe.rating.ratingValue)}
+                    </div>
+                  </div>
+                </Link>
+              ))}
           </div>
           <div className="border-b border-gray-300 dark:border-gray-500 relative pb-2 mt-4">
             <p className="text-2xl font-medium">Recipe Categories</p>
@@ -409,24 +395,22 @@ const Recipe = () => {
           </div>
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col w-16 px-2 pt-4 gap-y-4 text-xl text-gray-600 dark:text-gray-200 mb-4">
-              {mealTypesSmall.map((category, id) => {
-                return (
-                  <Link
-                    key={id}
-                    className="flex flex-row gap-x-2"
-                    to={"/search?mealTypes=" + category}
-                  >
-                    <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
-                    <p> {category}</p>
-                  </Link>
-                );
-              })}
+              {mealTypesSmall.map((category) => (
+                <Link
+                  key={category.id}
+                  className="flex flex-row gap-x-2"
+                  to={`/search?mealTypes=${category}`}
+                >
+                  <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
+                  <p> {category}</p>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Recipe;
+export default Recipe
