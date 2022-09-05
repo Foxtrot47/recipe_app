@@ -1,27 +1,25 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [searchinputTapped, setSearchInputTapped] = useState(false);
-  const [hamburgerClicked, setHamburgerClicked] = useState(false);
+  const [searchInputEnabled, setSearchInputEnabled] = useState(true);
 
   const navigate = useNavigate();
-  window.addEventListener("click", (e) => {
-    if (!e) return;
-    if (document.getElementById("mobile-search-button").contains(e.target)) {
-      setSearchInputTapped(true);
-    } else if (
-      document.getElementById("mobile-hamburger-button").contains(e.target)
-    ) {
-      setHamburgerClicked(true);
-    } else {
-      setSearchInputTapped(false);
-      setHamburgerClicked(false);
-    }
-  });
+  const location = useLocation();
 
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setSearchInputEnabled(false);
+    } else {
+      setSearchInputEnabled(true);
+    }
+  }, [location]);
   const gotoSearch = (e) => {
-    if (e.key === "Enter") navigate("/search?q=" + e.target.value);
+    if (e.key === "Enter") {
+      navigate("/search?q=" + e.target.value);
+      setSearchInputTapped(false);
+    }
   };
 
   return (
@@ -69,23 +67,30 @@ const Navbar = () => {
           </div>
         </div>
         <div className="hidden md:block">
-          <div className="relative block dark:text-gray-200 font-normal">
-            <div className="flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none">
-              <i className="fa-regular fa-search"></i>
+          {searchInputEnabled && (
+            <div className="relative block dark:text-gray-200 font-normal">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none">
+                <i className="fa-regular fa-search"></i>
+              </div>
+              <input
+                type="text"
+                id="search-navbar"
+                className="p-2 pl-10 w-full bg-gray-100 dark:bg-gray-700 placeholder:text-gray-900 placeholder:dark:text-gray-300 hover:placeholder:text-gray-900 dark:hover:placeholder:text-slate-200 rounded-full border border-gray-300 dark:border-gray-800 focus:outline-red-500 shadow-inner"
+                placeholder="Search..."
+                onKeyDown={gotoSearch}
+              />
             </div>
-            <input
-              type="text"
-              id="search-navbar"
-              className="p-2 pl-10 w-full bg-gray-100 dark:bg-gray-700 placeholder:text-gray-900 placeholder:dark:text-gray-300 hover:placeholder:text-gray-900 dark:hover:placeholder:text-slate-200 rounded-full border border-gray-300 dark:border-gray-800 focus:outline-red-500 shadow-inner"
-              placeholder="Search..."
-              onKeyDown={gotoSearch}
-            />
-          </div>
+          )}
         </div>
         <div className="md:hidden flex flex-row gap-x-10 items-center dark:text-gray-200 font-normal">
-          <button id="mobile-search-button">
-            <i className="fa-regular fa-search" />
-          </button>
+          {searchInputEnabled && (
+            <button
+              id="mobile-search-button"
+              onClick={() => setSearchInputTapped(true)}
+            >
+              <i className="fa-regular fa-search" />
+            </button>
+          )}
           {searchinputTapped && (
             <div
               id="mobile-searchbar"
@@ -102,16 +107,18 @@ const Navbar = () => {
                 autoFocus
                 onKeyDown={gotoSearch}
               />
-              <i className="fa-regular fa-arrow-right-from-bracket" />
+              <button onClick={() => setSearchInputTapped(false)}>
+                <i className="fa-regular fa-arrow-right-from-bracket" />
+              </button>
             </div>
           )}
-          <button id="mobile-hamburger-button">
-            <i className="fa-regular fa-bars" />
-          </button>
-          {hamburgerClicked && (
+          <div className="group">
+            <button id="mobile-hamburger-button">
+              <i className="fa-regular fa-bars" />
+            </button>
             <div
               id="mobile-hamburger-panel"
-              className="top-0 right-0 absolute w-screen h-screen flex justify-end p-2"
+              className="top-0 right-0 absolute hidden justify-end p-2 group-hover:flex"
             >
               <div className="absolute flex flex-col gap-y-4 py-6 px-8 pr-32 text-lg rounded-lg backdrop-blur-3xl dark:bg-gray-800 drop-shadow-lg">
                 <Link to="/" className="text-red-500" aria-current="page">
@@ -127,7 +134,7 @@ const Navbar = () => {
                 </Link>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
       <div
