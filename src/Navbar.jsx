@@ -105,6 +105,8 @@ const Navbar = () => {
                 id="mobile-search-input"
                 className="p-2 pl-10 w-full bg-gray-100 dark:bg-gray-700 placeholder:text-gray-900 placeholder:dark:text-gray-300 hover:placeholder:text-gray-900 dark:hover:placeholder:text-slate-200 rounded-full border border-gray-300 dark:border-gray-800 focus:outline-red-500 shadow-inner"
                 placeholder="Search..."
+                // Disabling rule because this is a mobile-only input
+                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 onKeyDown={gotoSearch}
               />
