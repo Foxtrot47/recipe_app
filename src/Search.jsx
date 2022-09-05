@@ -8,6 +8,7 @@ const Search = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filterButtonClicked, setFilterButtonClicked] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   let resultCount = 0,
     reachedBottom = false,
@@ -26,7 +27,11 @@ const Search = () => {
     if (resultCount > 0) body["offset"] = resultCount;
     // Copy the search query to a hidden input field so that it will not get removed on parameter change
     // This is because search query intially came from outside the form and serialize function will not see it
-    document.getElementById("queryField").value = body["q"];
+    if (body["q"] && body["q"] !== "") {
+      setSearchQuery(body.q);
+    } else {
+      body["q"] = "";
+    }
     fetchData("search", body, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
         if (resultsDup !== null) {
@@ -105,7 +110,8 @@ const Search = () => {
           id="queryField"
           name="q"
           className="hidden"
-          value=""
+          value={searchQuery}
+          readOnly
         />
         {Object.keys(filters).map((i) => {
           return (
