@@ -1,26 +1,26 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
-  const [searchinputTapped, setSearchInputTapped] = useState(false);
-  const [searchInputEnabled, setSearchInputEnabled] = useState(true);
+  const [searchinputTapped, setSearchInputTapped] = useState(false)
+  const [searchInputEnabled, setSearchInputEnabled] = useState(true)
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    if (location.pathname === "/") {
-      setSearchInputEnabled(false);
+    if (location.pathname === '/') {
+      setSearchInputEnabled(false)
     } else {
-      setSearchInputEnabled(true);
+      setSearchInputEnabled(true)
     }
-  }, [location]);
+  }, [location])
   const gotoSearch = (e) => {
-    if (e.key === "Enter") {
-      navigate("/search?q=" + e.target.value);
-      setSearchInputTapped(false);
+    if (e.key === 'Enter') {
+      navigate(`/search?q=${e.target.value}`)
+      setSearchInputTapped(false)
     }
-  };
+  }
 
   return (
     <nav className="bg-white text-gray-900 border-gray-200 px-5 md:px-10 pb-2 pt-3 dark:bg-gray-900 fixed top-0 w-full drop-shadow z-20 font-medium dark:text-white">
@@ -141,12 +141,12 @@ const Navbar = () => {
         className={`absolute left-0 bg-black transition ease-in-out duration-50 z-10
           ${
             searchinputTapped
-              ? "bg-opacity-80 h-screen w-screen"
-              : "bg-opacity-0 h-0 w-0"
+              ? 'bg-opacity-80 h-screen w-screen'
+              : 'bg-opacity-0 h-0 w-0'
           }`}
       ></div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
