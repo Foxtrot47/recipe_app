@@ -132,7 +132,7 @@ const Search = () => {
                           ? filterItem
                           : Object.keys(filterItem)[0]
                       }
-                      onClick={handleSubmit}
+                      onChange={handleSubmit}
                     >
                       {typeof filterItem !== "object"
                         ? filterItem
@@ -171,7 +171,7 @@ const Search = () => {
                               : Object.keys(filterItem)[0]
                           }
                           className="w-5 accent-red-500"
-                          onClick={handleSubmit}
+                          onChange={handleSubmit}
                         />
                         <p>
                           {typeof filterItem !== "object"
