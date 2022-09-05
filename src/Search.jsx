@@ -217,7 +217,7 @@ const Search = () => {
                   alt={recipe.image.alt}
                 />
                 <div className="flex flex-col gap-y-2 px-4">
-                  <p className="text-xl font-semibold truncate w-full text-white">
+                  <p className="text-xl font-semibold truncate w-full dark:text-white">
                     {recipe.name}
                   </p>
                   <div className="flex flex-row gap-x-2 text-red-500">
