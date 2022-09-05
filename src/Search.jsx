@@ -73,7 +73,7 @@ const Search = () => {
         className="md:hidden py-4 flex flex-row gap-x-2 justify-center text-xl text-black bg-white dark:bg-gray-600 dark:text-gray-100"
         onClick={() => handleFilterButtonTap(true)}
       >
-        <i className="fa-solid fa-bars-filter text-accent"></i>
+        <i className="fa-solid fa-bars-filter text-red-500"></i>
         Filters
       </button>
       <form
