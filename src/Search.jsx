@@ -70,7 +70,7 @@ const Search = () => {
   return (
     <div className="flex flex-col mt-[62px]">
       <button
-        className="md:hidden py-4 flex flex-row gap-x-2 justify-center text-xl text-black bg-white dark:bg-gray-600 dark:text-gray-100"
+        className="md:hidden py-4 flex flex-row gap-x-2 justify-center text-xl text-black bg-white drop-shadow dark:bg-gray-600 dark:text-gray-100 z-10"
         onClick={() => handleFilterButtonTap(true)}
       >
         <i className="fa-solid fa-bars-filter text-red-500"></i>
