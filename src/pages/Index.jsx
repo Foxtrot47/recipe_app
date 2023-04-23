@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import CarouselComponent from "./CarouselComponent.jsx";
 import { fetchData, renderRating } from "./Helpers.jsx";
-import { mealTypesSmall } from "./SearchData";
+import { mealTypesSmall } from "../SearchData.js";
 
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState(null);
