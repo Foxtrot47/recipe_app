@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
@@ -53,7 +53,7 @@ const CarouselComponent = ({ recipes }) => (
       // eslint-disable-next-line react/prop-types
       recipes.map((recipe) => (
         <Link
-          to={`/recipes/${recipe.slug}`}
+          href={`/recipes/${recipe.slug}`}
           key={recipe.id}
           className="block w-full relative group overflow-visible"
         >

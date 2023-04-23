@@ -1,9 +1,9 @@
 // ScrollToTop.jsx
 import { useEffect } from "react";
-import { useLocation } from "react-router";
+import {useRouter} from 'next/router';
 
 const ScrollToTop = (props) => {
-  const location = useLocation();
+  const router = useRouter()
 
   const scrollToTop = () => {
     const c = document.documentElement.scrollTop || document.body.scrollTop;
@@ -15,7 +15,7 @@ const ScrollToTop = (props) => {
 
   useEffect(() => {
     scrollToTop();
-  }, [location]);
+  }, [router]);
 
   // eslint-disable-next-line react/prop-types
   return <>{props.children}</>;

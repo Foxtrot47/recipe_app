@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from 'next/link';
+import { useRouter } from 'next/router'
 
 import CarouselComponent from "@/components/CarouselComponent.js";
 import { fetchData, renderRating } from "@/Helpers.js";
@@ -11,7 +12,7 @@ const Home = () => {
   const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchResult, setSearchResults] = useState(null);
-  const navigate = useNavigate();
+  const router = useRouter();
   const carousselRecipeId = [
     666164, 236556, 760127, 771380, 339180, 243740, 728908,
   ];
@@ -65,7 +66,7 @@ const Home = () => {
   };
 
   const gotoSearch = (event) => {
-    if (event.key === "Enter") navigate("/search?q=" + event.target.value);
+    if (event.key === "Enter") router.push("/search?q=" + event.target.value);
   };
 
   return (
@@ -98,7 +99,7 @@ const Home = () => {
                 return (
                   <Link
                     key={id}
-                    to={`/recipes/${recipe.slug}`}
+                    href={`/recipes/${recipe.slug}`}
                     className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                   >
                     <img src={recipe.image.url} className="w-16 rounded" />
@@ -117,7 +118,7 @@ const Home = () => {
             return (
               <Link
                 key={id}
-                to={"/recipes/" + recipe.slug}
+                href={"/recipes/" + recipe.slug}
                 className="flex flex-col flex-0 gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg group overflow-hidden"
               >
                 <div className="md:h-80 md:max-h-80 overflow-hidden">
@@ -163,7 +164,7 @@ const Home = () => {
               return (
                 <Link
                   key={id}
-                  to={"/recipes/" + recipe.slug}
+                  href={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                 >
                   <img
@@ -235,7 +236,7 @@ const Home = () => {
                     <Link
                       key={id}
                       className="flex flex-row gap-x-2"
-                      to={"/search?mealTypes=" + category}
+                      href={"/search?mealTypes=" + category}
                     >
                       <i className="fa-solid fa-circle-arrow-right text-red-500"></i>
                       <p> {category}</p>
