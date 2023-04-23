@@ -23,11 +23,6 @@
     "lint": "next lint",
     "format": "prettier --write \"{,!(node_modules)/**/}*.js\""
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
     "eslint": "8.39.0",
