@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { fetchData, renderRating } from "./Helpers.jsx";
+import { fetchData, renderRating } from "@/Helpers.js";
 import serialize from "form-serialize";
-import { filters } from "../SearchData";
+import { filters } from "@/SearchData.js";
 
 const Search = () => {
   const [results, setResults] = useState(null);

@@ -5,8 +5,8 @@ import axios from 'axios'
 import Icon from '@mdi/react'
 import { mdiBarleyOff, mdiEggOff, mdiSquareCircle } from '@mdi/js'
 import moment from 'moment'
-import { fetchData, renderRating } from './Helpers'
-import { mealTypesSmall } from './SearchData'
+import { fetchData, renderRating } from '@/Helpers'
+import { mealTypesSmall } from '@/SearchData'
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null)

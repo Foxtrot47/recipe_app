@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { mealTypes, mealImages } from "../SearchData";
+import { mealTypes, mealImages } from "@/SearchData";
 
 const Categories = () => {
   return (

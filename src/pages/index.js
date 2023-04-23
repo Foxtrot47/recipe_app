@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import CarouselComponent from "./CarouselComponent.jsx";
-import { fetchData, renderRating } from "./Helpers.jsx";
-import { mealTypesSmall } from "../SearchData.js";
+import CarouselComponent from "@/components/CarouselComponent.js";
+import { fetchData, renderRating } from "@/Helpers.js";
+import { mealTypesSmall } from "@/SearchData.js";
 
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState(null);
