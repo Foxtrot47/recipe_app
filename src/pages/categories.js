@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { mealTypes, mealImages } from "@/SearchData";
 
 const Categories = () => {
@@ -11,7 +12,9 @@ const Categories = () => {
             href={"/search?mealTypes=" + type}
             className="flex flex-col gap-y-6 hover: relative w-full"
           >
-            <img
+            <Image
+              width={384}
+              height={384}
               className="drop-shadow-xl filter rounded-lg object-cover object-center h-56 md:h-96"
               src={mealImages[id]}
               alt={type}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
+
 import { fetchData, renderRating } from "@/Helpers.js";
 import serialize from "form-serialize";
 import { filters } from "@/SearchData.js";
@@ -218,8 +220,10 @@ const Search = () => {
                 href={"/recipes/" + recipe.slug}
                 className="flex flex-col gap-y-6 hover:bg-white dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
               >
-                <img
-                  className="drop-shadow-xl filter rounded-lg object-cover object-center h-56"
+                <Image
+                  className="drop-shadow-xl filter rounded-lg object-cover object-center h-56 w-auto"
+                  width={224}
+                  height={224}
                   src={recipe.image.url}
                   alt={recipe.image.alt}
                 />
