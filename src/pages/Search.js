@@ -21,6 +21,10 @@ const Search = () => {
   useEffect(() => {
     fetchResults();
   }, [searchParams]);
+  
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+  },[])
 
   const fetchResults = () => {
     const body = {};
@@ -74,7 +78,6 @@ const Search = () => {
   const handleFilterButtonTap = (state) => {
     setFilterButtonClicked(state);
   };
-  window.addEventListener("scroll", handleScroll, true);
 
   return (
     <div className="flex flex-col mt-[62px]">
