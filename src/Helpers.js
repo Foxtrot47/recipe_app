@@ -3,7 +3,7 @@ import axios from "axios";
 async function fetchData(endPoint, params, method, callback) {
   await axios({
     method,
-    url: process.env.NEXT_PUBLIC_BACKEND_URL + endPoint,
+    url: "/api/" + endPoint,
     params,
   })
     .then((response) => callback(response))
