@@ -12,13 +12,15 @@ const Categories = () => {
             href={"/search?mealTypes=" + type}
             className="flex flex-col gap-y-6 hover: relative w-full"
           >
+            <div className="h-56 md:h-[500px]">
             <Image
-              width={384}
-              height={384}
-              className="drop-shadow-xl filter rounded-lg object-cover object-center h-56 md:h-96"
+              fill="true"
+              className="drop-shadow-xl filter rounded-lg object-cover object-center"
               src={mealImages[id]}
               alt={type}
             />
+            </div>
+
             <div className="flex flex-col gap-y-2 px-4 absolute bottom-0 rounded-lg bg-black fade-to-top h-full w-full"></div>
             <p className="text-lg md:text-2xl font-semibold truncate text-white absolute bottom-4 md:bottom-10 left-4 md:left-10 font-inter border-red-500 border-b-2">
               {type}
