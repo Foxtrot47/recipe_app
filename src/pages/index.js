@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import Link from 'next/link';
-import { useRouter } from 'next/router'
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
 import CarouselComponent from "@/components/CarouselComponent.js";
 import { fetchData, renderRating } from "@/Helpers.js";
@@ -102,7 +103,7 @@ const Home = () => {
                     href={`/recipes/${recipe.slug}`}
                     className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                   >
-                    <img src={recipe.image.url} className="w-16 rounded" />
+                    <Image width={64} height={64} src={recipe.image.url} className="rounded" />
                     <p key={id}>{recipe.name}</p>
                   </Link>
                 );
@@ -122,7 +123,10 @@ const Home = () => {
                 className="flex flex-col flex-0 gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg group overflow-hidden"
               >
                 <div className="md:h-80 md:max-h-80 overflow-hidden">
-                  <img
+                  <Image
+                    width={500}
+                    height={500}
+                    priority={true}
                     className="drop-shadow-xl filter rounded-lg object-cover group-hover:scale-110 group-hover:rotate-2 transition duration-300 ease-in-out"
                     src={recipe.image.url}
                     alt={recipe.image.alt}
@@ -167,11 +171,13 @@ const Home = () => {
                   href={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                 >
-                  <img
-                    className="drop-shadow-xl filter rounded-lg h-80 object-cover object-center"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                  />
+                    <Image
+                      className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
+                      src={recipe.image.url}
+                      alt={recipe.image.alt}
+                      width={370}
+                      height={330}
+                    />
                   <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
                     <p className="text-red-500 font-semibold">
                       {recipe.category.length > 0
@@ -205,10 +211,12 @@ const Home = () => {
                     className="flex flex-row gap-x-4 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow rounded-lg"
                   >
                     <div className="flex-none ">
-                      <img
+                      <Image
                         className="object-cover object-center w-36 h-36 rounded-lg"
+                        width={144}
+                        height={144}
                         src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna_wordpress_theme_radiustheme.com_1-530x338.jpg"
-                        alt=""
+                        alt="pizza"
                       />
                     </div>
                     <div className="flex flex-col gap-y-4 relative mt-4">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 import axios from "axios";
 import moment from "moment";
@@ -163,11 +164,15 @@ const Recipe = () => {
           </div>
           {!loading && (
             <div className="relative">
-              <img
-                className="object-cover object-center rounded w-full h-56 md:h-[450px]"
+              <div className="w-full h-56 md:h-[450px] relative">
+              <Image
+                fill={true}
+                className="object-cover object-center rounded"
                 src={recipeData.image.url}
                 alt={recipeData.image.alt}
+                priority={true}
               />
+              </div>
 
               <div className="flex flex-row gap-x-6 absolute bottom-3 md:bottom-5 left-3 md:left-5 y-0 bg-white">
                 {recipeData.diet.find(
@@ -387,7 +392,9 @@ const Recipe = () => {
                   href={recipe.url}
                 >
                   <div className="flex-none">
-                    <img
+                    <Image
+                      width={96}
+                      height={96}
                       className="object-cover object-center h-24 rounded-lg"
                       src={recipe.image.url}
                       alt={recipe.image.alt}

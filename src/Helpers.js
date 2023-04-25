@@ -31,4 +31,6 @@ const renderRating = (rating) => {
   return out;
 };
 
-export { fetchData, renderRating };
+const fetcher = (...args) => fetch(...args).then(res => res.json())
+
+export { fetchData, renderRating , fetcher };

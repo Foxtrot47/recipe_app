@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
-import Link from 'next/link'
+import Link from 'next/link';
+import Image from "next/image";
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
@@ -55,10 +56,11 @@ const CarouselComponent = ({ recipes }) => (
         <Link
           href={`/recipes/${recipe.slug}`}
           key={recipe.id}
-          className="block w-full relative group overflow-visible"
+          className="block w-full relative group overflow-visible h-72 md:h-[35rem]"
         >
-          <img
-            className="filter object-cover object-center w-full rounded-xl shadow-xl h-72 md:h-[35rem]"
+          <Image
+            fill={true}
+            className="filter object-cover object-center w-full rounded-xl shadow-xl"
             src={recipe.image.url}
             alt={recipe.name}
           />
