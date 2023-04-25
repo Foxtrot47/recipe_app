@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { fetchData, renderRating } from "@/Helpers.js";
 import serialize from "form-serialize";
 import { filters } from "@/SearchData.js";
@@ -9,7 +10,10 @@ const Search = () => {
   const [loading, setLoading] = useState(true);
   const [filterButtonClicked, setFilterButtonClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  const router = useRouter();
+  const searchParams = router.query;
+
   let resultCount = 0,
     reachedBottom = false,
     resultsDup = null;
@@ -208,7 +212,7 @@ const Search = () => {
             return (
               <Link
                 key={id}
-                to={"/recipes/" + recipe.slug}
+                href={"/recipes/" + recipe.slug}
                 className="flex flex-col gap-y-6 hover:bg-white dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg"
               >
                 <img
