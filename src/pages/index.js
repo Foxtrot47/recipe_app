@@ -6,29 +6,55 @@ import Image from "next/image";
 import CarouselComponent from "@/components/CarouselComponent.js";
 import { fetchData, renderRating } from "@/Helpers.js";
 import { mealTypesSmall } from "@/SearchData.js";
-import { Recipe } from "@/lib/db";
 
-const carousselRecipeId = [
-  666164, 236556, 760127, 771380, 339180, 243740, 728908,
-];
-const additionalRecipesIds = [761176, 687363, 238164, 744140];
-
-const Home = ({
-  randomRecipeData,
-  carouselRecipeData,
-  additionalRecipeData,
-}) => {
-  const recipeData = JSON.parse(randomRecipeData);
-  const carousselData = JSON.parse(carouselRecipeData);
-  const additionalData = JSON.parse(additionalRecipeData)
+const Home = () => {
+  const [randomRecipeData, setRandomRecipeData] = useState(null);
+  const [carouselRecipeData, setCarouselRecipeData] = useState([]);
+  const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchResult, setSearchResults] = useState(null);
+  const router = useRouter();
   const carousselRecipeId = [
     666164, 236556, 760127, 771380, 339180, 243740, 728908,
   ];
   const additionalRecipesIds = [761176, 687363, 238164, 744140];
-  
-  const [loading, setLoading] = useState(false);
-  const [searchResult, setSearchResults] = useState(null);
-  const router = useRouter();
+
+  useEffect(() => {
+    fetchData("random", { limit: 6 }, "get", (response) => {
+      if (response.status === 200 && response.data !== null) {
+        setRandomRecipeData(response.data);
+        setLoading(false);
+      } else {
+        console.log("Fetching recipies from API failed");
+      }
+    });
+    // Fetching caroussel recipes
+    carousselRecipeId.map((id) => {
+      fetchData("recipebyid", { id: id }, "get", (response) => {
+        if (response.status === 200 && response.data !== null) {
+          setCarouselRecipeData((carouselRecipeData) => [
+            ...carouselRecipeData,
+            response.data,
+          ]);
+        } else {
+          console.log("Fetching recipies from API failed");
+        }
+      });
+    });
+    // Fetching additional recipes
+    additionalRecipesIds.map((index) => {
+      fetchData("recipebyid", { id: index }, "get", (response) => {
+        if (response.status === 200 && response.data !== null) {
+          setAdditionalRecipeData((additionalRecipeData) => [
+            ...additionalRecipeData,
+            response.data,
+          ]);
+        } else {
+          console.log("Fetching recipies from API failed");
+        }
+      });
+    });
+  }, []);
 
   const doAutoComplete = async () => {
     const query = document.getElementById("searchfield").value;
@@ -77,12 +103,7 @@ const Home = ({
                     href={`/recipes/${recipe.slug}`}
                     className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                   >
-                    <Image
-                      width={64}
-                      height={64}
-                      src={recipe.image.url}
-                      className="rounded"
-                    />
+                    <Image width={64} height={64} src={recipe.image.url} className="rounded" />
                     <p key={id}>{recipe.name}</p>
                   </Link>
                 );
@@ -94,16 +115,17 @@ const Home = ({
       {/* Rest of body */}
       <div className="px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-x-2 md:gap-x-10 gap-y-6 text-center">
         {!loading &&
-          recipeData.map((recipe, id) => {
+          randomRecipeData.map((recipe, id) => {
             return (
               <Link
                 key={id}
                 href={"/recipes/" + recipe.slug}
                 className="flex flex-col flex-0 gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg group overflow-hidden"
               >
-                <div className="md:h-80 md:max-h-80 overflow-hidden relative">
+                <div className="md:h-80 md:max-h-80 overflow-hidden">
                   <Image
-                    fill={true}
+                    width={500}
+                    height={500}
                     priority={true}
                     className="drop-shadow-xl filter rounded-lg object-cover group-hover:scale-110 group-hover:rotate-2 transition duration-300 ease-in-out"
                     src={recipe.image.url}
@@ -139,23 +161,23 @@ const Home = ({
         </div>
       </div>
       <div className="mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
-        <CarouselComponent recipes={carousselData} />
+        <CarouselComponent recipes={carouselRecipeData} />
         <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-            {additionalData.map((recipe, id) => {
+            {additionalRecipeData.map((recipe, id) => {
               return (
                 <Link
                   key={id}
                   href={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                 >
-                  <Image
-                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                    width={370}
-                    height={330}
-                  />
+                    <Image
+                      className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
+                      src={recipe.image.url}
+                      alt={recipe.image.alt}
+                      width={370}
+                      height={330}
+                    />
                   <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
                     <p className="text-red-500 font-semibold">
                       {recipe.category.length > 0
@@ -237,44 +259,5 @@ const Home = ({
     </div>
   );
 };
-
-export async function getStaticProps() {
-  const randomRecipeArr = [1,2,3,4,5,6]
-
-  let randomRecipeData = {},
-    carouselRecipeData,
-    additionalRecipeData;
-
-  // Fetching random recipes for home page
-  const count = await Recipe.estimatedDocumentCount().exec();
-  let data = []
-  for await (const recipe of randomRecipeArr) {
-    let random = Math.floor(Math.random() * count);
-    data.push(await Recipe.findOne().skip(random).exec());
-  }
-  // stringying is required for passing as prop
-  randomRecipeData = JSON.stringify(data);
-
-  data = [];
-  // Fetching caroussel recipes
-  for await(const id of carousselRecipeId) {
-    data.push(await Recipe.findById(id).exec());
-  }
-  carouselRecipeData = JSON.stringify(data);
-  // Fetching additional recipes
-  data = [];
-  for await(const id of additionalRecipesIds) {
-    data.push(await Recipe.findById(id).exec());
-  }
-  additionalRecipeData = JSON.stringify(data);
-
-  return {
-    props: {
-      randomRecipeData,
-      carouselRecipeData,
-      additionalRecipeData,
-    },
-  };
-}
 
 export default Home;
