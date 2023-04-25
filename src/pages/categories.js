@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { mealTypes, mealImages } from "@/SearchData";
 
 const Categories = () => {
@@ -8,7 +8,7 @@ const Categories = () => {
         return (
           <Link
             key={id}
-            to={"/search?mealTypes=" + type}
+            href={"/search?mealTypes=" + type}
             className="flex flex-col gap-y-6 hover: relative w-full"
           >
             <img
