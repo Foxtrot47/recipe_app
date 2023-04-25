@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
   const [searchinputTapped, setSearchInputTapped] = useState(false)
   const [searchInputEnabled, setSearchInputEnabled] = useState(true)
 
-  const navigate = useNavigate()
-  const location = useLocation()
+  const router = useRouter();
 
   useEffect(() => {
-    if (location.pathname === '/') {
+    if (router.pathname === '/') {
       setSearchInputEnabled(false)
     } else {
       setSearchInputEnabled(true)
     }
-  }, [location])
+  }, [router])
   const gotoSearch = (e) => {
     if (e.key === 'Enter') {
-      navigate(`/search?q=${e.target.value}`)
+      router.push(`/search?q=${e.target.value}`)
       setSearchInputTapped(false)
     }
   }
@@ -28,7 +28,7 @@ const Navbar = () => {
         <div className="flex flex-row gap-x-10 items-center">
           <Link
             id="brand-container"
-            to="/"
+            href="/"
             className="flex flex-row items-baseline gap-x-2 pb-1"
           >
             <i className="fa-solid fa-burger-cheese text-xl" />
@@ -40,7 +40,7 @@ const Navbar = () => {
             <ul className="flex flex-row gap-x-8 font-medium text text-gray-500 dark:text-gray-400">
               <li>
                 <Link
-                  to="/"
+                  href="/"
                   className="text-red-500 border-b-red-500 border-b-4 pb-[16px]"
                   aria-current="page"
                 >
@@ -49,7 +49,7 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/categories"
+                  href="/categories"
                   className="hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   Category
@@ -57,7 +57,7 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/search"
+                  href="/search"
                   className="hover:text-gray-600 dark:hover:text-gray-300"
                 >
                   Recipes
@@ -124,15 +124,15 @@ const Navbar = () => {
               className="top-0 right-0 absolute hidden justify-end p-2 group-hover:flex"
             >
               <div className="absolute flex flex-col gap-y-4 py-6 px-8 pr-32 text-lg rounded-lg backdrop-blur-3xl dark:bg-gray-800 drop-shadow-lg">
-                <Link to="/" className="text-red-500" aria-current="page">
+                <Link href="/" className="text-red-500" aria-current="page">
                   Home
                 </Link>
 
-                <Link to="/categories" className="">
+                <Link href="/categories" className="">
                   Category
                 </Link>
 
-                <Link to="/search" className="">
+                <Link href="/search" className="">
                   Recipes
                 </Link>
               </div>
