@@ -10,7 +10,8 @@ export default async function handler(req, res) {
       if (req.query.cuisineTypes) query.cuisine = req.query.cuisineTypes;
       if (req.query.keywords) query.keywords = req.query.keywords;
       if (req.query.mealTypes) query.category = req.query.mealTypes;
-      if (req.query.dietType) query.diet.display = req.query.dietType;
+      if (req.query.dietTypes)
+        query.diet = { $elemMatch: { display: req.query.dietTypes } };
       if (req.query.skillLevel) query.skillLevel = req.query.skillLevel;
       if (req.query.yield) {
         if (req.query.yield === "9+") query.yield = { $gt: 8 };
@@ -59,6 +60,7 @@ export default async function handler(req, res) {
       if (req.query.sortBy && req.query.sortOrder)
         sort = [[req.query.sortBy, parseInt(req.query.sortOrder)]];
 
+        console.log(query);
       res.send(
         await Recipe.find(
           query,
