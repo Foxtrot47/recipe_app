@@ -2,79 +2,70 @@ import { Recipe } from "@/lib/db";
 
 export default async function handler(req, res) {
   try {
-    if (req.method === "GET") {
-      const query = {};
-      let offset = 0,
-        sort = [];
-      query.name = new RegExp(req.query.q, "i");
-      if (req.query.cuisineTypes) query.cuisine = req.query.cuisineTypes;
-      if (req.query.keywords) query.keywords = req.query.keywords;
-      if (req.query.mealTypes) query.category = req.query.mealTypes;
-      if (req.query.dietTypes)
-        query.diet = { $elemMatch: { display: req.query.dietTypes } };
-      if (req.query.skillLevel) query.skillLevel = req.query.skillLevel;
-      if (req.query.yield) {
-        if (req.query.yield === "9+") query.yield = { $gt: 8 };
-        else query.yield = req.query.yield;
-      }
-      if (req.query.totalTime) {
-        if (req.query.totalTime === "lte10")
-          query["time.totalTime"] = { $lte: 10 };
-        else if (req.query.totalTime === "lte30")
-          query["time.totalTime"] = { $lte: 30 };
-        else if (req.query.totalTime === "lte60")
-          query["time.totalTime"] = { $lte: 60 };
-        else if (req.query.totalTime === "gt60")
-          query["time.totalTime"] = { $gt: 60 };
-      }
-
-      if (req.query.q == null && Object.keys(query) < 2) {
-        res.send("Must specify some parameters to search");
-        return;
-      }
-
-      if (req.query.kcal) {
-        query["nutritionalInfo"] = { $elemMatch: { label: "kcal" } };
-        if (req.query.kcal === "lte250")
-          query["nutritionalInfo"].$elemMatch.value = { $lte: 250 };
-        else if (req.query.kcal === "lte500")
-          query["nutritionalInfo"].$elemMatch.value = { $lte: 500 };
-        else if (req.query.kcal === "lte750")
-          query["nutritionalInfo"].$elemMatch.value = { $lte: 750 };
-        else if (req.query.kcal === "lte1000")
-          query["nutritionalInfo"].$elemMatch.value = { $lte: 1000 };
-        else if (req.query.kcal === "lte1500")
-          query["nutritionalInfo"].$elemMatch.value = { $lte: 1500 };
-        else if (req.query.kcal === "gt1500")
-          query["nutritionalInfo"].$elemMatch.value = { $gt: 1500 };
-      }
-
-      if (req.query.rating) {
-        if (req.query.rating === "gte1") query["rating.avg"] = { $gte: 1 };
-        else if (req.query.rating === "gte2") query["rating.avg"] = { $gte: 2 };
-        else if (req.query.rating === "gte3") query["rating.avg"] = { $gte: 3 };
-        else if (req.query.rating === "gte4") query["rating.avg"] = { $gte: 4 };
-        else if (req.query.rating === "eq5") query["rating.avg"] = 5;
-      }
-      if (req.query.offset) offset = req.query.offset;
-      if (req.query.sortBy && req.query.sortOrder)
-        sort = [[req.query.sortBy, parseInt(req.query.sortOrder)]];
-
-        console.log(query);
-      res.send(
-        await Recipe.find(
-          query,
-          "_id name slug image rating date description",
-          {
-            limit: 20,
-            skip: offset,
-          }
-        ).sort(sort)
-      );
-      return;
-    } else {
-      res.status(404).send("Use GET");
+    if (req.method !== "GET") {
+      return res.status(404).send("Use GET");
     }
+
+    const query = {};
+    query.name = new RegExp(req.query.q, "i");
+    if (req.query.cuisineTypes) query.cuisine = req.query.cuisineTypes;
+    if (req.query.keywords) query.keywords = req.query.keywords;
+    if (req.query.mealTypes) query.category = req.query.mealTypes;
+    if (req.query.dietTypes)
+      query.diet = { $elemMatch: { $or: [{ display: req.query.dietTypes }] } };
+    if (req.query.skillLevel) query.skillLevel = req.query.skillLevel;
+    if (req.query.yield) {
+      if (req.query.yield === "9+") query.yield = { $gt: 8 };
+      else query.yield = req.query.yield;
+    }
+    if (req.query.totalTime) {
+      const totalTimes = {
+        lte10: { $lte: 10 },
+        lte30: { $lte: 30 },
+        lte60: { $lte: 60 },
+        gt60: { $gt: 60 },
+      };
+      query["time.totalTime"] = totalTimes[req.query.totalTime];
+    }
+
+    if (req.query.q == null && Object.keys(query) < 2) {
+      res.send("Must specify some parameters to search");
+      return;
+    }
+
+    if (req.query.kcal) {
+      const kcalValues = {
+        lte250: { $lte: 250 },
+        lte500: { $lte: 500 },
+        lte750: { $lte: 750 },
+        lte1000: { $lte: 1000 },
+        lte1500: { $lte: 1500 },
+        gt1500: { $gt: 1500 },
+      };
+      query["nutritionalInfo"] = {
+        $elemMatch: { label: "kcal", value: kcalValues[req.query.kcal] },
+      };
+    }
+
+    if (req.query.rating) {
+      const ratings = {
+        gte1: { $gte: 1 },
+        gte2: { $gte: 2 },
+        gte3: { $gte: 3 },
+        gte4: { $gte: 4 },
+        eq5: 5,
+      };
+      query["rating.avg"] = ratings[req.query.rating];
+    }
+
+    const sort = req.query.sortBy && req.query.sortOrder ? [[req.query.sortBy, parseInt(req.query.sortOrder)]] : [];
+
+    const recipes = await Recipe.find(
+      query,
+      "_id name slug image rating date description",
+      { limit: 20, skip: req.query.offset || 0 }
+    ).sort(sort);
+    res.send(recipes);
   } catch (ex) {
     console.error(ex);
     res.status(500).send();
