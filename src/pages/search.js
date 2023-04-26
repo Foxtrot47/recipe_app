@@ -14,7 +14,7 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const router = useRouter();
-  const searchParams = router.query;
+  let searchParams = router.query;
 
   let resultCount = 0,
     reachedBottom = false,
@@ -64,7 +64,8 @@ const Search = () => {
     resultCount = 0;
     reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
-    setSearchParams(data);
+    router.query = data;
+    router.push(router);
     setFilterButtonClicked(false);
   };
 
