@@ -8,6 +8,12 @@ export default async function handler(req, res) {
 
     const query = {};
     query.name = new RegExp(req.query.q, "i");
+
+    // You shouldn't await for the response
+    // The Scraper will take some time if there are lot of search results
+    if (query.name != "")
+      fetch(process.env.SCRAPER_API_URL + "search?query=" + query.name)
+
     if (req.query.cuisineTypes) query.cuisine = req.query.cuisineTypes;
     if (req.query.keywords) query.keywords = req.query.keywords;
     if (req.query.mealTypes) query.category = req.query.mealTypes;
