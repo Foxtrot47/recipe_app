@@ -9,11 +9,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ["Source Serif Pro", ...defaultTheme.fontFamily.serif],
-        inter: ["Inter"],
-        "helvetica-neue": ["Helvetica Neue"],
+        serif: ["var(--font-source-sans)", ...defaultTheme.fontFamily.serif],
+        inter: ["var(--font-inter)"],
+        "work-sans": ["var(--font-work-sans)"],
         "playfair-display": [
-          "Playfair Display",
+          "var(--font-playfair-display)",
           ...defaultTheme.fontFamily.sans,
         ],
       },
