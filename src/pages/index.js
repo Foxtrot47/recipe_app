@@ -4,32 +4,40 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import CarouselComponent from "../components/CarouselComponent.js";
+import RecipeDataCard from "../components/RecipeCard.js";
 import { fetchData, renderRating } from "../Helpers.js";
 import { mealTypesSmall } from "../SearchData.js";
 
 const Home = () => {
-  const [randomRecipeData, setRandomRecipeData] = useState(null);
+  const [randomRecipeData, setRandomRecipeData] = useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  ]);
   const [carouselRecipeData, setCarouselRecipeData] = useState([]);
-  const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [additionalRecipeData, setAdditionalRecipeData] = useState([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  ]);
+
+  const [randomDataLoading, setRandomDataLoading] = useState(true);
+  const [carouselDataLoading, setCarouselDataLoading] = useState(true);
+  const [additionalDataLoading, setAdditionalDataLoading] = useState(true);
+
   const [searchResult, setSearchResults] = useState(null);
   const router = useRouter();
-  const carousselRecipeId = [
-    666164, 236556, 760127, 771380, 339180, 243740, 728908,
-  ];
-  const additionalRecipesIds = [761176, 687363, 238164, 744140];
+  const carouselRecipeId = [267960, 220347, 219495, 662754, 238849, 231368];
+  const additionalRecipesIds = [761239, 214598, 407804, 23096, 228763, 243415];
 
   useEffect(() => {
+    // Fetching random recipes
     fetchData("random", { limit: 6 }, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
         setRandomRecipeData(response.data);
-        setLoading(false);
       } else {
-        console.log("Fetching recipies from API failed");
+        console.log("Fetching random recipies from API failed");
       }
     });
-    // Fetching caroussel recipes
-    carousselRecipeId.map((id) => {
+
+    //Fetching carousel recipes
+    carouselRecipeId.map((id) => {
       fetchData("recipebyid", { id: id }, "get", (response) => {
         if (response.status === 200 && response.data !== null) {
           setCarouselRecipeData((carouselRecipeData) => [
@@ -37,11 +45,13 @@ const Home = () => {
             response.data,
           ]);
         } else {
-          console.log("Fetching recipies from API failed");
+          console.log("Fetching carousel recipies from API failed");
         }
       });
     });
+
     // Fetching additional recipes
+    setAdditionalRecipeData([]);
     additionalRecipesIds.map((index) => {
       fetchData("recipebyid", { id: index }, "get", (response) => {
         if (response.status === 200 && response.data !== null) {
@@ -50,12 +60,31 @@ const Home = () => {
             response.data,
           ]);
         } else {
-          console.log("Fetching recipies from API failed");
+          console.log("Fetching additional recipies from API failed");
         }
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (randomRecipeData != null && randomRecipeData[0] != 0) {
+      setRandomDataLoading(false);
+    }
+  }, [randomRecipeData]);
+
+  useEffect(() => {
+    if (carouselRecipeData != null && carouselRecipeData.length > 0) {
+      setCarouselDataLoading(false);
+    }
+  }, [carouselRecipeData]);
+
+  useEffect(() => {
+    console.log(additionalRecipeData);
+    if (additionalRecipeData != null && additionalRecipeData[0] != 0) {
+      setAdditionalDataLoading(false);
+    }
+  }, [additionalRecipeData]);
 
   const doAutoComplete = async () => {
     const query = document.getElementById("searchfield").value;
@@ -121,44 +150,14 @@ const Home = () => {
         </div>
       </div>
       {/* Rest of body */}
-      <div className="px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-x-2 md:gap-x-10 gap-y-6 text-center">
-        {!loading &&
-          randomRecipeData.map((recipe, id) => {
-            return (
-              <Link
-                key={id}
-                href={"/recipes/" + recipe.slug}
-                className="flex flex-col flex-0 gap-y-6 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg hover:drop-shadow-lg group overflow-hidden"
-              >
-                <div className="md:h-80 md:max-h-80 overflow-hidden">
-                  <Image
-                    width={500}
-                    height={500}
-                    priority={true}
-                    className="drop-shadow-xl filter rounded-lg object-cover group-hover:scale-110 group-hover:rotate-2 transition duration-300 ease-in-out"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                  />
-                </div>
-                <div className="flex flex-none flex-col items-center gap-y-2 px-4 pb-4">
-                  <p className="text-red-500 font-semibold capitalize">
-                    {recipe.category.length > 0
-                      ? recipe.category[0]
-                      : "Unknown"}
-                  </p>
-                  <p className="text-2xl flex-none font-semibold truncate w-full">
-                    {recipe.name}
-                  </p>
-                  <div className="flex flex-none flex-row gap-x-2 text-sm text-red-500">
-                    {renderRating(recipe.rating.avg)}
-                  </div>
-                  <p className="md:px-4 h-full w-full text-ellipsis overflow-hidden dark:text-gray-300">
-                    {recipe.description}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+      <div className="px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-x-2 md:gap-x-10 gap-y-6 text-center">
+        {randomRecipeData.map((recipe, id) => (
+          <RecipeDataCard
+            key={"recommended_recipe_" + id}
+            recipeData={recipe}
+            dataLoading={randomDataLoading}
+          />
+        ))}
       </div>
       <div className="px-4 md:px-12">
         <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2">
@@ -169,40 +168,18 @@ const Home = () => {
         </div>
       </div>
       <div className="mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
-        <CarouselComponent recipes={carouselRecipeData} />
+        {!carouselDataLoading && (
+          <CarouselComponent recipes={carouselRecipeData} />
+        )}
         <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-            {additionalRecipeData.map((recipe, id) => {
-              return (
-                <Link
-                  key={id}
-                  href={"/recipes/" + recipe.slug}
-                  className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
-                >
-                  <Image
-                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
-                    src={recipe.image.url}
-                    alt={recipe.image.alt}
-                    width={370}
-                    height={330}
-                  />
-                  <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
-                    <p className="text-red-500 font-semibold">
-                      {recipe.category.length > 0
-                        ? recipe.category[0]
-                        : "Unknown"}
-                    </p>
-                    <p className="text-2xl font-semibold">{recipe.name}</p>
-                    <div className="flex flex-row gap-x-2 text-sm text-red-500">
-                      {renderRating(recipe.rating.avg)}
-                    </div>
-                    <p className="md:px-2 text-gray-600 dark:text-gray-300">
-                      {recipe.description}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+            {additionalRecipeData.map((recipe, id) => (
+              <RecipeDataCard
+                key={"additional_recipe_" + id}
+                recipeData={recipe}
+                dataLoading={additionalDataLoading}
+              />
+            ))}
           </div>
           <div className="flex flex-col gap-y-4 md:w-80 flex-none">
             <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mb-4">
