@@ -1,7 +1,7 @@
 import { Inter, Playfair_Display, Source_Sans_Pro, Work_Sans } from "next/font/google";
-import "@/styles/globals.css";
-import ScrollToTop from "@/components/ScrollToTop";
-import Navbar from "@/components/Navbar";
+import "../styles/globals.css";
+import ScrollToTop from "../components/ScrollToTop";
+import Navbar from "../components/Navbar";
 import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({

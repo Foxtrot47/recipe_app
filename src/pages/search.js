@@ -3,9 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
-import { fetchData, renderRating } from "@/Helpers.js";
+import { fetchData, renderRating } from "../Helpers.js";
 import serialize from "form-serialize";
-import { filters } from "@/SearchData.js";
+import { filters } from "../SearchData.js";
 
 const Search = () => {
   const [results, setResults] = useState(null);
@@ -22,10 +22,12 @@ const Search = () => {
 
   useEffect(() => {
     fetchResults();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
   
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   const fetchResults = () => {

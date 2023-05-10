@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { mealTypes, mealImages } from "@/SearchData";
+import { mealTypes, mealImages } from "../SearchData";
 
 const Categories = () => {
   return (

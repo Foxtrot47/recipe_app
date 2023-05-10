@@ -3,9 +3,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
-import CarouselComponent from "@/components/CarouselComponent.js";
-import { fetchData, renderRating } from "@/Helpers.js";
-import { mealTypesSmall } from "@/SearchData.js";
+import CarouselComponent from "../components/CarouselComponent.js";
+import { fetchData, renderRating } from "../Helpers.js";
+import { mealTypesSmall } from "../SearchData.js";
 
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState(null);
@@ -54,6 +54,7 @@ const Home = () => {
         }
       });
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const doAutoComplete = async () => {
@@ -77,6 +78,7 @@ const Home = () => {
         <img
           className="object-cover object-center w-full h-full fade-to-bottom brightness-75"
           src="https://radiustheme.com/demo/wordpress/themes/ranna/wp-content/uploads/2019/09/ranna-wordpress-theme-radiustheme.com-4-1240x578.jpg"
+          alt="cover picture"
         />
         <div className="absolute w-full items-center flex flex-col gap-y-4">
           <p className="text-5xl md:text-6xl font-semibold text-white font-playfair-display drop-shadow-xl filter">
@@ -103,7 +105,7 @@ const Home = () => {
                     href={`/recipes/${recipe.slug}`}
                     className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                   >
-                    <Image width={64} height={64} src={recipe.image.url} className="rounded" />
+                    <Image width={64} height={64} src={recipe.image.url} className="rounded" alt={recipe.name + "image"}/>
                     <p key={id}>{recipe.name}</p>
                   </Link>
                 );

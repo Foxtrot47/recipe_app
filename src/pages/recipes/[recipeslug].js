@@ -5,8 +5,8 @@ import Image from "next/image";
 
 import axios from "axios";
 import moment from "moment";
-import { fetchData, renderRating } from "@/Helpers";
-import { mealTypesSmall } from "@/SearchData";
+import { fetchData, renderRating } from "../../Helpers";
+import { mealTypesSmall } from "../../SearchData";
 
 const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
