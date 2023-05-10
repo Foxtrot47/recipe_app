@@ -1,6 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
-import { mealTypes, mealImages } from "../SearchData";
+import Link from "next/link";
+
+import { mealImages, mealTypes } from "../SearchData";
 
 const Categories = () => {
   return (
@@ -13,12 +14,12 @@ const Categories = () => {
             className="flex flex-col gap-y-6 hover: relative w-full"
           >
             <div className="h-56 md:h-[500px]">
-            <Image
-              fill="true"
-              className="drop-shadow-xl filter rounded-lg object-cover object-center"
-              src={mealImages[id]}
-              alt={type}
-            />
+              <Image
+                fill="true"
+                className="drop-shadow-xl filter rounded-lg object-cover object-center"
+                src={mealImages[id]}
+                alt={type}
+              />
             </div>
 
             <div className="flex flex-col gap-y-2 px-4 absolute bottom-0 rounded-lg bg-black fade-to-top h-full w-full"></div>

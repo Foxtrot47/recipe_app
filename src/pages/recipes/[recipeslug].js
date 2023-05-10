@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import Image from "next/image";
-
 import axios from "axios";
 import moment from "moment";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
 import { fetchData, renderRating } from "../../Helpers";
 import { mealTypesSmall } from "../../SearchData";
 
@@ -165,13 +165,13 @@ const Recipe = () => {
           {!loading && (
             <div className="relative">
               <div className="w-full h-56 md:h-[450px] relative">
-              <Image
-                fill={true}
-                className="object-cover object-center rounded"
-                src={recipeData.image.url}
-                alt={recipeData.image.alt}
-                priority={true}
-              />
+                <Image
+                  fill={true}
+                  className="object-cover object-center rounded"
+                  src={recipeData.image.url}
+                  alt={recipeData.image.alt}
+                  priority={true}
+                />
               </div>
 
               <div className="flex flex-row gap-x-6 absolute bottom-3 md:bottom-5 left-3 md:left-5 y-0 bg-white">

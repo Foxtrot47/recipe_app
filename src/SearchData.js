@@ -204,15 +204,15 @@ const mealTypes = [
     },
   ];
 export {
-  filters,
+  calorieRange,
+  cuisineTypes,
   dietTypes,
+  difficultyRanges,
+  filters,
+  mealImages,
   mealTypes,
   mealTypesSmall,
-  mealImages,
-  timeFilters,
-  cuisineTypes,
-  calorieRange,
-  difficultyRanges,
   ratingRanges,
   servingRanges,
+  timeFilters,
 };

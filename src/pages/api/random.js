@@ -8,7 +8,6 @@ export default async function handler(req, res) {
       } else if (isNaN(req.query.limit) || req.query.limit < 1) {
         res.status(404).send("Limit must be a positive number");
       } else {
-
         let recipes = [];
         const count = await Recipe.estimatedDocumentCount().exec();
         for (let i = 0; i < req.query.limit; i++) {
@@ -26,8 +25,7 @@ export default async function handler(req, res) {
     } else {
       res.status(404).send("Use GET");
     }
-  }
-  catch(ex) {
+  } catch (ex) {
     console.log(ex);
     res.status(500).send();
   }

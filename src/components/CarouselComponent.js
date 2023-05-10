@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types'
-import Link from 'next/link';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 import Image from "next/image";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import { Carousel } from "react-responsive-carousel";
 
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { Carousel } from 'react-responsive-carousel'
-
-import { renderRating } from '../Helpers'
+import { renderRating } from "../Helpers";
 
 const carouselProps = () => ({
   showArrows: true,
@@ -18,10 +18,10 @@ const carouselProps = () => ({
   swipeable: true,
   dynamicHeight: false,
   useKeyboardArrows: true,
-})
+});
 
 const carouselClasses =
-  'bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter absolute z-10 text-red-500 top-28 md:top-1/2'
+  "bg-white dark:bg-gray-600 rounded-full md:py-4 md:px-6 py-2 px-4 font-bold drop-shadow-xl filter absolute z-10 text-red-500 top-28 md:top-1/2";
 const CarouselComponent = ({ recipes }) => (
   <Carousel
     renderArrowPrev={(onClickHandler, hasPrev, label) =>
@@ -79,10 +79,10 @@ const CarouselComponent = ({ recipes }) => (
         </Link>
       ))}
   </Carousel>
-)
+);
 
 CarouselComponent.propTypes = {
   recipes: PropTypes.object.isRequired,
-}
+};
 
-export default CarouselComponent
+export default CarouselComponent;

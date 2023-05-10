@@ -12,7 +12,12 @@ export default async function handler(req, res) {
     // You shouldn't await for the response
     // The Scraper will take some time if there are lot of search results
     if (query.name != "")
-      fetch(process.env.SCRAPER_API_URL + "search?query=" + query.name + "&fetchSinglePage=false")
+      fetch(
+        process.env.SCRAPER_API_URL +
+          "search?query=" +
+          query.name +
+          "&fetchSinglePage=false"
+      );
 
     if (req.query.cuisineTypes) query.cuisine = req.query.cuisineTypes;
     if (req.query.keywords) query.keywords = req.query.keywords;
@@ -64,7 +69,10 @@ export default async function handler(req, res) {
       query["rating.avg"] = ratings[req.query.rating];
     }
 
-    const sort = req.query.sortBy && req.query.sortOrder ? [[req.query.sortBy, parseInt(req.query.sortOrder)]] : [];
+    const sort =
+      req.query.sortBy && req.query.sortOrder
+        ? [[req.query.sortBy, parseInt(req.query.sortOrder)]]
+        : [];
 
     const recipes = await Recipe.find(
       query,

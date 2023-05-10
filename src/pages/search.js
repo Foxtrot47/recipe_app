@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import serialize from "form-serialize";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import { fetchData, renderRating } from "../Helpers.js";
-import serialize from "form-serialize";
 import { filters } from "../SearchData.js";
 
 const Search = () => {
@@ -22,13 +22,13 @@ const Search = () => {
 
   useEffect(() => {
     fetchResults();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-  
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchResults = () => {
     const body = {};

@@ -31,4 +31,5 @@ const recipeSchema = new mongoose.Schema(
   { collection: "recipedata" }
 );
 
-export const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);
+export const Recipe =
+  mongoose.models.Recipe || mongoose.model("Recipe", recipeSchema);

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import CarouselComponent from "../components/CarouselComponent.js";
 import { fetchData, renderRating } from "../Helpers.js";
@@ -54,7 +54,7 @@ const Home = () => {
         }
       });
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const doAutoComplete = async () => {
@@ -105,7 +105,13 @@ const Home = () => {
                     href={`/recipes/${recipe.slug}`}
                     className="flex flex-row gap-x-4 items-center hover:bg-red-500 drop-shadow rounded"
                   >
-                    <Image width={64} height={64} src={recipe.image.url} className="rounded" alt={recipe.name + "image"}/>
+                    <Image
+                      width={64}
+                      height={64}
+                      src={recipe.image.url}
+                      className="rounded"
+                      alt={recipe.name + "image"}
+                    />
                     <p key={id}>{recipe.name}</p>
                   </Link>
                 );
@@ -173,13 +179,13 @@ const Home = () => {
                   href={"/recipes/" + recipe.slug}
                   className="flex flex-col gap-y-6 hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow-lg rounded-lg"
                 >
-                    <Image
-                      className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
-                      src={recipe.image.url}
-                      alt={recipe.image.alt}
-                      width={370}
-                      height={330}
-                    />
+                  <Image
+                    className="drop-shadow-xl filter rounded-lg object-cover object-center h-80 w-auto"
+                    src={recipe.image.url}
+                    alt={recipe.image.alt}
+                    width={370}
+                    height={330}
+                  />
                   <div className="flex flex-col items-center gap-y-2 pb-6 text-center">
                     <p className="text-red-500 font-semibold">
                       {recipe.category.length > 0
