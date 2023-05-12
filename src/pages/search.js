@@ -12,12 +12,12 @@ const Search = () => {
   const [loading, setLoading] = useState(true);
   const [filterButtonClicked, setFilterButtonClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [resultCount, setResultCount] = useState(0);
 
   const router = useRouter();
   let searchParams = router.query;
 
-  let resultCount = 0,
-    reachedBottom = false,
+  let reachedBottom = false,
     resultsDup = null;
 
   useEffect(() => {
@@ -26,9 +26,9 @@ const Search = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [results]);
 
   const fetchResults = () => {
     const body = {};
@@ -46,12 +46,13 @@ const Search = () => {
     }
     fetchData("search", body, "get", (response) => {
       if (response.status === 200 && response.data !== null) {
-        if (resultsDup !== null) {
-          response.data = resultsDup.concat(response.data);
-        } else reachedBottom = false;
-        resultsDup = response.data;
-        setResults(response.data);
-        resultCount += response.data.length;
+        if (results !== null) {
+          setResults(results.concat(response.data));
+        } else {
+          reachedBottom = false;
+          setResults(response.data);
+        }
+        setResultCount(resultCount + response.data.length);
 
         // If results are less than what we normally expect , don't turn on infinite scroll
         if (response.data < 20) reachedBottom = true;
@@ -63,7 +64,7 @@ const Search = () => {
   };
 
   const handleSubmit = () => {
-    resultCount = 0;
+    setResultCount(0);
     reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
     router.query = data;
@@ -71,11 +72,15 @@ const Search = () => {
     setFilterButtonClicked(false);
   };
 
-  const handleScroll = () => {
-    const bottom =
-      Math.ceil(window.innerHeight + window.scrollY + 500) >=
-      document.documentElement.scrollHeight;
-    if (bottom && reachedBottom === false && resultsDup !== null) {
+  const onScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    if (
+      scrollTop + clientHeight + 1000 >= scrollHeight &&
+      !reachedBottom &&
+      results !== null
+    ) {
       fetchResults();
     }
   };
