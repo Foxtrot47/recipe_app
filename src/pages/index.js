@@ -171,8 +171,8 @@ const Home = () => {
         {!carouselDataLoading && (
           <CarouselComponent recipes={carouselRecipeData} />
         )}
-        <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+        <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full w-3/4">
             {additionalRecipeData.map((recipe, id) => (
               <RecipeDataCard
                 key={"additional_recipe_" + id}
