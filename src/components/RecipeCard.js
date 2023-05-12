@@ -45,7 +45,7 @@ const RecipeDataCard = ({ recipeData, dataLoading, error }) => {
             <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mt-1 mb-5 animate-pulse"></div>
           )}
         </div>
-        <div className="text-2xl flex-none font-semibold truncate w-full">
+        <div className="text-2xl flex-none text-center font-semibold truncate w-full">
           {recipeData && !dataLoading ? (
             recipeData.name
           ) : (
