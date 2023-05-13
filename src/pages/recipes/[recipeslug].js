@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import RecipeCardSmallHorizontal from "../../components/RecipeCardSmallHorizontal";
 import { fetchData, renderRating } from "../../Helpers";
 import { mealTypesSmall } from "../../SearchData";
 
@@ -143,7 +144,7 @@ const Recipe = () => {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
-                          className="text-red-500"
+                          className="text-red-500 w-6"
                           stroke="currentColor"
                           fontSize={19}
                         >
@@ -156,7 +157,7 @@ const Recipe = () => {
                       (dietInfo.slug === "healthy" && (
                         <i className="fa-solid fa-heart text-red-500"></i>
                       ))}
-                    {dietInfo.display !== "Vegetarian" && dietInfo.display}
+                    <span className="whitespace-nowrap">{dietInfo.display !== "Vegetarian" && dietInfo.display}</span>
                   </div>
                 ))}
               </div>
@@ -182,7 +183,7 @@ const Recipe = () => {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    className="text-green-veg w-10 md:w-12"
+                    className="text-green-500 w-10 md:w-12"
                     fill="currentColor"
                   >
                     <path d="M20 4V20H4V4H20M22 2H2V22H22V2M12 6C8.69 6 6 8.69 6 12S8.69 18 12 18 18 15.31 18 12 15.31 6 12 6Z" />
@@ -385,30 +386,12 @@ const Recipe = () => {
           <div className="flex flex-col gap-y-4 mb-4">
             {!loading &&
               recipeData.similiarRecipes !== null &&
-              recipeData.similiarRecipes.map((recipe) => (
-                <Link
-                  key={recipe.id}
-                  className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
-                  href={recipe.url}
-                >
-                  <div className="flex-none">
-                    <Image
-                      width={96}
-                      height={96}
-                      className="object-cover object-center h-24 rounded-lg"
-                      src={recipe.image.url}
-                      alt={recipe.image.alt}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-around items-start">
-                    <p className="text-lg font-semibold text-clip overflow-hidden w-50">
-                      {recipe.title}
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-red-500 text-sm">
-                      {renderRating(recipe.rating.ratingValue)}
-                    </div>
-                  </div>
-                </Link>
+              recipeData.similiarRecipes.map((similiarRecipe, id) => (
+                <RecipeCardSmallHorizontal
+                  key={"similiar_recipe_" + id}
+                  recipeData={similiarRecipe}
+                  dataLoading={loading}
+                />
               ))}
           </div>
           <div className="border-b border-gray-300 dark:border-gray-500 relative pb-2 mt-4">
