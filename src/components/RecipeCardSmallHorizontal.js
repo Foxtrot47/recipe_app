@@ -19,7 +19,7 @@ const RecipeCardSmallHorizontal = ({ recipeData, dataLoading, error }) => {
             alt={recipeData.image.alt}
           />
         ) : (
-          <div className="flex items-center justify-center md:h-80 md:max-h-80 bg-gray-300 rounded dark:bg-gray-700 animate-pulse">
+          <div className="flex items-center justify-center h-full w-full bg-gray-300 rounded dark:bg-gray-700 animate-pulse">
             <svg
               className="w-12 h-12 text-gray-200"
               xmlns="http://www.w3.org/2000/svg"
@@ -32,30 +32,19 @@ const RecipeCardSmallHorizontal = ({ recipeData, dataLoading, error }) => {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-y-2 px-4 pb-4 pt-2 overflow-hidden">
+      <div className="flex flex-col gap-y-2 px-4 pb-4 pt-2 overflow-hidden w-full">
         <div className="text-2xl flex-none truncate w-full">
           {recipeData && !dataLoading ? (
             recipeData.title
           ) : (
-            <div className="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-72 animate-pulse mx-auto mb-3"></div>
+            <div className="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-3/4 animate-pulse"></div>
           )}
         </div>
         <div className="flex flex-none flex-row gap-x-2 text-sm text-red-500">
           {recipeData && !dataLoading ? (
             renderRating(recipeData.rating.RatingValue)
           ) : (
-            <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-          )}
-        </div>
-        <div className="md:px-4 h-full w-full text-ellipsis overflow-hidden dark:text-gray-300">
-          {recipeData && !dataLoading ? (
-            recipeData.description
-          ) : (
-            <>
-              <div className="mx-auto h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-4"></div>
-              <div className="mx-auto h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-56 mb-4"></div>
-              <div className="mx-auto h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-64 mb-4"></div>
-            </>
+            <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-1/2 mb-4"></div>
           )}
         </div>
       </div>
