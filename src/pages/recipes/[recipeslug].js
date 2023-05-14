@@ -531,7 +531,7 @@ const Recipe = () => {
                         </div>
                       </div>
                       <div className="flex flex-row gap-x-2 text-red-500">
-                        {review.rating ? (
+                        {!loading ? (
                           renderRating(review.rating)
                         ) : (
                           <div className="h-4 my-4 bg-gray-200 rounded-full dark:bg-gray-700 w-20 animate-pulse"></div>
@@ -539,7 +539,7 @@ const Recipe = () => {
                       </div>
                     </div>
                     <div className="md:text-lg md:px-16">
-                      {review.body || (
+                      {!loading ? review.body : (
                         <>
                           <div className="h-2 my-4 bg-gray-200 rounded-full dark:bg-gray-700 w-1/2 animate-pulse"></div>
                           <div className="h-2 my-4 bg-gray-200 rounded-full dark:bg-gray-700 w-1/2 animate-pulse"></div>
