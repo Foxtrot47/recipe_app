@@ -1,15 +1,3 @@
-import axios from "axios";
-
-async function fetchData(endPoint, params, method, callback) {
-  await axios({
-    method,
-    url: "/api/" + endPoint,
-    params,
-  })
-    .then((response) => callback(response))
-    .catch((error) => callback(error));
-}
-
 // For rendering the stars
 const renderRating = (rating) => {
   // if rating is in percentage convert
@@ -31,6 +19,4 @@ const renderRating = (rating) => {
   return out;
 };
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-export { fetchData, fetcher, renderRating };
+export { renderRating };

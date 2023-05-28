@@ -13,11 +13,11 @@ const RecipeDataCard = ({ recipeData, dataLoading, error }) => {
       <div className="md:h-80 md:max-h-80 relative overflow-hidden">
         {recipeData && !dataLoading ? (
           <Image
-            fill="true"
+            fill={true}
             priority={true}
             className="drop-shadow-xl filter rounded-lg object-cover group-hover:scale-110 group-hover:rotate-2 transition duration-300 ease-in-out"
-            src={recipeData.image.url}
-            alt={recipeData.image.alt}
+            src={recipeData.images.url}
+            alt={recipeData.images.alt}
           />
         ) : (
           <div className="flex items-center justify-center md:h-80 md:max-h-80 bg-gray-300 rounded dark:bg-gray-700 animate-pulse">
@@ -36,8 +36,8 @@ const RecipeDataCard = ({ recipeData, dataLoading, error }) => {
       <div className="flex flex-none flex-col items-center gap-y-2 px-4 pb-4">
         <div className="text-red-500 font-semibold capitalize">
           {recipeData && !dataLoading ? (
-            recipeData.category && recipeData.category.length > 0 ? (
-              recipeData.category[0]
+            recipeData.recipecategories && recipeData.recipecategories.length > 0 ? (
+              recipeData.recipecategories[0].categories.name
             ) : (
               "Unknown"
             )
@@ -54,7 +54,7 @@ const RecipeDataCard = ({ recipeData, dataLoading, error }) => {
         </div>
         <div className="flex flex-none flex-row gap-x-2 text-sm text-red-500">
           {recipeData && !dataLoading ? (
-            renderRating(recipeData.rating.avg)
+            renderRating(recipeData.ratings.avg)
           ) : (
             <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
           )}
