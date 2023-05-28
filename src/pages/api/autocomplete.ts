@@ -1,4 +1,4 @@
-import { Recipe } from "../../lib/db";
+import prisma from "../../lib/prisma";
 
 export default async function handler(req, res) {
   try {
@@ -6,17 +6,22 @@ export default async function handler(req, res) {
       if (req.query.q == undefined || req.query.q == null) {
         res.status(404).send("Must specify query parameter");
       } else {
-        const regex = new RegExp(req.query.q, "i");
         res.send(
-          await Recipe.find(
-            {
-              name: regex,
+          await prisma.recipes.findMany({
+            where: {
+              name: {
+                contains: req.query.q
+              }
             },
-            "_id name slug image rating",
-            {
-              limit: 5,
-            }
-          ).exec()
+            select: {
+              id: true,
+              name: true,
+              images: true,
+              slug: true,
+              ratings: true
+            },
+            take: 5
+          })
         );
       }
     } else {
