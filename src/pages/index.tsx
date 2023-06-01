@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 
 import CarouselComponent from "../components/CarouselComponent.js";
 import RecipeDataCard from "../components/RecipeCard";
-import { fetchData, renderRating } from "../Helpers.js";
-import { mealTypesSmall } from "../SearchData.js";
+import { renderRating } from "../Helpers";
+import { mealTypesSmall } from "../SearchData";
 
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState([
