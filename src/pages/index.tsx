@@ -100,11 +100,13 @@ const Home = () => {
 
   const doAutoComplete = async () => {
     const query = (document.getElementById("searchfield") as HTMLInputElement).value;
-    fetchData("autocomplete", { q: query }, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        setSearchResults(response.data);
-      }
-    });
+    let response = await fetch(`/api/autocomplete?q=${query}`);
+    let result = await response.json();
+    if (response.status === 200 && result !== null) {
+      setSearchResults(result);
+    } else {
+      throw "api failure";
+    }
   };
 
   const gotoSearch = (event) => {
