@@ -81,7 +81,7 @@ model nutritionalinfos {
   id       Int      @id(map: "PK_NutritionalInfos") @default(autoincrement())
   label    String?
   prefix   String?
-  puffix   String?
+  suffix   String?
   value    Float?
   recipeid Int?
   recipes  recipes? @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_NutritionalInfos_Recipes_RecipeId")
