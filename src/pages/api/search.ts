@@ -20,28 +20,7 @@ export default async function handler(req, res) {
       console.log("Failed to ping scraper");
     }
 
-    const kcalValues = {
-      lte250: 250,
-      lte500: 500,
-      lte750: 750,
-      lte1000: 1000,
-      lte1500: 1500,
-    };
-
-    const ratingValues = {
-      gte1: 1,
-      gte2: 2,
-      gte3: 3,
-      gte4: 4,
-    };
-
-    const totalTimes = {
-      lte10: 10,
-      lte30: 30,
-      lte60: 60,
-    };
-
-    const recipes = await prisma.recipes.findMany({
+    const clause = {
       where: {
         name: isValidParam(req.query.name)
           ? { contains: req.query.name.trim() }
@@ -123,6 +102,13 @@ export default async function handler(req, res) {
           ? req.query.yield.trim()
           : undefined,
       },
+    };
+    const recipeCount = await prisma.recipes.count({
+      ...clause,
+    });
+
+    const recipes = await prisma.recipes.findMany({
+      ...clause,
       select: {
         description: true,
         date: true,
@@ -138,9 +124,16 @@ export default async function handler(req, res) {
         slug: true,
         skilllevel: true,
       },
-      take: isValidParam(req.query.limt) ? req.query.limt : 20,
+      take: isValidParam(req.query.limt) ? Number(req.query.limt) : 20,
+      skip: isValidParam(req.query.skip) ? Number(req.query.skip) : 0,
     });
-    res.json(recipes);
+    const output = {
+      recipes,
+      limit: recipes.length,
+      skip: isValidParam(req.query.skip) ? Number(req.query.skip) : 0,
+      total: recipeCount,
+    };
+    res.json(output);
   } catch (ex) {
     console.error(ex);
     res.status(500).send();
@@ -152,3 +145,24 @@ const isValidParam = (param) =>
   param !== undefined &&
   param !== null &&
   param.trim() !== "";
+
+const kcalValues = {
+  lte250: 250,
+  lte500: 500,
+  lte750: 750,
+  lte1000: 1000,
+  lte1500: 1500,
+};
+
+const ratingValues = {
+  gte1: 1,
+  gte2: 2,
+  gte3: 3,
+  gte4: 4,
+};
+
+const totalTimes = {
+  lte10: 10,
+  lte30: 30,
+  lte60: 60,
+};
