@@ -3,7 +3,7 @@ import { fetchJsonBySlug } from "../../lib/prisma";
 export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
-      if (req.query.slug || req.query.slug == null) {
+      if (!req.query.slug || req.query.slug == null) {
         res.status(404).send("Must specify slug");
       } else {
         let result = await fetchJsonBySlug(req.query.slug);
