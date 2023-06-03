@@ -44,17 +44,18 @@ export default async function handler(req, res) {
           : undefined,
         nutritionalinfos: {
           some: {
-              label: "kcal",
-              value: (
-                isValidParam(req.query.kcal) && 
-                req.query.kcal === "gt1500" && {
-                  gt: 1500 
-                }
-              ) || 
+            label: "kcal",
+            value:
               (isValidParam(req.query.kcal) &&
-              req.query.kcal !== "gt1500" && { lte: kcalValues[req.query.kcal] }) ||
-            undefined,
-          }
+                req.query.kcal === "gt1500" && {
+                  gt: 1500,
+                }) ||
+              (isValidParam(req.query.kcal) &&
+                req.query.kcal !== "gt1500" && {
+                  lte: kcalValues[req.query.kcal],
+                }) ||
+              undefined,
+          },
         },
         recipecuisines: {
           some: {
