@@ -42,7 +42,7 @@ const Recipe = () => {
       page: 1,
       client: "bbcgoodfood",
     };
-    const response =  await fetch("https://reactions.api.immediate.co.uk/api/reactions?", {params});
+    const response =  await fetch(`https://reactions.api.immediate.co.uk/api/reactions?${params}`);
     const result = await response.json();
     if (
       response.status === 200 &&
