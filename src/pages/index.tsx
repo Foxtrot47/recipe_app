@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import CarouselComponent from "../components/CarouselComponent.js";
+import CarouselComponent from "../components/CarouselComponent";
 import RecipeDataCard from "../components/RecipeCard";
 import { renderRating } from "../Helpers";
 import { mealTypesSmall } from "../SearchData";
