@@ -17,9 +17,6 @@ const Search = () => {
 
   const router = useRouter();
 
-  let reachedBottom = false,
-    resultsDup = null;
-
   useEffect(() => {
     setResults(null);
     setLoading(true);
@@ -27,11 +24,6 @@ const Search = () => {
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [results]);
 
   const fetchResults = async () => {
     if (Object.keys(router.query).length < 1) return;
@@ -54,16 +46,8 @@ const Search = () => {
     const fetchResponse = await fetch(`/api/search?${serializedParams}`);
     const fetchResult = await fetchResponse.json();
     if (fetchResponse.status === 200 && fetchResult !== null) {
-      if (results !== null) {
-        setResults(results.concat(fetchResult));
-      } else {
-        reachedBottom = false;
-        setResults(fetchResult);
-      }
+      setResults(fetchResult);
       setResultCount(resultCount + fetchResult.length);
-
-      // If results are less than what we normally expect , don't turn on infinite scroll
-      if (fetchResult < 20) reachedBottom = true;
       setLoading(false);
     } else {
       console.log("Fetching resuls from API failed");
@@ -72,24 +56,10 @@ const Search = () => {
 
   const handleSubmit = () => {
     setResultCount(0);
-    reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
     router.query = data;
     router.push(router);
     setFilterButtonClicked(false);
-  };
-
-  const onScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-    if (
-      scrollTop + clientHeight + 1000 >= scrollHeight &&
-      !reachedBottom &&
-      results !== null
-    ) {
-      fetchResults();
-    }
   };
 
   const handleFilterButtonTap = (state) => {
