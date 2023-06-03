@@ -15,7 +15,7 @@ const Categories = () => {
           >
             <div className="h-56 md:h-[500px]">
               <Image
-                fill="true"
+                fill={true}
                 className="drop-shadow-xl filter rounded-lg object-cover object-center"
                 src={mealImages[id]}
                 alt={type}

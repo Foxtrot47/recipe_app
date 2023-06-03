@@ -17,7 +17,7 @@ const Navbar = () => {
   }, [router]);
   const gotoSearch = (e) => {
     if (e.key === "Enter") {
-      router.push(`/search?q=${e.target.value}`);
+      router.push(`/search?name=${e.target.value}`);
       setSearchInputTapped(false);
     }
   };

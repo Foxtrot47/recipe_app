@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_CONNECTION_STRING")
+}
+
+model categories {
+  id               Int                @id(map: "PK_Categories") @default(autoincrement())
+  name             String?
+  recipecategories recipecategories[]
+}
+
+model cuisines {
+  id             Int              @id(map: "PK_Cuisines") @default(autoincrement())
+  name           String?
+  recipecuisines recipecuisines[]
+}
+
+model diets {
+  id          Int           @id(map: "PK_Diets") @default(autoincrement())
+  name        String?
+  recipediets recipediets[]
+}
+
+model images {
+  id          Int       @id(map: "PK_Images") @default(autoincrement())
+  url         String?
+  title       String?
+  alt         String?
+  width       Int
+  height      Int
+  aspectratio Float
+  recipes     recipes[]
+}
+
+model ingredientgroups {
+  id          Int           @id(map: "PK_IngredientGroups") @default(autoincrement())
+  heading     String?
+  recipeid    Int?
+  recipes     recipes?      @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_IngredientGroups_Recipes_RecipeId")
+  ingredients ingredients[]
+
+  @@index([recipeid], map: "IX_IngredientGroups_RecipeId")
+}
+
+model ingredients {
+  id                Int               @id(map: "PK_Ingredients") @default(autoincrement())
+  type              String?
+  ingredienttext    String?
+  note              String?
+  quantitytext      String?
+  termid            Int?
+  ingredientgroupid Int?
+  ingredientgroups  ingredientgroups? @relation(fields: [ingredientgroupid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Ingredients_IngredientGroups_IngredientGroupId")
+  terms             terms?            @relation(fields: [termid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Ingredients_Terms_TermId")
+
+  @@index([ingredientgroupid], map: "IX_Ingredients_IngredientGroupId")
+  @@index([termid], map: "IX_Ingredients_TermId")
+}
+
+model instructions {
+  id       Int      @id(map: "PK_Instructions") @default(autoincrement())
+  type     String?
+  text     String?
+  recipeid Int?
+  recipes  recipes? @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Instructions_Recipes_RecipeId")
+
+  @@index([recipeid], map: "IX_Instructions_RecipeId")
+}
+
+model keywords {
+  id             Int              @id(map: "PK_Keywords") @default(autoincrement())
+  name           String?
+  recipekeywords recipekeywords[]
+}
+
+model nutritionalinfos {
+  id       Int      @id(map: "PK_NutritionalInfos") @default(autoincrement())
+  label    String?
+  prefix   String?
+  suffix   String?
+  value    Float?
+  recipeid Int?
+  recipes  recipes? @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_NutritionalInfos_Recipes_RecipeId")
+
+  @@index([recipeid], map: "IX_NutritionalInfos_RecipeId")
+}
+
+model ratings {
+  id         Int       @id(map: "PK_Ratings") @default(autoincrement())
+  avg        Float
+  ishalfstar Boolean
+  total      Int
+  recipes    recipes[]
+}
+
+model recipecategories {
+  id         Int        @id(map: "PK_RecipeCategories") @default(autoincrement())
+  recipeid   Int
+  categoryid Int
+  categories categories @relation(fields: [categoryid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeCategories_Categories_CategoryId")
+  recipes    recipes    @relation(fields: [recipeid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeCategories_Recipes_RecipeId")
+
+  @@index([categoryid], map: "IX_RecipeCategories_CategoryId")
+  @@index([recipeid], map: "IX_RecipeCategories_RecipeId")
+}
+
+model recipecuisines {
+  id        Int      @id(map: "PK_RecipeCuisines") @default(autoincrement())
+  recipeid  Int
+  cuisineid Int
+  cuisines  cuisines @relation(fields: [cuisineid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeCuisines_Cuisines_CuisineId")
+  recipes   recipes  @relation(fields: [recipeid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeCuisines_Recipes_RecipeId")
+
+  @@index([cuisineid], map: "IX_RecipeCuisines_CuisineId")
+  @@index([recipeid], map: "IX_RecipeCuisines_RecipeId")
+}
+
+model recipediets {
+  id       Int     @id(map: "PK_RecipeDiets") @default(autoincrement())
+  recipeid Int
+  dietid   Int
+  diets    diets   @relation(fields: [dietid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeDiets_Diets_DietId")
+  recipes  recipes @relation(fields: [recipeid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeDiets_Recipes_RecipeId")
+
+  @@index([dietid], map: "IX_RecipeDiets_DietId")
+  @@index([recipeid], map: "IX_RecipeDiets_RecipeId")
+}
+
+model recipekeywords {
+  Id        Int      @id(map: "PK_RecipeKeywords") @default(autoincrement())
+  recipeid  Int
+  keywordid Int
+  keywords  keywords @relation(fields: [keywordid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeKeywords_Keywords_KeywordId")
+  recipes   recipes  @relation(fields: [recipeid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RecipeKeywords_Recipes_RecipeId")
+
+  @@index([keywordid], map: "IX_RecipeKeywords_KeywordId")
+  @@index([recipeid], map: "IX_RecipeKeywords_RecipeId")
+}
+
+model recipes {
+  id               Int                @id(map: "PK_Recipes") @default(autoincrement())
+  date             DateTime           @db.Timestamptz(6)
+  description      String?
+  imageid          Int?
+  name             String?
+  ratingid         Int?
+  slug             String?
+  skilllevel       String?
+  timeid           Int?
+  yield            String?
+  ingredientgroups ingredientgroups[]
+  instructions     instructions[]
+  nutritionalinfos nutritionalinfos[]
+  recipecategories recipecategories[]
+  recipecuisines   recipecuisines[]
+  recipediets      recipediets[]
+  recipekeywords   recipekeywords[]
+  images           images?            @relation(fields: [imageid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Images_ImageId")
+  ratings          ratings?           @relation(fields: [ratingid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Ratings_RatingId")
+  times            times?             @relation(fields: [timeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Times_TimeId")
+  similarrecipes   similarrecipes[]
+
+  @@index([imageid], map: "IX_Recipes_ImageId")
+  @@index([ratingid], map: "IX_Recipes_RatingId")
+  @@index([timeid], map: "IX_Recipes_TimeId")
+}
+
+model similarrecipes {
+  id               Int      @id(map: "PK_SimilarRecipes") @default(autoincrement())
+  recipeid         Int?
+  similiarrecipeid Int?
+  recipes          recipes? @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_SimilarRecipes_Recipes_RecipeId")
+
+  @@index([recipeid], map: "IX_SimilarRecipes_RecipeId")
+}
+
+model terms {
+  id          Int           @id(map: "PK_Terms") @default(autoincrement())
+  type        String?
+  slug        String?
+  display     String?
+  taxonomy    String?
+  ingredients ingredients[]
+}
+
+model times {
+  id        Int       @id(map: "PK_Times") @default(autoincrement())
+  cooktime  Int
+  preptime  Int
+  totaltime Int
+  recipes   recipes[]
+}

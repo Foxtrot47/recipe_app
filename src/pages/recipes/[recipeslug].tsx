@@ -1,11 +1,10 @@
-import axios from "axios";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { fetchData, renderRating } from "../../Helpers";
+import { renderRating } from "../../Helpers";
 import { mealTypesSmall } from "../../SearchData";
 
 const Recipe = () => {
@@ -17,21 +16,19 @@ const Recipe = () => {
 
   useEffect(() => {
     if (recipeslug === undefined) return;
-    fetchData("recipebyslug", { slug: recipeslug }, "get", (response) => {
-      if (
-        response.status === 200 &&
-        response.data !== null &&
-        response.data.length > 0
-      ) {
-        setRecipeData(response.data[0]);
-        // The key is _id and not id because of the way mongodb stores data
-        // eslint-disable-next-line no-underscore-dangle
-        fetchReviews(response.data[0]._id);
+
+    ( async () => {
+      const fetchResponse = await fetch(`/api/recipebyslug?slug=${recipeslug}`);
+      const fetchResult = await fetchResponse.json();
+      if (fetchResponse.status === 200 && fetchResult !== null) {
+        setRecipeData(fetchResult);
+        fetchReviews(fetchResult.id);
         setLoading(false);
       } else {
-        console.log("uh oh");
+        console.log("Fetching resuls from API failed");
       }
-    });
+    })();
+
   }, [recipeslug]);
 
   const fetchReviews = async (recipeId) => {
@@ -45,19 +42,16 @@ const Recipe = () => {
       page: 1,
       client: "bbcgoodfood",
     };
-    await axios({
-      method: "get",
-      url: "https://reactions.api.immediate.co.uk/api/reactions?",
-      params,
-    }).then((response) => {
-      if (
-        response.status === 200 &&
-        response.data !== null &&
-        response.data["hydra:member"].length > 0
-      ) {
-        setReviews(response.data["hydra:member"]);
-      }
-    });
+    const response =  await fetch(`https://reactions.api.immediate.co.uk/api/reactions?${params}`);
+    const result = await response.json();
+    if (
+      response.status === 200 &&
+      result !== null &&
+      result["hydra:member"].length > 0
+    ) {
+      setReviews(result["hydra:member"]);
+    }
+
   };
 
   return (
@@ -65,8 +59,8 @@ const Recipe = () => {
       <div className="flex flex-col gap-y-4 relative justify-center items-center bg-red-500 h-56 md:h-72 text-white font-medium text-center">
         {!loading && (
           <img
-            src={recipeData.image.url}
-            alt={recipeData.image.alt}
+            src={recipeData.images.url}
+            alt={recipeData.images.alt}
             className="object-cover object-center w-full absolute opacity-10 h-full"
           />
         )}
@@ -79,13 +73,13 @@ const Recipe = () => {
             &nbsp;Home&nbsp;
             <i className="fa-regular fa-angle-right text-sm"></i>
           </Link>
-          {!loading && recipeData.category[0] && (
+          {!loading && recipeData.recipecategories[0] && (
             <Link
-              href={`/search?mealTypes=${recipeData.category[0]}`}
+              href={`/search?mealTypes=${recipeData.recipecategories[0].categories.name}`}
               className="hover:text-gray-100"
             >
               &nbsp;
-              {recipeData.category[0]}
+              {recipeData.recipecategories[0].categories.name}
               &nbsp;
               <i className="fa-regular fa-angle-right text-sm" />
             </Link>
@@ -103,34 +97,37 @@ const Recipe = () => {
                 {!loading && recipeData.author}
               </div>
             )}
-            {!loading && recipeData.cuisine.length > 0 && (
+            {!loading && recipeData.recipecuisines.length > 0 && (
               <div className="text-gray-500 dark:text-gray-100 flex flex-row gap-x-1">
                 <i className="text-red-500 font-bold fa-solid fa-bell-concierge"></i>
                 <span className="text-gray-500 dark:text-gray-400">
                   Cuisine:
                 </span>
-                <span>{recipeData.cuisine}</span>
+                {recipeData.recipecuisines.map((cu) => (
+                  <span key={cu.id}>{cu.cuisines.name},</span>
+                ))}
               </div>
             )}
-            {!loading && recipeData.category.length > 0 && (
+            {!loading && recipeData.recipecategories.length > 0 && (
               <div className="text-gray-500 dark:text-gray-100 flex flex-row gap-x-1">
                 <i className="text-red-500 font-bold fa-solid fa-book"></i>
                 <span className="text-gray-500 dark:text-gray-400">
                   Category:
                 </span>
-                {recipeData.category.map((cat) => (
-                  <span key={cat.id}>{cat},</span>
+                {recipeData.recipecategories.map((cat) => (
+                  <span key={cat.id}>{cat.categories.name},</span>
                 ))}
               </div>
             )}
-            {!loading && recipeData.diet.length > 0 && (
+            
+            {!loading && recipeData.recipediets.length > 0 && (
               <div className=" flex flex-row gap-x-4">
-                {recipeData.diet.map((dietInfo) => (
+                {recipeData.recipediets.map((recipediet) => (
                   <div
-                    key={dietInfo.id}
+                    key={recipediet.id}
                     className="flex flex-row gap-x-2 items-center whitespace-normal"
                   >
-                    {(dietInfo.slug === "diary-free" && (
+                    {(recipediet.diets.name === "diary-free" && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -139,7 +136,7 @@ const Recipe = () => {
                         <path d="M22.1 21.5L2.4 1.7L1.1 3L6.1 8C5.1 10.3 4.5 12.8 4.5 14.5C4.5 18.6 7.9 22 12 22C14.2 22 16.2 21 17.6 19.5L20.8 22.7L22.1 21.5M19.5 14.5C19.5 10.4 16.1 2 12 2C10.5 2 9.1 3.1 7.9 4.7L19.3 16.1C19.4 15.6 19.5 15.1 19.5 14.5Z" />
                       </svg>
                     )) ||
-                      (dietInfo.slug === "gluten-free" && (
+                      (recipediet.diets.name === "gluten-free" && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
@@ -150,13 +147,13 @@ const Recipe = () => {
                           <path d="M11.96,1.21C11.3,2.76 10.64,4.31 10.65,5.82C10.66,6.42 10.77,7 10.94,7.62C10.86,7.46 10.77,7.31 10.67,7.17C9.83,6 8.17,5 6.5,4C6.5,4.8 6.5,5.59 6.68,6.36L13,12.68V10.7C14.5,9.8 15.92,8.88 16.67,7.83C17.5,6.67 17.5,5.33 17.5,4C15.83,5 14.17,6 13.33,7.17C13.23,7.31 13.15,7.45 13.07,7.59C13.25,6.96 13.36,6.32 13.35,5.69C13.34,4.18 12.65,2.69 11.96,1.21M3.28,5.5L2,6.77L6.64,11.41C6.75,12 6.95,12.55 7.33,13.08C8.08,14.13 9.5,15.05 11,15.95V18.23L10.67,17.67C9.83,16.5 8.17,15.5 6.5,14.5C6.5,15.83 6.5,17.17 7.33,18.33C8.08,19.38 9.5,20.3 11,21.2V23H13V21.2C13.74,20.76 14.45,20.31 15.07,19.84L18.73,23.5L20,22.22C14,16.23 9.1,11.32 3.28,5.5M17.5,9.25C15.83,10.25 14.17,11.25 13.33,12.42L13.12,12.79L15,14.66C15.67,14.16 16.27,13.64 16.67,13.08C17.5,11.92 17.5,10.58 17.5,9.25M17.5,14.5C16.93,14.84 16.38,15.18 15.85,15.53L17.29,16.97C17.5,16.17 17.5,15.33 17.5,14.5Z" />
                         </svg>
                       )) ||
-                      (dietInfo.slug === "vegan" && (
+                      (recipediet.diets.name === "vegan" && (
                         <i className="fa-solid fa-circle-check text-red-500"></i>
                       )) ||
-                      (dietInfo.slug === "healthy" && (
+                      (recipediet.diets.name === "healthy" && (
                         <i className="fa-solid fa-heart text-red-500"></i>
                       ))}
-                    {dietInfo.display !== "Vegetarian" && dietInfo.display}
+                    {recipediet.diets.name !== "Vegetarian" && recipediet.display}
                   </div>
                 ))}
               </div>
@@ -168,14 +165,14 @@ const Recipe = () => {
                 <Image
                   fill={true}
                   className="object-cover object-center rounded"
-                  src={recipeData.image.url}
-                  alt={recipeData.image.alt}
+                  src={recipeData.images.url}
+                  alt={recipeData.images.alt}
                   priority={true}
                 />
               </div>
 
               <div className="flex flex-row gap-x-6 absolute bottom-3 md:bottom-5 left-3 md:left-5 y-0 bg-white">
-                {recipeData.diet.find(
+                {recipeData.recipediets.find(
                   (term) =>
                     term.display === "Vegetarian" || term.display === "Vegan"
                 ) ? (
@@ -200,7 +197,7 @@ const Recipe = () => {
               </div>
               <div className="absolute top-3 md:top-5 left-3 md:left-5 border border-black bg-white px-2 py-1">
                 <div className="flex flex-row gap-x-2 md:text-lg text-black">
-                  {renderRating(recipeData.rating.avg)}
+                  {renderRating(recipeData.ratings.avg)}
                 </div>
               </div>
             </div>
@@ -211,7 +208,7 @@ const Recipe = () => {
               <div className="flex flex-col">
                 <span className="text-xl font-semibold">Difficulty</span>
                 <span className="text-gray-400">
-                  {(!loading && recipeData.skillLevel) || "N/A"}
+                  {(!loading && recipeData.skilllevel) || "N/A"}
                 </span>
               </div>
             </div>
@@ -229,7 +226,7 @@ const Recipe = () => {
               <div className="flex flex-col">
                 <span className="text-xl font-semibold">Prep Time</span>
                 <span className="text-gray-400">
-                  {!loading && recipeData.time.prepTime}m
+                  {!loading && recipeData.times.preptime}m
                 </span>
               </div>
             </div>
@@ -238,7 +235,7 @@ const Recipe = () => {
               <div className="flex flex-col">
                 <span className="text-xl font-semibold">Cook Time</span>
                 <span className="text-gray-400">
-                  {!loading && recipeData.time.cookTime}m
+                  {!loading && recipeData.times.cooktime}m
                 </span>
               </div>
             </div>
@@ -256,17 +253,17 @@ const Recipe = () => {
               </div>
               <div className="flex flex-col gap-y-2 my-10">
                 {!loading &&
-                  recipeData.ingredients.map((section) => (
-                    <div key={section.id}>
-                      {section.heading && (
-                        <p className="text-2xl py-4">{section.heading}</p>
+                  recipeData.ingredientgroups.map((ingredientgroup) => (
+                    <div key={ingredientgroup.id}>
+                      {ingredientgroup.heading && (
+                        <p className="text-2xl py-4">{ingredientgroup.heading}</p>
                       )}
                       <div className="text-lg flex flex-col px-4 gap-y-4">
                         <ul className="list-disc">
-                          {section.ingredients.map((ingredient) => (
+                          {ingredientgroup.ingredients.map((ingredient) => (
                             <li key={ingredient.id}>
-                              {ingredient.quantityText} {}
-                              {ingredient.ingredientText}
+                              {ingredient.quantitytext} {}
+                              {ingredient.ingredienttext}
                               {ingredient.note}
                             </li>
                           ))}
@@ -310,7 +307,7 @@ const Recipe = () => {
             </div>
             <div className="grid grid-cols-8 gap-x-32 md:gap-x-32 py-8 overflow-x-scroll md:overflow-visible">
               {!loading &&
-                recipeData.nutritionalInfo.map((nutrition) => (
+                recipeData.nutritionalinfos.map((nutrition) => (
                   <div
                     key={nutrition.id}
                     className="flex flex-col gap-x-4 bg-gray-200 dark:bg-gray-600 items-center px-14 py-6 rounded-full"
@@ -384,7 +381,7 @@ const Recipe = () => {
           </div>
           <div className="flex flex-col gap-y-4 mb-4">
             {!loading &&
-              recipeData.similiarRecipes !== null &&
+              recipeData.similiarRecipes !== undefined &&
               recipeData.similiarRecipes.map((recipe) => (
                 <Link
                   key={recipe.id}
@@ -419,9 +416,9 @@ const Recipe = () => {
           </div>
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col w-16 px-2 pt-4 gap-y-4 text-xl text-gray-600 dark:text-gray-200 mb-4">
-              {mealTypesSmall.map((category) => (
+              {mealTypesSmall.map((category, id) => (
                 <Link
-                  key={category.id}
+                  key={id}
                   className="flex flex-row gap-x-2"
                   href={`/search?mealTypes=${category}`}
                 >

@@ -2,10 +2,11 @@ import serialize from "form-serialize";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import queryString from "query-string";
 import { useEffect, useState } from "react";
 
-import { fetchData, renderRating } from "../Helpers.js";
-import { filters } from "../SearchData.js";
+import { renderRating } from "../Helpers";
+import { filters } from "../SearchData";
 
 const Search = () => {
   const [results, setResults] = useState(null);
@@ -15,74 +16,50 @@ const Search = () => {
   const [resultCount, setResultCount] = useState(0);
 
   const router = useRouter();
-  let searchParams = router.query;
-
-  let reachedBottom = false,
-    resultsDup = null;
 
   useEffect(() => {
+    setResults(null);
+    setLoading(true);
+    setResultCount(0);
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [router.query]);
 
-  useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [results]);
+  const fetchResults = async () => {
+    if (Object.keys(router.query).length < 1) return;
 
-  const fetchResults = () => {
-    const body = {};
-    let params = new URLSearchParams(searchParams);
-    for (const [key, value] of params.entries()) {
-      body[key] = value;
-    }
-    if (resultCount > 0) body["offset"] = resultCount;
-    // Copy the search query to a hidden input field so that it will not get removed on parameter change
-    // This is because search query intially came from outside the form and serialize function will not see it
-    if (body["q"] && body["q"] !== "") {
-      setSearchQuery(body.q);
+    // Serialize the query parameters
+    let queryParams = router.query;
+
+    const additionalParams: Record<string, string> = {};
+    if (resultCount > 0) additionalParams.offset = resultCount.toString();
+
+    if (queryParams.name && queryParams.name != "")
+      setSearchQuery(queryParams.name.toString());
+
+    queryParams = {
+      ...queryParams,
+      ...additionalParams,
+    };
+    const serializedParams = queryString.stringify(queryParams);
+
+    const fetchResponse = await fetch(`/api/search?${serializedParams}`);
+    const fetchResult = await fetchResponse.json();
+    if (fetchResponse.status === 200 && fetchResult !== null) {
+      setResults(fetchResult);
+      setResultCount(resultCount + fetchResult.length);
+      setLoading(false);
     } else {
-      body["q"] = "";
+      console.log("Fetching resuls from API failed");
     }
-    fetchData("search", body, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        if (results !== null) {
-          setResults(results.concat(response.data));
-        } else {
-          reachedBottom = false;
-          setResults(response.data);
-        }
-        setResultCount(resultCount + response.data.length);
-
-        // If results are less than what we normally expect , don't turn on infinite scroll
-        if (response.data < 20) reachedBottom = true;
-        setLoading(false);
-      } else {
-        console.log("Fetching resuls from API failed");
-      }
-    });
   };
 
   const handleSubmit = () => {
     setResultCount(0);
-    reachedBottom = false;
     const data = serialize(document.getElementById("filters"), { hash: true });
     router.query = data;
     router.push(router);
     setFilterButtonClicked(false);
-  };
-
-  const onScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-    if (
-      scrollTop + clientHeight + 1000 >= scrollHeight &&
-      !reachedBottom &&
-      results !== null
-    ) {
-      fetchResults();
-    }
   };
 
   const handleFilterButtonTap = (state) => {
@@ -125,7 +102,7 @@ const Search = () => {
         <input
           type="text"
           id="queryField"
-          name="q"
+          name="name"
           className="hidden"
           value={searchQuery}
           readOnly
@@ -232,15 +209,15 @@ const Search = () => {
                   className="drop-shadow-xl filter rounded-lg object-cover object-center h-56 w-auto"
                   width={224}
                   height={224}
-                  src={recipe.image.url}
-                  alt={recipe.image.alt}
+                  src={recipe.images.url}
+                  alt={recipe.images.alt}
                 />
                 <div className="flex flex-col gap-y-2 px-4">
                   <p className="text-xl font-semibold truncate w-full dark:text-white">
                     {recipe.name}
                   </p>
                   <div className="flex flex-row gap-x-2 text-red-500">
-                    {renderRating(recipe.rating.avg)}
+                    {renderRating(recipe.ratings.avg)}
                   </div>
                   <div className="flex flex-row gap-x-2 text-sm"></div>
                   <p className="h-12 mb-4 w-full text-ellipsis overflow-hidden">

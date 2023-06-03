@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import CarouselComponent from "../components/CarouselComponent.js";
-import RecipeDataCard from "../components/RecipeCard.js";
-import { fetchData, renderRating } from "../Helpers.js";
-import { mealTypesSmall } from "../SearchData.js";
+import CarouselComponent from "../components/CarouselComponent";
+import RecipeDataCard from "../components/RecipeCard";
+import { renderRating } from "../Helpers";
+import { mealTypesSmall } from "../SearchData";
 
 const Home = () => {
   const [randomRecipeData, setRandomRecipeData] = useState([
@@ -26,44 +26,56 @@ const Home = () => {
   const carouselRecipeId = [267960, 220347, 219495, 662754, 238849, 231368];
   const additionalRecipesIds = [761239, 214598, 407804, 23096, 228763, 243415];
 
+  const [error, setError] = useState(false);
+
   useEffect(() => {
-    // Fetching random recipes
-    fetchData("random", { limit: 6 }, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        setRandomRecipeData(response.data);
-      } else {
-        console.log("Fetching random recipies from API failed");
+    (async () => {
+      try {
+        let response = await fetch("/api/random?limit=6");
+        let result = await response.json();
+        if (response.status !== 200 || result === null) throw "api failure";
+        setRandomRecipeData(result);
+      } catch (ex) {
+        setError(true);
+        console.error("Failed to fetch random recipe data");
       }
-    });
 
-    //Fetching carousel recipes
-    carouselRecipeId.map((id) => {
-      fetchData("recipebyid", { id: id }, "get", (response) => {
-        if (response.status === 200 && response.data !== null) {
-          setCarouselRecipeData((carouselRecipeData) => [
-            ...carouselRecipeData,
-            response.data,
-          ]);
-        } else {
-          console.log("Fetching carousel recipies from API failed");
-        }
-      });
-    });
+      try {
+        carouselRecipeId.map(async (id) => {
+          let response = await fetch(`/api/recipebyid?id=${id}`);
+          let result = await response.json();
+          if (response.status === 200 && result !== null) {
+            setCarouselRecipeData((carouselRecipeData) => [
+              ...carouselRecipeData,
+              result
+            ]);
+          } else {
+            throw "api failure";
+          }
+        });
+      } catch (ex) {
+        setError(true);
+        console.log("Fetching carousel recipies from API failed");
+      }
 
-    // Fetching additional recipes
-    setAdditionalRecipeData([]);
-    additionalRecipesIds.map((index) => {
-      fetchData("recipebyid", { id: index }, "get", (response) => {
-        if (response.status === 200 && response.data !== null) {
-          setAdditionalRecipeData((additionalRecipeData) => [
-            ...additionalRecipeData,
-            response.data,
-          ]);
-        } else {
-          console.log("Fetching additional recipies from API failed");
-        }
-      });
-    });
+      try {
+        additionalRecipesIds.map(async (id) => {
+          let response = await fetch(`/api/recipebyid?id=${id}`);
+          let result = await response.json();
+          if (response.status === 200 && result !== null) {
+            setAdditionalRecipeData((additionalRecipeData) => [
+              ...additionalRecipeData,
+              result,
+            ]);
+          } else {
+            throw "api failure";
+          }
+        });
+      } catch (ex) {
+        setError(true);
+        console.log("Fetching additional recipies from API failed");
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -87,13 +99,14 @@ const Home = () => {
   }, [additionalRecipeData]);
 
   const doAutoComplete = async () => {
-    const query = document.getElementById("searchfield").value;
-    if (query === "") setSearchResults(null);
-    fetchData("autocomplete", { q: query }, "get", (response) => {
-      if (response.status === 200 && response.data !== null) {
-        setSearchResults(response.data);
-      }
-    });
+    const query = (document.getElementById("searchfield") as HTMLInputElement).value;
+    let response = await fetch(`/api/autocomplete?q=${query}`);
+    let result = await response.json();
+    if (response.status === 200 && result !== null) {
+      setSearchResults(result);
+    } else {
+      throw "api failure";
+    }
   };
 
   const gotoSearch = (event) => {
@@ -120,7 +133,7 @@ const Home = () => {
               className="pl-11 py-4 w-full dark:bg-[#1d1e26] border-0 focus:border-gray-700 focus:ring-gray-900 caret-red-500 rounded-lg dark:placeholder:text-white dark:text-white text-lg"
               type="text"
               placeholder="Search for recipes"
-              onInput={doAutoComplete.bind()}
+              onInput={doAutoComplete.bind(this)}
               onKeyDown={gotoSearch}
               autoComplete="off"
             />
@@ -137,7 +150,7 @@ const Home = () => {
                     <Image
                       width={64}
                       height={64}
-                      src={recipe.image.url}
+                      src={recipe.images.url}
                       className="rounded"
                       alt={recipe.name + "image"}
                     />
@@ -156,6 +169,7 @@ const Home = () => {
             key={"recommended_recipe_" + id}
             recipeData={recipe}
             dataLoading={randomDataLoading}
+            error={error}
           />
         ))}
       </div>
@@ -178,6 +192,7 @@ const Home = () => {
                 key={"additional_recipe_" + id}
                 recipeData={recipe}
                 dataLoading={additionalDataLoading}
+                error={error}
               />
             ))}
           </div>
