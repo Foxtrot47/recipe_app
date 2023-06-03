@@ -7,14 +7,18 @@ export default async function handler(req, res) {
     }
 
     // You shouldn't await for the response
-    // The Scraper will take some time if there are lot of search results
-    if (req.query.name !== "")
-      fetch(
-        process.env.SCRAPER_API_URL +
-          "search?query=" +
-          req.query.name +
-          "&fetchSinglePage=false"
-      );
+    // The Scraper will take some time if there are a lot of search results
+    try {
+      isValidParam(req.query.name) &&
+        fetch(
+          process.env.SCRAPER_API_URL +
+            "search?query=" +
+            req.query.name +
+            "&fetchSinglePage=false"
+        );
+    } catch (ex) {
+      console.log("Failed to ping scraper");
+    }
 
     const kcalValues = {
       lte250: 250,
