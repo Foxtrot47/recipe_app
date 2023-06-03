@@ -3,10 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import queryString from "query-string";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
+import Pagination from "../components/Pagination";
+import { DOTS, usePagination } from "../components/usePagination";
 import { renderRating } from "../Helpers";
 import { filters } from "../SearchData";
+
+let PageSize = 20;
 
 const Search = () => {
   const [results, setResults] = useState(null);
@@ -14,16 +18,21 @@ const Search = () => {
   const [filterButtonClicked, setFilterButtonClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [resultCount, setResultCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const router = useRouter();
 
+  // For resetting page number on filter change
   useEffect(() => {
-    setResults(null);
+    setCurrentPage(1)
+  }, [router.query]);
+
+  useEffect(() => {
     setLoading(true);
-    setResultCount(0);
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query]);
+  }, [router.query,currentPage]);
+
 
   const fetchResults = async () => {
     if (Object.keys(router.query).length < 1) return;
@@ -32,7 +41,8 @@ const Search = () => {
     let queryParams = router.query;
 
     const additionalParams: Record<string, string> = {};
-    if (resultCount > 0) additionalParams.offset = resultCount.toString();
+    if (currentPage > 1)
+      additionalParams.skip = (currentPage * PageSize - PageSize).toString();
 
     if (queryParams.name && queryParams.name != "")
       setSearchQuery(queryParams.name.toString());
@@ -45,9 +55,9 @@ const Search = () => {
 
     const fetchResponse = await fetch(`/api/search?${serializedParams}`);
     const fetchResult = await fetchResponse.json();
-    if (fetchResponse.status === 200 && fetchResult !== null) {
-      setResults(fetchResult);
-      setResultCount(resultCount + fetchResult.length);
+    if (fetchResponse.status === 200 && fetchResult.recipes !== null) {
+      setResults(fetchResult.recipes);
+      setResultCount(fetchResult.total);
       setLoading(false);
     } else {
       console.log("Fetching resuls from API failed");
@@ -55,7 +65,9 @@ const Search = () => {
   };
 
   const handleSubmit = () => {
+    setResults(null);
     setResultCount(0);
+    setCurrentPage(1);
     const data = serialize(document.getElementById("filters"), { hash: true });
     router.query = data;
     router.push(router);
@@ -228,6 +240,18 @@ const Search = () => {
             );
           })}
       </div>
+      {!loading && results && resultCount > 0 && (
+        <div className="flex w-full justify-center my-6">
+          <Pagination
+            currentPage={currentPage}
+            totalCount={resultCount}
+            pageSize={PageSize}
+            onPageChange={(page: SetStateAction<number>) =>
+              setCurrentPage(page)
+            }
+          />
+        </div>
+      )}
     </div>
   );
 };
