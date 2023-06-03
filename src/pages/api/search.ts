@@ -21,7 +21,14 @@ export default async function handler(req, res) {
       lte500: 500,
       lte750: 750,
       lte1000: 1000,
-      lte1500: 1500
+      lte1500: 1500,
+    };
+
+    const ratingValues = {
+      gte1: 1,
+      gte2: 2,
+      gte3: 3,
+      gte4: 4,
     };
 
     const totalTimes = {
@@ -95,9 +102,15 @@ export default async function handler(req, res) {
               req.query.totaltime === "gt60" && { gte: 60 }) ||
             undefined,
         },
-        ratings: isValidParam(req.query.rating)
-          ? { avg: { lte: req.query.rating.trim() } }
-          : undefined,
+        ratings:
+          (isValidParam(req.query.rating) && {
+            avg: { lte: ratingValues[req.query.rating.trim()] },
+          }) ||
+          (isValidParam(req.query.rating) &&
+            req.query.rating !== "eq5" && {
+              avg: { lte: ratingValues[req.query.rating.trim()] },
+            }) ||
+          undefined,
         skilllevel: isValidParam(req.query.skillLevel)
           ? req.query.skillLevel.trim()
           : undefined,
