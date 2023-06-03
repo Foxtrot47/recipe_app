@@ -88,6 +88,8 @@ const fetchJsonBySlug = async (slug: string) => {
         },
       },
       instructions: true,
+      nutritionalinfos: true,
+      ratings: true,
       recipekeywords: {
         select: {
           keywords: true,
@@ -98,7 +100,10 @@ const fetchJsonBySlug = async (slug: string) => {
           similiarrecipeid: true,
         },
       },
+      skilllevel: true,
       slug: true,
+      times: true,
+      yield: true,
     },
   });
 };
