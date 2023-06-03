@@ -416,9 +416,9 @@ const Recipe = () => {
           </div>
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col w-16 px-2 pt-4 gap-y-4 text-xl text-gray-600 dark:text-gray-200 mb-4">
-              {mealTypesSmall.map((category) => (
+              {mealTypesSmall.map((category, id) => (
                 <Link
-                  key={category.id}
+                  key={id}
                   className="flex flex-row gap-x-2"
                   href={`/search?mealTypes=${category}`}
                 >
