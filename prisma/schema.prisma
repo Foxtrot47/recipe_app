@@ -13,6 +13,22 @@ model categories {
   recipecategories recipecategories[]
 }
 
+model collectionrecipes {
+  id           Int         @id(map: "PK_CollectionRecipes") @default(autoincrement())
+  collectionid Int
+  recipeid     Int
+  collections  collections @relation(fields: [collectionid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CollectionRecipes_CollectionId")
+  recipes      recipes     @relation(fields: [recipeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CollectionRecipes_RecipeId")
+}
+
+model collections {
+  id                Int                 @id(map: "PK_Collections") @default(autoincrement())
+  name              String
+  description       String?
+  slug              String?
+  collectionrecipes collectionrecipes[]
+}
+
 model cuisines {
   id             Int              @id(map: "PK_Cuisines") @default(autoincrement())
   name           String?
@@ -142,27 +158,28 @@ model recipekeywords {
 }
 
 model recipes {
-  id               Int                @id(map: "PK_Recipes") @default(autoincrement())
-  date             DateTime           @db.Timestamptz(6)
-  description      String?
-  imageid          Int?
-  name             String?
-  ratingid         Int?
-  slug             String?
-  skilllevel       String?
-  timeid           Int?
-  yield            String?
-  ingredientgroups ingredientgroups[]
-  instructions     instructions[]
-  nutritionalinfos nutritionalinfos[]
-  recipecategories recipecategories[]
-  recipecuisines   recipecuisines[]
-  recipediets      recipediets[]
-  recipekeywords   recipekeywords[]
-  images           images?            @relation(fields: [imageid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Images_ImageId")
-  ratings          ratings?           @relation(fields: [ratingid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Ratings_RatingId")
-  times            times?             @relation(fields: [timeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Times_TimeId")
-  similarrecipes   similarrecipes[]
+  id                Int                 @id(map: "PK_Recipes") @default(autoincrement())
+  date              DateTime            @db.Timestamptz(6)
+  description       String?
+  imageid           Int?
+  name              String?
+  ratingid          Int?
+  slug              String?
+  skilllevel        String?
+  timeid            Int?
+  yield             String?
+  collectionrecipes collectionrecipes[]
+  ingredientgroups  ingredientgroups[]
+  instructions      instructions[]
+  nutritionalinfos  nutritionalinfos[]
+  recipecategories  recipecategories[]
+  recipecuisines    recipecuisines[]
+  recipediets       recipediets[]
+  recipekeywords    recipekeywords[]
+  images            images?             @relation(fields: [imageid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Images_ImageId")
+  ratings           ratings?            @relation(fields: [ratingid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Ratings_RatingId")
+  times             times?              @relation(fields: [timeid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Recipes_Times_TimeId")
+  similarrecipes    similarrecipes[]
 
   @@index([imageid], map: "IX_Recipes_ImageId")
   @@index([ratingid], map: "IX_Recipes_RatingId")
