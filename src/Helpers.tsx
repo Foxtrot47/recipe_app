@@ -19,4 +19,10 @@ const renderRating = (rating) => {
   return out;
 };
 
-export { renderRating };
+const isValidStringParam = (param) =>
+  typeof param === "string" &&
+  param !== undefined &&
+  param !== null &&
+  param.trim() !== "";
+
+export { isValidStringParam,renderRating  };
