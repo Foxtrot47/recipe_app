@@ -11,27 +11,45 @@ const Recipe = () => {
   const [recipeData, setRecipeData] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [similiarRecipes, setSimiliarRecipes] = useState(null);
+  const [similiarRecipeLoading, setSimiliarRecipeLoading] = useState(true);
+
   const router = useRouter();
   const { recipeslug } = router.query;
 
   useEffect(() => {
     if (recipeslug === undefined) return;
 
-    ( async () => {
+    (async () => {
       const fetchResponse = await fetch(`/api/recipebyslug?slug=${recipeslug}`);
       const fetchResult = await fetchResponse.json();
       if (fetchResponse.status === 200 && fetchResult !== null) {
         setRecipeData(fetchResult);
+        fetchSimiliarRecipes(fetchResult.id);
         fetchReviews(fetchResult.id);
         setLoading(false);
       } else {
         console.log("Fetching resuls from API failed");
       }
     })();
-
   }, [recipeslug]);
 
-  const fetchReviews = async (recipeId) => {
+  const fetchSimiliarRecipes = async (recipeid: number) => {
+    try {
+      const response = await fetch(
+        `/api/similiarrecipesbyid?recipeid=${recipeid}&limit=5`
+      );
+      const result = await response.json();
+      if (response.status === 200 && result !== null) {
+        setSimiliarRecipes(result.recipes);
+        setSimiliarRecipeLoading(false);
+      } else throw "failed to fetch recipes";
+    } catch (ex) {
+      console.error("Failed to fetch similiar recipes");
+    }
+  };
+
+  const fetchReviews = async (recipeId: number) => {
     // Required params for comments api
     const params = {
       siteId: "bbcgoodfood",
@@ -42,7 +60,9 @@ const Recipe = () => {
       page: 1,
       client: "bbcgoodfood",
     };
-    const response =  await fetch(`https://reactions.api.immediate.co.uk/api/reactions?${params}`);
+    const response = await fetch(
+      `https://reactions.api.immediate.co.uk/api/reactions?${params}`
+    );
     const result = await response.json();
     if (
       response.status === 200 &&
@@ -51,7 +71,6 @@ const Recipe = () => {
     ) {
       setReviews(result["hydra:member"]);
     }
-
   };
 
   return (
@@ -119,7 +138,7 @@ const Recipe = () => {
                 ))}
               </div>
             )}
-            
+
             {!loading && recipeData.recipediets.length > 0 && (
               <div className=" flex flex-row gap-x-4">
                 {recipeData.recipediets.map((recipediet) => (
@@ -153,7 +172,8 @@ const Recipe = () => {
                       (recipediet.diets.name === "healthy" && (
                         <i className="fa-solid fa-heart text-red-500"></i>
                       ))}
-                    {recipediet.diets.name !== "Vegetarian" && recipediet.display}
+                    {recipediet.diets.name !== "Vegetarian" &&
+                      recipediet.display}
                   </div>
                 ))}
               </div>
@@ -256,7 +276,9 @@ const Recipe = () => {
                   recipeData.ingredientgroups.map((ingredientgroup) => (
                     <div key={ingredientgroup.id}>
                       {ingredientgroup.heading && (
-                        <p className="text-2xl py-4">{ingredientgroup.heading}</p>
+                        <p className="text-2xl py-4">
+                          {ingredientgroup.heading}
+                        </p>
                       )}
                       <div className="text-lg flex flex-col px-4 gap-y-4">
                         <ul className="list-disc">
@@ -380,29 +402,29 @@ const Recipe = () => {
             </span>
           </div>
           <div className="flex flex-col gap-y-4 mb-4">
-            {!loading &&
-              recipeData.similiarRecipes !== undefined &&
-              recipeData.similiarRecipes.map((recipe) => (
+            {!similiarRecipeLoading &&
+              similiarRecipes !== undefined &&
+              similiarRecipes.map((recipe, id) => (
                 <Link
-                  key={recipe.id}
+                  key={id}
                   className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
-                  href={recipe.url}
+                  href={"/recipes/" + recipe.slug}
                 >
                   <div className="flex-none">
                     <Image
                       width={96}
                       height={96}
                       className="object-cover object-center h-24 rounded-lg"
-                      src={recipe.image.url}
-                      alt={recipe.image.alt}
+                      src={recipe.images.url}
+                      alt={recipe.images.alt}
                     />
                   </div>
-                  <div className="flex flex-col justify-around items-start">
+                  <div className="flex flex-col justify-around place-content-start">
                     <p className="text-lg font-semibold text-clip overflow-hidden w-50">
-                      {recipe.title}
+                      {recipe.name}
                     </p>
                     <div className="flex flex-row gap-x-2 text-red-500 text-sm">
-                      {renderRating(recipe.rating.ratingValue)}
+                      {renderRating(recipe.ratings.avg)}
                     </div>
                   </div>
                 </Link>

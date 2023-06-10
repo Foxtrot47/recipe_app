@@ -63,6 +63,7 @@ const fetchJsonBySlug = async (slug: string) => {
       slug,
     },
     select: {
+      id: true,
       date: true,
       description: true,
       images: true,
