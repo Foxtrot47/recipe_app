@@ -1,9 +1,10 @@
+import { Listbox, Transition } from "@headlessui/react";
 import serialize from "form-serialize";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import queryString from "query-string";
-import { SetStateAction, useEffect, useState } from "react";
+import { Fragment, SetStateAction, useEffect, useState } from "react";
 
 import Pagination from "../components/Pagination";
 import { DOTS, usePagination } from "../components/usePagination";
@@ -24,15 +25,14 @@ const Search = () => {
 
   // For resetting page number on filter change
   useEffect(() => {
-    setCurrentPage(1)
+    setCurrentPage(1);
   }, [router.query]);
 
   useEffect(() => {
     setLoading(true);
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query,currentPage]);
-
+  }, [router.query, currentPage]);
 
   const fetchResults = async () => {
     if (Object.keys(router.query).length < 1) return;
@@ -90,13 +90,12 @@ const Search = () => {
       <form
         id="filters"
         className={`drop-shadow text-black bg-white dark:bg-gray-600 dark:text-gray-100
-                    md:fixed md:w-full md:flex md:flex-row md:px-10 md:justify-around md:h-auto md:-top-2 md:z-10
-                    fixed h-screen w-screen flex-col overscroll-contain z-30
-                    transition ease-in-out duration-700 top-0
+                    md:flex md:flex-row md:px-10 md:justify-around fixed md:static h-screen md:h-max
+                    w-screen md:w-auto flex-col overscroll-contain z-30 md:z-10 transition ease-in-out duration-700
                     ${
                       filterButtonClicked
                         ? "flex translate-y-0"
-                        : "translate-y-full"
+                        : "translate-y-full md:translate-y-0"
                     }
                   `}
       >
@@ -121,82 +120,97 @@ const Search = () => {
         />
         {Object.keys(filters).map((i) => {
           return (
-            <div
-              key={i}
-              className={
-                "items-center gap-x-2 group py-5 px-6 text-xl justify-between grid grid-cols-2 md:flex md:flex-row " +
-                (!filters[i]["full-width"] && "md:relative")
-              }
-            >
-              {filters[i].name}
-              <i className="hidden md:block fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
-
-              <select
-                className="md:hidden rounded-lg bg-gray-800 focus:border-red-500 focus:ring-0"
-                name={filters[i].slug}
-              >
-                <option value="">Any</option>
-                {filters[i].data.map((filterItem, id) => {
-                  return (
-                    <option
-                      key={id}
-                      value={
-                        typeof filterItem !== "object"
-                          ? filterItem
-                          : Object.keys(filterItem)[0]
-                      }
-                      onChange={handleSubmit}
-                    >
-                      {typeof filterItem !== "object"
-                        ? filterItem
-                        : Object.values(filterItem)[0]}
-                    </option>
-                  );
-                })}
-              </select>
+            <>
+              {/* Mobile Select Menu Start */}
               <div
-                className={
-                  "hidden md:group-hover:block absolute bg-white dark:bg-gray-600 drop-shadow-lg py-8 z-20 gap-y-2 top-[64px] h-max " +
-                  (filters[i]["full-width"] ? "w-screen " : "w-72 ") +
-                  (filters[i].name === "Servings"
-                    ? "md:right-0 w-44 "
-                    : "md:left-0")
-                }
+                key={i}
+                className="items-center gap-x-2 group py-5 px-6 text-xl justify-between grid grid-cols-2 md:hidden"
               >
-                <div
-                  className={`text-xl gap-x-10 items-center justify-between px-10
-                              grid gap-y-4 grid-cols-1 
-                              ${filters[i]["full-width"] && "grid-cols-5"}
-                  `}
+                {filters[i].name}
+                <i className="hidden md:block fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"></i>
+
+                <select
+                  className="md:hidden rounded-lg bg-gray-800 focus:border-red-500 focus:ring-0"
+                  name={filters[i].slug}
                 >
+                  <option value="">Any</option>
                   {filters[i].data.map((filterItem, id) => {
                     return (
-                      <div
+                      <option
                         key={id}
-                        className="flex flex-row gap-x-4 dark:text-gray-400 dark:hover:text-gray-200 items-center"
-                      >
-                        <input
-                          type="checkbox"
-                          name={filters[i].slug}
-                          value={
-                            typeof filterItem !== "object"
-                              ? filterItem
-                              : Object.keys(filterItem)[0]
-                          }
-                          className="w-5 accent-red-500"
-                          onChange={handleSubmit}
-                        />
-                        <p>
-                          {typeof filterItem !== "object"
+                        value={
+                          typeof filterItem !== "object"
                             ? filterItem
-                            : Object.values(filterItem)[0]}
-                        </p>
-                      </div>
+                            : Object.keys(filterItem)[0]
+                        }
+                        onChange={handleSubmit}
+                      >
+                        {typeof filterItem !== "object"
+                          ? filterItem
+                          : Object.values(filterItem)[0]}
+                      </option>
                     );
                   })}
-                </div>
+                </select>
               </div>
-            </div>
+              {/* Mobile Select Menu End */}
+
+              <Listbox as="div" className="hidden md:block" >
+                <div>
+                  <Listbox.Button className="relative w-full cursor-default rounded-lg text-xl py-4 pl-4 pr-10 text-left hover:text-red-500">
+                    <span className="block">{filters[i].name}</span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <i
+                        className="hidden md:block fa-solid fa-angle-down group-hover:rotate-180 transition ease-out duration-300"
+                        aria-hidden="true"
+                      ></i>
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 max-h-96 w-auto overflow-auto rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      {filters[i].data.map((filterItem, id) => (
+                        <Listbox.Option
+                          key={id}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              active ? "bg-red-100 text-black dark:text-white dark:bg-red-500" : "text-gray-900 dark:text-gray-200"
+                            }`
+                          }
+                          value={filterItem}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block ${
+                                  selected ? "font-medium" : "font-normal"
+                                }`}
+                              >
+                                {typeof filterItem !== "object"
+                                  ? filterItem
+                                  : Object.values(filterItem)[0]}
+                              </span>
+                              {selected ? (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-red-600 dark:text-red-400">
+                                  <i
+                                    className="h-5 w-5 fa-solid fa-check"
+                                    aria-hidden="true"
+                                  ></i>
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+            </>
           );
         })}
 
