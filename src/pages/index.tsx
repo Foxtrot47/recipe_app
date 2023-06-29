@@ -13,9 +13,7 @@ const Home = () => {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
   ]);
   const [carouselRecipeData, setCarouselRecipeData] = useState([]);
-  const [additionalRecipeData, setAdditionalRecipeData] = useState([
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-  ]);
+  const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
 
   const [randomDataLoading, setRandomDataLoading] = useState(true);
   const [carouselDataLoading, setCarouselDataLoading] = useState(true);
@@ -23,8 +21,22 @@ const Home = () => {
 
   const [searchResult, setSearchResults] = useState(null);
   const router = useRouter();
-  const carouselRecipeId = [267960, 220347, 219495, 662754, 238849, 231368];
-  const additionalRecipesIds = [761239, 214598, 407804, 23096, 228763, 243415];
+  const carouselRecipeSlugs = [
+    "pecan-mince-pie",
+    "chunky-vegetable-brown-rice-soup",
+    "orange-fennel-wild-rice-salad",
+    "pork-shoulder-braised-black-vinegar-rice-wine-pickled-chillies",
+    "prawn-cakes-cucumber-peanut-relish",
+    "lamb-dopiaza-broccoli-rice",
+  ];
+  const additionalRecipeSlugs = [
+    "mincemeat-shortbread-squares",
+    "chicken-mushroom-risotto",
+    "congee-soy-eggs",
+    "korean-style-fried-rice",
+    "quinoa-stir-fried-winter-veg",
+    "quinoa-stir-fried-winter-veg",
+  ];
 
   const [error, setError] = useState(false);
 
@@ -41,13 +53,13 @@ const Home = () => {
       }
 
       try {
-        carouselRecipeId.map(async (id) => {
-          let response = await fetch(`/api/recipebyid?id=${id}`);
+        carouselRecipeSlugs.map(async (slug) => {
+          let response = await fetch(`/api/recipebyslug?slug=${slug}`);
           let result = await response.json();
           if (response.status === 200 && result !== null) {
             setCarouselRecipeData((carouselRecipeData) => [
               ...carouselRecipeData,
-              result
+              result,
             ]);
           } else {
             throw "api failure";
@@ -59,8 +71,8 @@ const Home = () => {
       }
 
       try {
-        additionalRecipesIds.map(async (id) => {
-          let response = await fetch(`/api/recipebyid?id=${id}`);
+        additionalRecipeSlugs.map(async (slug) => {
+          let response = await fetch(`/api/recipebyslug?slug=${slug}`);
           let result = await response.json();
           if (response.status === 200 && result !== null) {
             setAdditionalRecipeData((additionalRecipeData) => [
@@ -92,14 +104,14 @@ const Home = () => {
   }, [carouselRecipeData]);
 
   useEffect(() => {
-    console.log(additionalRecipeData);
     if (additionalRecipeData != null && additionalRecipeData[0] != 0) {
       setAdditionalDataLoading(false);
     }
   }, [additionalRecipeData]);
 
   const doAutoComplete = async () => {
-    const query = (document.getElementById("searchfield") as HTMLInputElement).value;
+    const query = (document.getElementById("searchfield") as HTMLInputElement)
+      .value;
     let response = await fetch(`/api/autocomplete?q=${query}`);
     let result = await response.json();
     if (response.status === 200 && result !== null) {
@@ -204,7 +216,7 @@ const Home = () => {
               </span>
             </div>
             <div className="flex flex-col gap-y-6">
-              {additionalRecipesIds.map((id) => {
+              {additionalRecipeSlugs.map((recipe, id) => {
                 return (
                   <div
                     key={id}
