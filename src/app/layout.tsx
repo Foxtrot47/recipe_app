@@ -1,15 +1,15 @@
 import "../styles/globals.css";
 
 import { Analytics } from "@vercel/analytics/react";
+import type { Metadata } from "next";
 import {
   Inter,
   Playfair_Display,
-  Source_Sans_Pro,
+  Source_Sans_3,
   Work_Sans,
 } from "next/font/google";
 
 import Navbar from "../components/Navbar";
-import ScrollToTop from "../components/ScrollToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
 });
 
-const sourceSans = Source_Sans_Pro({
+const sourceSans = Source_Sans_3({
   display: "swap",
   weight: ["200", "300", "400", "600", "700", "900"],
   style: ["normal", "italic"],
@@ -37,14 +37,23 @@ const workSans = Work_Sans({
   variable: "--font-work-sans",
 });
 
-export default function App({ Component, pageProps }) {
+export const metadata: Metadata = {
+  title: "Recipes",
+  description: "A simple recipe website",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-      <Navbar />
-      <ScrollToTop>
-        <Component {...pageProps} />
-      </ScrollToTop>
-      <Analytics />
-    </>
+    <html lang="en">
+      <body className={`${inter.className} dark:bg-gray-800 dark:text-gray-300`}>
+        <Navbar />
+        {children}
+        <Analytics />
+      </body>
+    </html>
   );
 }
