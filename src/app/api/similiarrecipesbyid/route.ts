@@ -1,20 +1,21 @@
-import { isValidStringParam } from "../../Helpers";
-import prisma from "../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function handler(req, res) {
+import { isValidStringParam } from "../../../Helpers";
+import prisma from "../../../lib/prisma";
+
+export async function GET(request: NextRequest) {
   try {
-    if (req.method !== "GET") {
-      return res.status(404).send("Use GET");
-    }
-
-    const { limit, recipeid, skip } = req.query;
-
+    const searchParams = request.nextUrl.searchParams;
+    const recipeid = searchParams.get("recipeid");
+    const limit = searchParams.get("limt");
+    const skip = searchParams.get("skip");
+    
     if (!recipeid || recipeid == null) {
-      return res.status(404).send("Must specify recipeid");
+      return new NextResponse("Must specify recipeid", { status: 400 });
     }
 
     if (!isValidStringParam(recipeid)) {
-      return res.status(404).send("Invalid recipeid");
+      return new NextResponse("Invalid recipeid", { status: 400 });
     }
 
     const similiarRecipes = await prisma.similarrecipes.findMany({
@@ -59,9 +60,9 @@ export default async function handler(req, res) {
       skip: isValidStringParam(skip) ? Number(skip) : 0,
       total: count,
     };
-    return res.json(output);
+    return NextResponse.json(output);
   } catch (ex) {
     console.error(ex);
-    return res.status(500).send();
+    return new NextResponse(null, { status: 500 });
   }
 }

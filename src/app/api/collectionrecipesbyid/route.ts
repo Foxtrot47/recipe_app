@@ -1,18 +1,21 @@
-import { isValidStringParam } from "../../Helpers";
-import prisma from "../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function handler(req, res) {
+import { isValidStringParam } from "../../../Helpers";
+import prisma from "../../../lib/prisma";
+
+export async function GET(request: NextRequest) {
   try {
-    if (req.method !== "GET") {
-      return res.status(404).send("Use GET");
+    const searchParams = request.nextUrl.searchParams;
+    const collectionid = searchParams.get("collectionid");
+    const limt = searchParams.get("limt");
+    const skip = searchParams.get("skip");
+
+    if (!collectionid || collectionid == null) {
+      return new NextResponse("Must specify collectionid", { status: 400 });
     }
 
-    if (!req.query.collectionid || req.query.collectionid == null) {
-      return res.status(404).send("Must specify collectionid");
-    }
-
-    if (!isValidStringParam(req.query.collectionid)) {
-      return res.status(404).send("Invalid collectionid");
+    if (!isValidStringParam(collectionid)) {
+      return new NextResponse("Invalid collectionid", { status: 400 });
     }
 
     // You shouldn't await for the response
@@ -21,7 +24,7 @@ export default async function handler(req, res) {
       fetch(
         process.env.SCRAPER_API_URL +
           "search?query=" +
-          req.query.name +
+          collectionid +
           "&fetchSinglePage=false"
       );
     } catch (ex) {
@@ -30,7 +33,7 @@ export default async function handler(req, res) {
 
     const recipeCount = await prisma.collectionrecipes.count({
       where: {
-        collectionid: Number(req.query.collectionid),
+        collectionid: Number(collectionid),
       },
     });
 
@@ -39,24 +42,24 @@ export default async function handler(req, res) {
       where: {
         collectionrecipes: {
           every: {
-            collectionid: Number(req.query.collectionid),
+            collectionid: Number(collectionid),
           },
         },
       },
-      take: isValidStringParam(req.query.limt) ? Number(req.query.limt) : 20,
-      skip: isValidStringParam(req.query.skip) ? Number(req.query.skip) : 0,
+      take: isValidStringParam(limt) ? Number(limt) : 20,
+      skip: isValidStringParam(skip) ? Number(skip) : 0,
     });
 
     const output = {
       recipes,
       limit: recipes.length,
-      skip: isValidStringParam(req.query.skip) ? Number(req.query.skip) : 0,
+      skip: isValidStringParam(skip) ? Number(skip) : 0,
       total: recipeCount,
     };
-    return res.json(output);
+    return NextResponse.json(output);
   } catch (ex) {
     console.error(ex);
-    return res.status(500).send();
+    return new NextResponse(null, { status: 500});
   }
 }
 
