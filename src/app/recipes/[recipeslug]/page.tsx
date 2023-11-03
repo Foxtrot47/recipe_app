@@ -1,30 +1,29 @@
+"use client";
+
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 
-import { renderRating } from "../../Helpers";
-import { mealTypesSmall } from "../../SearchData";
+import { renderRating } from "../../../Helpers";
+import { mealTypesSmall } from "../../../SearchData";
 
-const Recipe = () => {
+export default function Page({ params }: { params: { recipeslug: string } }) {
   const [recipeData, setRecipeData] = useState(null);
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [similiarRecipes, setSimiliarRecipes] = useState(null);
   const [similiarRecipeLoading, setSimiliarRecipeLoading] = useState(true);
 
-  const router = useRouter();
-  const { recipeslug } = router.query;
 
   useEffect(() => {
-    if (recipeslug === undefined) return;
+    if (params.recipeslug === undefined) return;
 
     (async () => {
-      const fetchResponse = await fetch(`/api/recipebyslug?slug=${recipeslug}`);
+      const fetchResponse = await fetch(`/api/recipebyslug?slug=${params.recipeslug}`);
       const fetchResult = await fetchResponse.json();
       if (fetchResponse.status === 200 && fetchResult !== null) {
-        setRecipeData(fetchResult);
+        setRecipeData(fetchResult.result);
         fetchSimiliarRecipes(fetchResult.id);
         fetchReviews(fetchResult.id);
         setLoading(false);
@@ -32,7 +31,7 @@ const Recipe = () => {
         console.log("Fetching resuls from API failed");
       }
     })();
-  }, [recipeslug]);
+  }, [params.recipeslug]);
 
   const fetchSimiliarRecipes = async (recipeid: number) => {
     try {
@@ -122,8 +121,8 @@ const Recipe = () => {
                 <span className="text-gray-500 dark:text-gray-400">
                   Cuisine:
                 </span>
-                {recipeData.recipecuisines.map((cu) => (
-                  <span key={cu.id}>{cu.cuisines.name},</span>
+                {recipeData.recipecuisines.map((cu, index: Key) => (
+                  <span key={index}>{cu.cuisines.name},</span>
                 ))}
               </div>
             )}
@@ -133,17 +132,17 @@ const Recipe = () => {
                 <span className="text-gray-500 dark:text-gray-400">
                   Category:
                 </span>
-                {recipeData.recipecategories.map((cat) => (
-                  <span key={cat.id}>{cat.categories.name},</span>
+                {recipeData.recipecategories.map((cat, index: Key) => (
+                  <span key={index}>{cat.categories.name},</span>
                 ))}
               </div>
             )}
 
             {!loading && recipeData.recipediets.length > 0 && (
               <div className=" flex flex-row gap-x-4">
-                {recipeData.recipediets.map((recipediet) => (
+                {recipeData.recipediets.map((recipediet, index: Key) => (
                   <div
-                    key={recipediet.id}
+                    key={index}
                     className="flex flex-row gap-x-2 items-center whitespace-normal"
                   >
                     {(recipediet.diets.name === "diary-free" && (
@@ -193,7 +192,7 @@ const Recipe = () => {
 
               <div className="flex flex-row gap-x-6 absolute bottom-3 md:bottom-5 left-3 md:left-5 y-0 bg-white">
                 {recipeData.recipediets.find(
-                  (term) =>
+                  (term: { display: string; }) =>
                     term.display === "Vegetarian" || term.display === "Vegan"
                 ) ? (
                   <svg
@@ -273,8 +272,8 @@ const Recipe = () => {
               </div>
               <div className="flex flex-col gap-y-2 my-10">
                 {!loading &&
-                  recipeData.ingredientgroups.map((ingredientgroup) => (
-                    <div key={ingredientgroup.id}>
+                  recipeData.ingredientgroups.map((ingredientgroup, index: Key) => (
+                    <div key={index}>
                       {ingredientgroup.heading && (
                         <p className="text-2xl py-4">
                           {ingredientgroup.heading}
@@ -282,8 +281,8 @@ const Recipe = () => {
                       )}
                       <div className="text-lg flex flex-col px-4 gap-y-4">
                         <ul className="list-disc">
-                          {ingredientgroup.ingredients.map((ingredient) => (
-                            <li key={ingredient.id}>
+                          {ingredientgroup.ingredients.map((ingredient, index: Key) => (
+                            <li key={index}>
                               {ingredient.quantitytext} {}
                               {ingredient.ingredienttext}
                               {ingredient.note}
@@ -304,7 +303,7 @@ const Recipe = () => {
               </div>
               <div className="flex flex-col gap-y-9 my-10">
                 {!loading &&
-                  recipeData.instructions.map((instruction, id) => (
+                  recipeData.instructions.map((instruction, id: number) => (
                     <div key={instruction.id} className="flex flex-row gap-x-4">
                       <div className="h-10 pr-4 py-1 border-r-red-500 border-r-2 flex items-center text-2xl flex-none">
                         Step {id + 1}
@@ -329,9 +328,9 @@ const Recipe = () => {
             </div>
             <div className="grid grid-cols-8 gap-x-32 md:gap-x-32 py-8 overflow-x-scroll md:overflow-visible">
               {!loading &&
-                recipeData.nutritionalinfos.map((nutrition) => (
+                recipeData.nutritionalinfos.map((nutrition, index: Key) => (
                   <div
-                    key={nutrition.id}
+                    key={index}
                     className="flex flex-col gap-x-4 bg-gray-200 dark:bg-gray-600 items-center px-14 py-6 rounded-full"
                   >
                     <p className="text-lg pt-1 whitespace-pre-wrap">
@@ -358,9 +357,9 @@ const Recipe = () => {
             <div className="flex flex-col gap-y-8 py-8 md:w-5/6">
               {!loading &&
                 reviews != null &&
-                reviews.map((review) => (
+                reviews.map((review, index: Key) => (
                   <div
-                    key={review.id}
+                    key={index}
                     className="flex flex-col gap-y-4 p-4 bg-gray-100 dark:bg-gray-600 rounded-lg drop-shadow"
                   >
                     <div className="flex flex-col md:flex-row md:gap-x-4 gap-y-2 justify-between items-start">
@@ -404,7 +403,7 @@ const Recipe = () => {
           <div className="flex flex-col gap-y-4 mb-4">
             {!similiarRecipeLoading &&
               similiarRecipes !== undefined &&
-              similiarRecipes.map((recipe, id) => (
+              similiarRecipes.map((recipe, id: Key) => (
                 <Link
                   key={id}
                   className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
@@ -455,5 +454,3 @@ const Recipe = () => {
     </div>
   );
 };
-
-export default Recipe;

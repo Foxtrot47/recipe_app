@@ -1,14 +1,16 @@
+"use client";
+
 import serialize from "form-serialize";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 
-import Pagination from "../components/Pagination";
-import { DOTS, usePagination } from "../components/usePagination";
-import { renderRating } from "../Helpers";
-import { filters } from "../SearchData";
+import Pagination from "../../components/Pagination";
+import { DOTS, usePagination } from "../../components/usePagination";
+import { renderRating } from "../../Helpers";
+import { filters } from "../../SearchData";
 
 let PageSize = 20;
 
@@ -21,39 +23,29 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   // For resetting page number on filter change
   useEffect(() => {
-    setCurrentPage(1)
-  }, [router.query]);
+    setCurrentPage(1);
+  }, [searchParams]);
 
   useEffect(() => {
     setLoading(true);
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query,currentPage]);
-
+  }, [searchParams, currentPage]);
 
   const fetchResults = async () => {
-    if (Object.keys(router.query).length < 1) return;
+    if (Object.keys(searchParams).length < 1) return;
 
-    // Serialize the query parameters
-    let queryParams = router.query;
+    const params = new URLSearchParams(searchParams);
 
-    const additionalParams: Record<string, string> = {};
     if (currentPage > 1)
-      additionalParams.skip = (currentPage * PageSize - PageSize).toString();
+      params.set("skip", (currentPage * PageSize - PageSize).toString());
 
-    if (queryParams.name && queryParams.name != "")
-      setSearchQuery(queryParams.name.toString());
-
-    queryParams = {
-      ...queryParams,
-      ...additionalParams,
-    };
-    const serializedParams = queryString.stringify(queryParams);
-
-    const fetchResponse = await fetch(`/api/search?${serializedParams}`);
+    const fetchResponse = await fetch(`/api/search?${params}`);
     const fetchResult = await fetchResponse.json();
     if (fetchResponse.status === 200 && fetchResult.recipes !== null) {
       setResults(fetchResult.recipes);
@@ -69,8 +61,8 @@ const Search = () => {
     setResultCount(0);
     setCurrentPage(1);
     const data = serialize(document.getElementById("filters"), { hash: true });
-    router.query = data;
-    router.push(router);
+    const params = new URLSearchParams(data);
+    router.push(pathname + "?" + params.toString());
     setFilterButtonClicked(false);
   };
 

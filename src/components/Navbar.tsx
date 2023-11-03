@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
@@ -7,14 +9,15 @@ const Navbar = () => {
   const [searchInputEnabled, setSearchInputEnabled] = useState(true);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (router.pathname === "/") {
+    if (pathname === "/") {
       setSearchInputEnabled(false);
     } else {
       setSearchInputEnabled(true);
     }
-  }, [router]);
+  }, [pathname]);
   const gotoSearch = (e) => {
     if (e.key === "Enter") {
       router.push(`/search?name=${e.target.value}`);
