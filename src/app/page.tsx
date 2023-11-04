@@ -1,29 +1,15 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 
+import AdditionalRecipeComponent from "../components/AdditionalRecipeComponent";
 import CarouselComponent from "../components/CarouselComponent";
 import RecipeDataCard from "../components/RecipeCard";
 import SearchBox from "../components/SearchBox";
-import { renderRating } from "../Helpers";
+import prisma from "../lib/prisma";
 import { mealTypesSmall } from "../SearchData";
 
-const Home = () => {
-  const [randomRecipeData, setRandomRecipeData] = useState([
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-  ]);
-  const [carouselRecipeData, setCarouselRecipeData] = useState([]);
-  const [additionalRecipeData, setAdditionalRecipeData] = useState([]);
-
-  const [randomDataLoading, setRandomDataLoading] = useState(true);
-  const [carouselDataLoading, setCarouselDataLoading] = useState(true);
-  const [additionalDataLoading, setAdditionalDataLoading] = useState(true);
-
-  const [searchResult, setSearchResults] = useState(null);
-  const router = useRouter();
+export default async function Page() {
   const carouselRecipeSlugs = [
     "pecan-mince-pie",
     "chunky-vegetable-brown-rice-soup",
@@ -38,81 +24,25 @@ const Home = () => {
     "congee-soy-eggs",
     "korean-style-fried-rice",
     "quinoa-stir-fried-winter-veg",
-    "quinoa-stir-fried-winter-veg",
   ];
 
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        let response = await fetch("/api/random?limit=6");
-        let result = await response.json();
-        if (response.status !== 200 || result === null) throw "api failure";
-        setRandomRecipeData(result);
-      } catch (ex) {
-        setError(true);
-        console.error("Failed to fetch random recipe data");
-      }
-
-      try {
-        carouselRecipeSlugs.map(async (slug) => {
-          let response = await fetch(`/api/recipebyslug?slug=${slug}`);
-          let result = await response.json();
-          console.log(result.result);
-          if (response.status === 200 && result !== null) {
-            setCarouselRecipeData((carouselRecipeData) => [
-              ...carouselRecipeData,
-              result.result,
-            ]);
-          } else {
-            throw "api failure";
-          }
-        });
-      } catch (ex) {
-        setError(true);
-        console.log("Fetching carousel recipies from API failed");
-      }
-
-      try {
-        additionalRecipeSlugs.map(async (slug) => {
-          let response = await fetch(`/api/recipebyslug?slug=${slug}`);
-          let result = await response.json();
-          if (response.status === 200 && result !== null) {
-            setAdditionalRecipeData((additionalRecipeData) => [
-              ...additionalRecipeData,
-              result.result,
-            ]);
-          } else {
-            throw "api failure";
-          }
-        });
-      } catch (ex) {
-        setError(true);
-        console.log("Fetching additional recipies from API failed");
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (randomRecipeData != null && randomRecipeData[0] != 0) {
-      setRandomDataLoading(false);
-    }
-  }, [randomRecipeData]);
-
-  useEffect(() => {
-    if (carouselRecipeData != null && carouselRecipeData.length > 0) {
-      setCarouselDataLoading(false);
-    }
-  }, [carouselRecipeData]);
-
-  useEffect(() => {
-    if (additionalRecipeData != null && additionalRecipeData[0] != 0) {
-      setAdditionalDataLoading(false);
-    }
-  }, [additionalRecipeData]);
-
+  const error = false;
+  const randomRecipeData = await prisma.recipes.findMany({
+    take: 6,
+    select: {
+      date: true,
+      description: true,
+      images: true,
+      name: true,
+      recipecategories: {
+        select: {
+          categories: true,
+        },
+      },
+      ratings: true,
+      slug: true,
+    },
+  });
 
   return (
     <div className="flex flex-col h-full gap-y-8">
@@ -136,7 +66,7 @@ const Home = () => {
           <RecipeDataCard
             key={"recommended_recipe_" + id}
             recipeData={recipe}
-            dataLoading={randomDataLoading}
+            dataLoading={false}
             error={error}
           />
         ))}
@@ -150,20 +80,15 @@ const Home = () => {
         </div>
       </div>
       <div className="mt-0 px-4 md:px-8 h-full flex-none flex flex-col gap-y-10">
-        {!carouselDataLoading && (
-          <CarouselComponent recipes={carouselRecipeData} />
-        )}
+        <Suspense>
+          <CarouselComponent carouselRecipeSlugs={carouselRecipeSlugs} />
+        </Suspense>
         <div className="flex flex-col md:flex-row gap-y-5 md:gap-x-10 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full w-3/4">
-            {additionalRecipeData.map((recipe, id) => (
-              <RecipeDataCard
-                key={"additional_recipe_" + id}
-                recipeData={recipe}
-                dataLoading={additionalDataLoading}
-                error={error}
-              />
-            ))}
-          </div>
+          <Suspense>
+            <AdditionalRecipeComponent
+              additionalRecipeSlugs={additionalRecipeSlugs}
+            />
+          </Suspense>
           <div className="flex flex-col gap-y-4 md:w-80 flex-none">
             <div className="border-b border-gray-400 dark:border-gray-500 relative pb-2 mb-4">
               <p className="text-2xl font-medium">Latest Recipes</p>
@@ -226,6 +151,4 @@ const Home = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}
