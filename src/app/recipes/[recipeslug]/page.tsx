@@ -11,15 +11,8 @@ import SimiliarRecipesComponent from "./SimiliarRecipesComponent";
 async function getData(recipeslug: string) {
   const recipeData = await fetchJsonBySlug(recipeslug);
 
-  const similiarRecipesResponse = await fetch(
-    `http://localhost:3000/api/similiarrecipesbyid?recipeid=${recipeData.id}&limit=5`
-  );
-  const similiarRecipeData = await similiarRecipesResponse.json();
-  const similiarRecipes = await similiarRecipeData.recipes;
-
   return {
-    recipeData,
-    similiarRecipes,
+    recipeData
   };
 }
 
@@ -28,7 +21,7 @@ export default async function Page({
 }: {
   params: { recipeslug: string };
 }) {
-  const { recipeData, similiarRecipes } = await getData(params.recipeslug);
+  const { recipeData } = await getData(params.recipeslug);
 
   return (
     <div className="flex flex-col gap-y-6 mt-14">
