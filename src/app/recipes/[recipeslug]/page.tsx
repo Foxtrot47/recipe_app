@@ -1,11 +1,12 @@
-import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import { Key, useEffect, useState } from "react";
+import { Key, Suspense } from "react";
 
 import { renderRating } from "../../../Helpers";
 import { fetchJsonBySlug } from "../../../lib/prisma";
 import { mealTypesSmall } from "../../../SearchData";
+import ReviewDataComponent from "./ReviewDataComponent";
+import SimiliarRecipesComponent from "./SimiliarRecipesComponent";
 
 async function getData(recipeslug: string) {
   const recipeData = await fetchJsonBySlug(recipeslug);
@@ -16,26 +17,9 @@ async function getData(recipeslug: string) {
   const similiarRecipeData = await similiarRecipesResponse.json();
   const similiarRecipes = await similiarRecipeData.recipes;
 
-  // Required params for comments api
-  const params = {
-    siteId: "bbcgoodfood",
-    entityType: "recipe",
-    entityId: recipeData.id,
-    source: "content-api",
-    itemsPerPage: 5,
-    page: 1,
-    client: "bbcgoodfood",
-  };
-  const reviewRequest = await fetch(
-    `https://reactions.api.immediate.co.uk/api/reactions?${params}`
-  );
-  const reviewResponse = await reviewRequest.json();
-  const reviewData = reviewResponse["hydra:member"];
-
   return {
     recipeData,
     similiarRecipes,
-    reviewData,
   };
 }
 
@@ -44,20 +28,20 @@ export default async function Page({
 }: {
   params: { recipeslug: string };
 }) {
-  const { recipeData, similiarRecipes, reviewData } = await getData(
-    params.recipeslug
-  );
+  const { recipeData, similiarRecipes } = await getData(params.recipeslug);
 
   return (
     <div className="flex flex-col gap-y-6 mt-14">
       <div className="flex flex-col gap-y-4 relative justify-center items-center bg-red-500 h-56 md:h-72 text-white font-medium text-center">
-        {
-          <img
-            src={recipeData.images.url}
+        <div className="w-full">
+          <Image
             alt={recipeData.images.alt}
-            className="object-cover object-center w-full absolute opacity-10 h-full"
+            src={recipeData.images.url}
+            fill={true}
+            priority={true}
+            className="object-cover object-center w-full relative opacity-10 h-auto"
           />
-        }
+        </div>
         <div className="text-3xl md:text-4xl font-helvetica-neue font-semibold px-4">
           {recipeData.name}
         </div>
@@ -317,89 +301,14 @@ export default async function Page({
               ))}
             </div>
           </div>
-          <div className="flex flex-col gap-y-4 md:mr-20">
-            <div className="border-b border-gray-300 dark:border-gray-500 relative pb-2 mt-6">
-              <p className="text-2xl md:text-3xl font-medium">
-                <i className="fa-solid fa-comments text-red-500 md:text-xl mr-2"></i>
-                Comments
-              </p>
-              <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[4px] w-40 md:w-48">
-                &nbsp;
-              </span>
-            </div>
-            <div className="flex flex-col gap-y-8 py-8 md:w-5/6">
-              {reviewData != null &&
-                reviewData.map((review, index: Key) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-y-4 p-4 bg-gray-100 dark:bg-gray-600 rounded-lg drop-shadow"
-                  >
-                    <div className="flex flex-col md:flex-row md:gap-x-4 gap-y-2 justify-between items-start">
-                      <div className="flex flex-row gap-x-2 items-center">
-                        <i className="fa-solid fa-circle-user text-red-500 text-bg-gray-200 text-5xl mr-2"></i>
-                        <div className="flex flex-col md:gap-y-1">
-                          <span className="capitalize text-xl dark:text-gray-100 truncate w-64">
-                            {review.author.displayName}
-                          </span>
-                          {review.changed && (
-                            <div className="text-lg text-gray-500">
-                              {moment(
-                                review.changed,
-                                "YYYY-MM-DDTh:mm:ss a"
-                              ).fromNow()}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {review.rating && (
-                        <div className="flex flex-row gap-x-2 text-red-500">
-                          {renderRating(review.rating)}
-                        </div>
-                      )}
-                    </div>
-                    {review.body && (
-                      <div className="md:text-lg md:px-16">{review.body}</div>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </div>
+          <Suspense>
+            <ReviewDataComponent recipeId={recipeData.id} />
+          </Suspense>
         </div>
         <div className="flex flex-col md:w-1/4 flex-none h-full">
-          <div className="border-b border-gray-300 dark:border-gray-500 relative pb-2 mb-6">
-            <p className="text-2xl font-medium">Similiar Recipes</p>
-            <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-44">
-              &nbsp;
-            </span>
-          </div>
-          <div className="flex flex-col gap-y-4 mb-4">
-            {similiarRecipes !== undefined &&
-              similiarRecipes.map((recipe, id: Key) => (
-                <Link
-                  key={id}
-                  className="flex flex-row gap-x-4 w-full pr-6 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:drop-shadow"
-                  href={"/recipes/" + recipe.slug}
-                >
-                  <div className="flex-none">
-                    <Image
-                      width={96}
-                      height={96}
-                      className="object-cover object-center h-24 rounded-lg"
-                      src={recipe.images.url}
-                      alt={recipe.images.alt}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-around place-content-start">
-                    <p className="text-lg font-semibold text-clip overflow-hidden w-50">
-                      {recipe.name}
-                    </p>
-                    <div className="flex flex-row gap-x-2 text-red-500 text-sm">
-                      {renderRating(recipe.ratings.avg)}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
+          <Suspense>
+            <SimiliarRecipesComponent recipeId={recipeData.id} />
+          </Suspense>
           <div className="border-b border-gray-300 dark:border-gray-500 relative pb-2 mt-4">
             <p className="text-2xl font-medium">Recipe Categories</p>
             <span className="bg-red-500 text-sm font-light absolute -bottom-0.5 h-[3px] w-48">
