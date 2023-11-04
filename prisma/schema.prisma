@@ -37,7 +37,9 @@ model cuisines {
 
 model diets {
   id          Int           @id(map: "PK_Diets") @default(autoincrement())
-  name        String?
+  slug        String?
+  display     String?
+  taxonomy    String?
   recipediets recipediets[]
 }
 
@@ -49,6 +51,7 @@ model images {
   width       Int
   height      Int
   aspectratio Float
+  blurhash    String?
   recipes     recipes[]
 }
 

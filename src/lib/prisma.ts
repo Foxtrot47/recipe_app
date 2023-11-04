@@ -85,6 +85,7 @@ const fetchJsonBySlug = async (slug: string) => {
       },
       ingredientgroups: {
         select: {
+          heading: true,
           ingredients: true,
         },
       },

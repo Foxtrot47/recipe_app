@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
                 kcal === "gt1500" && {
                   gt: 1500,
                 }) ||
+                
               (isValidStringParam(kcal) &&
                 kcal !== "gt1500" && {
                   lte: kcalValues[kcal],
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
         recipediets: {
           some: {
             diets: {
-              name: isValidStringParam(diet)
+              display: isValidStringParam(diet)
                 ? { contains: diet.trim() }
                 : undefined,
             },
